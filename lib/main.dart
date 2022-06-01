@@ -1,5 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import './screens/camera_screen.dart';
 
 import 'themedata.dart';
 
@@ -19,6 +20,11 @@ class AppEntry extends StatelessWidget {
       theme: AppTheme.maintheme(),
       debugShowCheckedModeBanner: false,
       home: SafeArea(child: TopBar()),
+      initialRoute: '/',
+      routes: {
+        CameraScreen.routeName: (ctx) => CameraScreen(cameras: cameras),
+      },
+
     );
   }
 }
@@ -118,9 +124,9 @@ class TopBar extends StatelessWidget {
                   // Spacer(),
                   IconButton(
                     icon: const Icon(Icons.photo_camera),
-                    tooltip: 'Open shopping cart',
+                    tooltip: 'Open camera screen',
                     onPressed: () {
-                      // handle the press
+                      Navigator.pushNamed(context, CameraScreen.routeName);
                     },
                   ),
                   // Spacer(),
