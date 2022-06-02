@@ -37,6 +37,8 @@ dependencies:
   camera: ^0.9.4+21
   image_picker: ^0.8.5+3
   path_provider: ^2.0.10
+  document_scanner_flutter: ^0.2.7
+  advance_pdf_viewer: ^2.0.1
 
 dev_dependencies:
   flutter_test:
