@@ -1,5 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:musescore/screens/scanner_screen.dart';
 import './screens/camera_screen.dart';
 
 import 'themedata.dart';
@@ -23,8 +24,8 @@ class AppEntry extends StatelessWidget {
       initialRoute: '/',
       routes: {
         CameraScreen.routeName: (ctx) => CameraScreen(cameras: cameras),
+        ScannerScreen.routeName: (ctx) => ScannerScreen(),
       },
-
     );
   }
 }
@@ -126,7 +127,7 @@ class TopBar extends StatelessWidget {
                     icon: const Icon(Icons.photo_camera),
                     tooltip: 'Open camera screen',
                     onPressed: () {
-                      Navigator.pushNamed(context, CameraScreen.routeName);
+                      Navigator.pushNamed(context, ScannerScreen.routeName);
                     },
                   ),
                   // Spacer(),
