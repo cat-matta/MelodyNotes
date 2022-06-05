@@ -24,7 +24,6 @@ class AppEntry extends StatelessWidget {
       routes: {
         CameraScreen.routeName: (ctx) => CameraScreen(cameras: cameras),
       },
-
     );
   }
 }
@@ -36,7 +35,7 @@ class TopBar extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
             centerTitle: true,
-            titleSpacing: 2.3,
+            titleSpacing: 0.0,
             title: Container(
                 // alignment: Alignment.center,
                 width: mediaQuerry.size.width * 0.5,
@@ -62,84 +61,61 @@ class TopBar extends StatelessWidget {
                     ),
                   ],
                 )),
-            leadingWidth: mediaQuerry.size.width,
-            leading: Row(
-              // mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Spacer(),
-                IconButton(
-                  icon: const Icon(Icons.display_settings),
+            //leadingWidth: mediaQuerry.size.width,
+            leading: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: GestureDetector(
+                onTap: () {},
+                child: Icon(
+                  Icons.menu,
+                  size: 26.0,
                   color: AppTheme.maintheme().iconTheme.color,
-                  onPressed: () {
-                    // handle the press
-                  },
                 ),
-                Spacer(),
-                IconButton(
-                  icon: const Icon(Icons.music_note),
-                  color: AppTheme.maintheme().iconTheme.color,
-                  onPressed: () {
-                    // handle the press
-                  },
-                ),
-                Spacer(),
-                IconButton(
-                  icon: const Icon(Icons.bookmarks),
-                  color: AppTheme.maintheme().iconTheme.color,
-                  onPressed: () {
-                    // handle the press
-                  },
-                ),
-                Spacer(),
-                IconButton(
-                  icon: const Icon(Icons.collections_bookmark),
-                  color: AppTheme.maintheme().iconTheme.color,
-                  onPressed: () {
-                    // handle the press
-                  },
-                ),
-                Spacer(),
-              ],
+              ),
             ),
             actions: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  // Spacer(),
-                  IconButton(
-                    icon: const Icon(Icons.draw),
-                    tooltip: 'Open shopping cart',
-                    onPressed: () {
-                      // handle the press
-                    },
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: GestureDetector(
+                  onTap: () {},
+                  child: Icon(
+                    Icons.draw,
+                    size: 26.0,
                   ),
-                  // Spacer(),
-                  IconButton(
-                    icon: const Icon(Icons.library_music),
-                    tooltip: 'Open shopping cart',
-                    onPressed: () {
-                      // handle the press
-                    },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, CameraScreen.routeName);
+                  },
+                  child: Icon(
+                    Icons.photo_camera,
+                    size: 26.0,
                   ),
-                  // Spacer(),
-                  IconButton(
-                    icon: const Icon(Icons.photo_camera),
-                    tooltip: 'Open camera screen',
-                    onPressed: () {
-                      Navigator.pushNamed(context, CameraScreen.routeName);
-                    },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: GestureDetector(
+                  onTap: () {},
+                  child: Icon(
+                    Icons.music_note,
+                    size: 26.0,
                   ),
-                  // Spacer(),
-                  IconButton(
-                    icon: const Icon(Icons.menu),
-                    tooltip: 'Open shopping cart',
-                    onPressed: () {
-                      // handle the press
-                    },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: GestureDetector(
+                  onTap: () {},
+                  child: Icon(
+                    Icons.bookmark,
+                    size: 26.0,
                   ),
-                  // Spacer(),
-                ],
-              )
+                ),
+              ),
             ]),
         body: AppBody());
   }

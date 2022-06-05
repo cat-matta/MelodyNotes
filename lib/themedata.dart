@@ -10,7 +10,9 @@ class AppTheme {
 
   static ThemeData maintheme() {
     return ThemeData(
-        iconTheme: IconThemeData(color: accentMain),
+        iconTheme: IconThemeData(
+          color: accentMain,
+        ),
         primaryColor: darkBackground,
         appBarTheme: AppBarTheme(
           backgroundColor: darkBackground,
