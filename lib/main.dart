@@ -32,6 +32,11 @@ class TopBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final mediaQuerry = MediaQuery.of(context);
+
+    bool isDesktop(BuildContext context) {
+      return mediaQuerry.size.width >= 600;
+    }
+
     return Scaffold(
         appBar: AppBar(
             centerTitle: true,
@@ -61,18 +66,71 @@ class TopBar extends StatelessWidget {
                     ),
                   ],
                 )),
-            //leadingWidth: mediaQuerry.size.width,
-            leading: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: GestureDetector(
-                onTap: () {},
-                child: Icon(
-                  Icons.menu,
-                  size: 26.0,
-                  color: AppTheme.maintheme().iconTheme.color,
-                ),
-              ),
-            ),
+            leadingWidth: mediaQuerry.orientation == Orientation.landscape ||
+                    isDesktop(context)
+                ? mediaQuerry.size.width * 0.2
+                : mediaQuerry.size.width * 0.15,
+            leading: mediaQuerry.orientation == Orientation.landscape ||
+                    isDesktop(context)
+                ? Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: GestureDetector(
+                          onTap: () {},
+                          child: Icon(
+                            Icons.menu,
+                            size: 26.0,
+                            color: AppTheme.maintheme().iconTheme.color,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: GestureDetector(
+                          onTap: () {},
+                          child: Icon(
+                            Icons.display_settings,
+                            size: 26.0,
+                            color: AppTheme.maintheme().iconTheme.color,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: GestureDetector(
+                          onTap: () {},
+                          child: Icon(
+                            Icons.collections_bookmark,
+                            size: 26.0,
+                            color: AppTheme.maintheme().iconTheme.color,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: GestureDetector(
+                          onTap: () {},
+                          child: Icon(
+                            Icons.library_music,
+                            size: 26.0,
+                            color: AppTheme.maintheme().iconTheme.color,
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                : Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: GestureDetector(
+                      onTap: () {},
+                      child: Icon(
+                        Icons.menu,
+                        size: 26.0,
+                        color: AppTheme.maintheme().iconTheme.color,
+                      ),
+                    ),
+                  ),
             actions: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
