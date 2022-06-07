@@ -55,9 +55,12 @@ class TopBar extends StatelessWidget {
                       icon: Icon(Icons.settings),
                       color: AppTheme.accentSecondary,
                     ),
-                    Text(
-                      "Piece",
-                      style: TextStyle(color: Colors.black),
+                    Flexible(
+                      child: Text(
+                        "River Flows in You",
+                        style: TextStyle(color: Colors.black),
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                     IconButton(
                       onPressed: () => {},
@@ -68,11 +71,12 @@ class TopBar extends StatelessWidget {
                 )),
             leadingWidth: mediaQuerry.orientation == Orientation.landscape ||
                     isDesktop(context)
-                ? mediaQuerry.size.width * 0.2
+                ? mediaQuerry.size.width * 0.25
                 : mediaQuerry.size.width * 0.15,
             leading: mediaQuerry.orientation == Orientation.landscape ||
                     isDesktop(context)
                 ? Row(
+                    //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(8.0),
