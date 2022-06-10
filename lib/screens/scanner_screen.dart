@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import '../themedata.dart';
 
 import 'package:document_scanner_flutter/document_scanner_flutter.dart';
 import 'package:document_scanner_flutter/configs/configs.dart';
@@ -31,7 +32,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
     if (doc != null) {
       _scannedDocument = null;
       setState(() {});
-      await Future.delayed(Duration(milliseconds: 100));
+      await Future.delayed(const Duration(milliseconds: 100));
       _scannedDocumentFile = doc;
       _scannedDocument = await PDFDocument.fromFile(doc);
       setState(() {});
@@ -53,11 +54,77 @@ class _ScannerScreenState extends State<ScannerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuerry = MediaQuery.of(context);
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Document Scanner Demo'),
-        ),
+            centerTitle: true,
+            titleSpacing: 2.3,
+            backgroundColor: const Color.fromRGBO(44, 44, 60, 1),
+            actionsIconTheme:
+                const IconThemeData(color: Colors.green, size: 36),
+            title: Container(
+              
+                alignment: Alignment.center,
+                width: mediaQuerry.size.width * 0.4,
+                decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 186, 222, 204),
+                    borderRadius: BorderRadius.circular(5)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Spacer(),
+                    IconButton(
+                      onPressed: () => openPdfScanner(context),
+                      icon: const Icon(Icons.file_copy_outlined),
+                      color: Color.fromRGBO(4, 67, 171, 1),
+                    ),
+                    const Spacer(),
+                    IconButton(
+                      onPressed: () => openImageScanner(context),
+                      icon: const Icon(Icons.camera_alt_outlined),
+                      color: Color.fromRGBO(4, 67, 171, 1),
+                    ),
+                    const Spacer(),
+                    IconButton(
+                      onPressed: () => {},
+                      icon: const Icon(Icons.photo_library_outlined),
+                      color: Color.fromRGBO(4, 67, 171, 1),
+                    ),
+                    const Spacer(),
+                  ],
+                )),
+            leadingWidth: mediaQuerry.size.width,
+            leading: Row(
+              children: [
+                const Spacer(),
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/');
+                    },
+                    child: const Text('Close'),
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(
+                          Color.fromRGBO(44, 44, 60, 1)),
+                    )),
+                const Spacer(),
+                const Spacer(),
+              ],
+            ),
+            actions: [
+              Row(
+                children: [
+                  
+                  ElevatedButton(
+                      onPressed: () {},
+                      child: Text('Save'),
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(Color.fromRGBO(44, 44, 60, 1), 
+                            ),  )),
+                ],
+              )
+            ]),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -77,20 +144,20 @@ class _ScannerScreenState extends State<ScannerScreen> {
                     _scannedDocumentFile?.path ?? _scannedImage?.path ?? ''),
               ),
             ],
-            Center(
-              child: Builder(builder: (context) {
-                return ElevatedButton(
-                    onPressed: () => openPdfScanner(context),
-                    child: Text("PDF Scan"));
-              }),
-            ),
-            Center(
-              child: Builder(builder: (context) {
-                return ElevatedButton(
-                    onPressed: () => openImageScanner(context),
-                    child: Text("Image Scan"));
-              }),
-            )
+            // Center(
+            //   child: Builder(builder: (context) {
+            //     return ElevatedButton(
+            //         onPressed: () => openPdfScanner(context),
+            //         child: const Text("PDF Scan"));
+            //   }),
+            // ),
+            // Center(
+            //   child: Builder(builder: (context) {
+            //     return ElevatedButton(
+            //         onPressed: () => openImageScanner(context),
+            //         child: const Text("Image Scan"));
+            //   }),
+            // )
           ],
         ),
       ),
