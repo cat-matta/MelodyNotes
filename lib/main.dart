@@ -1,5 +1,8 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:modal_side_sheet/modal_side_sheet.dart';
+
+import './widgets/MainDrawer.dart';
 import './screens/camera_screen.dart';
 
 import 'themedata.dart';
@@ -28,13 +31,42 @@ class AppEntry extends StatelessWidget {
   }
 }
 
-class TopBar extends StatelessWidget {
+class TopBar extends StatefulWidget {
+  @override
+  State<TopBar> createState() => _TopBarState();
+}
+
+class _TopBarState extends State<TopBar> {
   @override
   Widget build(BuildContext context) {
     final mediaQuerry = MediaQuery.of(context);
 
     bool isDesktop(BuildContext context) {
       return mediaQuerry.size.width >= 700;
+    }
+
+    Future showMainDrawer(Widget body, double width) {
+      return showModalSideSheet(
+        context: context,
+        barrierDismissible: true,
+        withCloseControll: true,
+        body: body,
+        width: mediaQuerry.size.width * width,
+      );
+    }
+
+    Widget buildAppBarIcons(IconData icon, VoidCallback function) {
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: GestureDetector(
+          onTap: function,
+          child: Icon(
+            icon,
+            size: 26.0,
+            color: AppTheme.maintheme().iconTheme.color,
+          ),
+        ),
+      );
     }
 
     return Scaffold(
@@ -75,109 +107,29 @@ class TopBar extends StatelessWidget {
                 : mediaQuerry.size.width * 0.15,
             leading: mediaQuerry.orientation == Orientation.landscape ||
                     isDesktop(context)
-                ? Row(
-                    //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: GestureDetector(
-                          onTap: () {},
-                          child: Icon(
-                            Icons.menu,
-                            size: 26.0,
-                            color: AppTheme.maintheme().iconTheme.color,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: GestureDetector(
-                          onTap: () {},
-                          child: Icon(
-                            Icons.display_settings,
-                            size: 26.0,
-                            color: AppTheme.maintheme().iconTheme.color,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: GestureDetector(
-                          onTap: () {},
-                          child: Icon(
-                            Icons.collections_bookmark,
-                            size: 26.0,
-                            color: AppTheme.maintheme().iconTheme.color,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: GestureDetector(
-                          onTap: () {},
-                          child: Icon(
-                            Icons.library_music,
-                            size: 26.0,
-                            color: AppTheme.maintheme().iconTheme.color,
-                          ),
-                        ),
-                      ),
-                    ],
-                  )
-                : Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: GestureDetector(
-                      onTap: () {},
-                      child: Icon(
-                        Icons.menu,
-                        size: 26.0,
-                        color: AppTheme.maintheme().iconTheme.color,
-                      ),
-                    ),
-                  ),
+                ? Builder(builder: (context) {
+                    return Row(
+                      //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        buildAppBarIcons(Icons.photo_camera, () {
+                          Navigator.pushNamed(context, CameraScreen.routeName);
+                        }),
+                        buildAppBarIcons(Icons.draw, () {}),
+                        buildAppBarIcons(Icons.display_settings, () {}),
+                        buildAppBarIcons(Icons.collections_bookmark, () {}),
+                      ],
+                    );
+                  })
+                : Builder(builder: (context) {
+                    return buildAppBarIcons(Icons.draw, () {});
+                  }),
             actions: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: GestureDetector(
-                  onTap: () {},
-                  child: Icon(
-                    Icons.draw,
-                    size: 26.0,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, CameraScreen.routeName);
-                  },
-                  child: Icon(
-                    Icons.photo_camera,
-                    size: 26.0,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: GestureDetector(
-                  onTap: () {},
-                  child: Icon(
-                    Icons.music_note,
-                    size: 26.0,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: GestureDetector(
-                  onTap: () {},
-                  child: Icon(
-                    Icons.bookmark,
-                    size: 26.0,
-                  ),
-                ),
-              ),
+              buildAppBarIcons(Icons.library_music, () {}),
+              buildAppBarIcons(Icons.music_note, () {}),
+              buildAppBarIcons(Icons.bookmark, () {}),
+              buildAppBarIcons(Icons.menu, () {
+                showMainDrawer(MainDrawer(), 0.7);
+              }),
             ]),
         body: AppBody());
   }
