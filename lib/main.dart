@@ -49,7 +49,7 @@ class _TopBarState extends State<TopBar> {
       return showModalSideSheet(
         context: context,
         barrierDismissible: true,
-        withCloseControll: false,
+        withCloseControll: true,
         body: body,
         width: mediaQuerry.size.width * width,
       );
