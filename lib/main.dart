@@ -45,7 +45,7 @@ class _TopBarState extends State<TopBar> {
       return mediaQuerry.size.width >= 700;
     }
 
-    Future showMainDrawer(Widget body, double width) {
+    Future showMainDrawer(BuildContext context, Widget body, double width) {
       return showModalSideSheet(
         context: context,
         barrierDismissible: true,
@@ -107,28 +107,24 @@ class _TopBarState extends State<TopBar> {
                 : mediaQuerry.size.width * 0.15,
             leading: mediaQuerry.orientation == Orientation.landscape ||
                     isDesktop(context)
-                ? Builder(builder: (context) {
-                    return Row(
-                      //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        buildAppBarIcons(Icons.photo_camera, () {
-                          Navigator.pushNamed(context, CameraScreen.routeName);
-                        }),
-                        buildAppBarIcons(Icons.draw, () {}),
-                        buildAppBarIcons(Icons.display_settings, () {}),
-                        buildAppBarIcons(Icons.collections_bookmark, () {}),
-                      ],
-                    );
-                  })
-                : Builder(builder: (context) {
-                    return buildAppBarIcons(Icons.draw, () {});
-                  }),
+                ? Row(
+                    //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      buildAppBarIcons(Icons.photo_camera, () {
+                        Navigator.pushNamed(context, CameraScreen.routeName);
+                      }),
+                      buildAppBarIcons(Icons.draw, () {}),
+                      buildAppBarIcons(Icons.display_settings, () {}),
+                      buildAppBarIcons(Icons.collections_bookmark, () {}),
+                    ],
+                  )
+                : buildAppBarIcons(Icons.draw, () {}),
             actions: [
               buildAppBarIcons(Icons.library_music, () {}),
               buildAppBarIcons(Icons.music_note, () {}),
               buildAppBarIcons(Icons.bookmark, () {}),
               buildAppBarIcons(Icons.menu, () {
-                showMainDrawer(MainDrawer(), 0.7);
+                showMainDrawer(context, MainDrawer(), 0.7);
               }),
             ]),
         body: AppBody());
