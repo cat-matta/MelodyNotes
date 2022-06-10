@@ -34,7 +34,7 @@ class TopBar extends StatelessWidget {
     final mediaQuerry = MediaQuery.of(context);
 
     bool isDesktop(BuildContext context) {
-      return mediaQuerry.size.width >= 600;
+      return mediaQuerry.size.width >= 700;
     }
 
     return Scaffold(
