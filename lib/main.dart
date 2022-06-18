@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:modal_side_sheet/modal_side_sheet.dart';
 
 import './widgets/MainDrawer.dart';
+import './widgets/SetlistDrawer.dart';
 import './screens/camera_screen.dart';
 
 import 'themedata.dart';
@@ -40,6 +41,7 @@ class _TopBarState extends State<TopBar> {
   @override
   Widget build(BuildContext context) {
     final mediaQuerry = MediaQuery.of(context);
+    List<VoidCallback> menuFunctions = [];
 
     bool isDesktop(BuildContext context) {
       return mediaQuerry.size.width >= 700;
@@ -49,7 +51,15 @@ class _TopBarState extends State<TopBar> {
       return showModalSideSheet(
         context: context,
         barrierDismissible: true,
-        withCloseControll: true,
+        body: body,
+        width: mediaQuerry.size.width * width,
+      );
+    }
+
+    Future showSetlistDrawer(BuildContext context, Widget body, double width) {
+      return showModalSideSheet(
+        context: context,
+        barrierDismissible: true,
         body: body,
         width: mediaQuerry.size.width * width,
       );
@@ -121,7 +131,13 @@ class _TopBarState extends State<TopBar> {
                 : buildAppBarIcons(Icons.draw, () {}),
             actions: [
               buildAppBarIcons(Icons.library_music, () {}),
-              buildAppBarIcons(Icons.music_note, () {}),
+              buildAppBarIcons(Icons.music_note, () {
+                showSetlistDrawer(
+                  context,
+                  SetlistDrawer(),
+                  0.7,
+                );
+              }),
               buildAppBarIcons(Icons.bookmark, () {}),
               buildAppBarIcons(Icons.menu, () {
                 showMainDrawer(context, MainDrawer(), 0.7);

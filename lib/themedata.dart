@@ -7,6 +7,8 @@ class AppTheme {
 
   static final darkBackground = Color.fromRGBO(44, 44, 60, 1);
   static final lightBackground = Color.fromRGBO(234, 234, 235, 1);
+  static final headerFontWeight = FontWeight.w600;
+  static final headerFontSize = 30.0;
 
   static ThemeData maintheme() {
     return ThemeData(

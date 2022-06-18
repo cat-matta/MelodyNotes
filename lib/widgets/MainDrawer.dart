@@ -1,9 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:modal_side_sheet/modal_side_sheet.dart';
+
 import 'package:musescore/themedata.dart';
+import './SetlistDrawer.dart';
 
 class MainDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    Future showSetlistDrawer(BuildContext context, Widget body, double width) {
+      return showModalSideSheet(
+        context: context,
+        barrierDismissible: true,
+        body: body,
+        width: MediaQuery.of(context).size.width * width,
+      );
+    }
+
     Widget buildListTile(IconData icon, String text, VoidCallback function) {
       return ListTile(
         title: Text(
@@ -38,7 +50,17 @@ class MainDrawer extends StatelessWidget {
             padding: EdgeInsets.zero,
             children: [
               buildListTile(Icons.library_music, "Score Library", () {}),
-              buildListTile(Icons.music_note, "Setlists", () {}),
+              buildListTile(
+                Icons.music_note,
+                "Setlists",
+                () {
+                  showSetlistDrawer(
+                    context,
+                    SetlistDrawer(),
+                    0.7,
+                  );
+                },
+              ),
               buildListTile(Icons.bookmark, "Bookmarks", () {}),
               buildListTile(Icons.photo_camera, "Scan", () {}),
               buildListTile(Icons.draw, "Edit", () {}),
