@@ -112,10 +112,13 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
 
     return Scaffold(
       appBar: AppBar(
+
           automaticallyImplyLeading: false,
+          centerTitle: false,
           title: const Text(
+
             'Scores Library',
-            textAlign: TextAlign.center,
+            textAlign: TextAlign.left,
           ),
           toolbarHeight: 56.0,
           // leading: TextButton(
@@ -128,6 +131,13 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
           actions: [
             Row(
               children: [
+                 TextButton(
+                    onPressed: () => {},
+                    child: const Text('Imports'),
+                    style: TextButton.styleFrom(
+                      primary: Color.fromRGBO(131, 195, 163, 1),
+                      backgroundColor: Color.fromRGBO(44, 44, 60, 1),
+                    )),
                 TextButton(
                     onPressed: () => {Navigator.pushNamed(context, '/')},
                     child: const Text('Back'),
@@ -237,31 +247,7 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
           body: Container(
             child: _widgetOptions.elementAt(_selectedIndex),
           ),
-          bottomNavigationBar: BottomAppBar(
-              color: Color.fromRGBO(44, 44, 60, 1),
-              child: Row(
-                children: [
-                  Spacer(),
-                  TextButton(
-                      onPressed: () => {},
-                      child: const Text('Import'),
-                      style: TextButton.styleFrom(
-                        primary: Color.fromRGBO(131, 195, 163, 1),
-                      )),
-                  Spacer(),
-                  Spacer(),
-                  Spacer(),
-                  Spacer(),
-                  Spacer(),
-                  TextButton(
-                      onPressed: () => {},
-                      child: const Text('Edit'),
-                      style: TextButton.styleFrom(
-                        primary: Color.fromRGBO(131, 195, 163, 1),
-                      )),
-                  Spacer(),
-                ],
-              ))),
+              ),
     );
   }
 }
