@@ -145,20 +145,20 @@ class _TopBarState extends State<TopBar> {
                       buildAppBarIcons(Icons.photo_camera, () {
                         Navigator.pushNamed(context, CameraScreen.routeName);
                       }),
-                      buildAppBarIcons(Icons.draw, () {
-                          showScoreDrawer(
-                          context,
-                          ScoreDrawer(),
-                          0.7,
-                        );
-                      }),
+                      buildAppBarIcons(Icons.draw, () {}),
                       buildAppBarIcons(Icons.display_settings, () {}),
                       buildAppBarIcons(Icons.collections_bookmark, () {}),
                     ],
                   )
                 : buildAppBarIcons(Icons.draw, () {}),
             actions: [
-              buildAppBarIcons(Icons.library_music, () {}),
+              buildAppBarIcons(Icons.library_music, () {
+                showScoreDrawer(
+                  context,
+                  ScoreDrawer(),
+                  0.7,
+                );
+              }),
               buildAppBarIcons(Icons.music_note, () {
                 showSetlistDrawer(
                   context,
