@@ -1,6 +1,8 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_side_sheet/modal_side_sheet.dart';
+import 'package:musescore/widgets/BookMarkDrawer.dart';
+import 'package:musescore/widgets/ScoresDrawer.dart';
 
 import './widgets/MainDrawer.dart';
 import './widgets/SetlistDrawer.dart';
@@ -65,6 +67,26 @@ class _TopBarState extends State<TopBar> {
       );
     }
 
+    Future showBookMarkDrawer(BuildContext context, Widget body, double width) {
+      return showModalSideSheet(
+        context: context,
+        barrierDismissible: true,
+        withCloseControll: false,
+        body: body,
+        width: mediaQuerry.size.width * width,
+      );
+    }
+
+    Future showScoreDrawer(BuildContext context, Widget body, double width) {
+      return showModalSideSheet(
+        context: context,
+        barrierDismissible: true,
+        withCloseControll: false,
+        body: body,
+        width: mediaQuerry.size.width * width,
+      );
+    }
+
     Widget buildAppBarIcons(IconData icon, VoidCallback function) {
       return Padding(
         padding: const EdgeInsets.all(8.0),
@@ -123,7 +145,13 @@ class _TopBarState extends State<TopBar> {
                       buildAppBarIcons(Icons.photo_camera, () {
                         Navigator.pushNamed(context, CameraScreen.routeName);
                       }),
-                      buildAppBarIcons(Icons.draw, () {}),
+                      buildAppBarIcons(Icons.draw, () {
+                          showScoreDrawer(
+                          context,
+                          ScoreDrawer(),
+                          0.7,
+                        );
+                      }),
                       buildAppBarIcons(Icons.display_settings, () {}),
                       buildAppBarIcons(Icons.collections_bookmark, () {}),
                     ],
@@ -138,7 +166,13 @@ class _TopBarState extends State<TopBar> {
                   0.7,
                 );
               }),
-              buildAppBarIcons(Icons.bookmark, () {}),
+              buildAppBarIcons(Icons.bookmark, () {
+                showBookMarkDrawer(
+                  context,
+                  BookMarkDrawer(),
+                  0.7,
+                );
+              }),
               buildAppBarIcons(Icons.menu, () {
                 showMainDrawer(context, MainDrawer(), 0.7);
               }),

@@ -3,6 +3,7 @@ import 'package:modal_side_sheet/modal_side_sheet.dart';
 
 import 'package:musescore/themedata.dart';
 import './SetlistDrawer.dart';
+import 'BookMarkDrawer.dart';
 
 class MainDrawer extends StatelessWidget {
   @override
@@ -11,6 +12,16 @@ class MainDrawer extends StatelessWidget {
       return showModalSideSheet(
         context: context,
         barrierDismissible: true,
+        body: body,
+        width: MediaQuery.of(context).size.width * width,
+      );
+    }
+
+    Future showBookMarkDrawer(BuildContext context, Widget body, double width) {
+      return showModalSideSheet(
+        context: context,
+        barrierDismissible: true,
+        withCloseControll: false,
         body: body,
         width: MediaQuery.of(context).size.width * width,
       );
@@ -61,7 +72,13 @@ class MainDrawer extends StatelessWidget {
                   );
                 },
               ),
-              buildListTile(Icons.bookmark, "Bookmarks", () {}),
+              buildListTile(Icons.bookmark, "Bookmarks", () {
+                showBookMarkDrawer(
+                  context,
+                  BookMarkDrawer(),
+                  0.7,
+                );
+              }),
               buildListTile(Icons.photo_camera, "Scan", () {}),
               buildListTile(Icons.draw, "Edit", () {}),
               buildListTile(Icons.display_settings, "Display Settings", () {}),
