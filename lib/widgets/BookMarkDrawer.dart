@@ -28,6 +28,7 @@ class _BookMarksWidgetState extends State<BookMarkDrawer> {
       _selectedIndex = index;
     });
   }
+
   //This function will control indexes for TOP LEFT nav bar
   void _onItemTappedNavLeftButtons(int index1) {
     setState(() {
@@ -43,6 +44,24 @@ class _BookMarksWidgetState extends State<BookMarkDrawer> {
       _navBottomIndex2 = secondButton;
       _navBottomIndex3 = thirdButton;
     });
+  }
+
+  //Same from SetlistDrawer.dart
+  late TextEditingController _controller;
+
+  //method called when the stateful widget is inserted in the widget tree
+  //it will only run once and initilize and listeners/variables
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
+
+  //to get rid of the controller when it is no longer needed
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -135,7 +154,7 @@ class _BookMarksWidgetState extends State<BookMarkDrawer> {
     ];
 
     final mediaQuerry = MediaQuery.of(context);
-    
+
     return Scaffold(
       appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -234,8 +253,34 @@ class _BookMarksWidgetState extends State<BookMarkDrawer> {
               ],
             ),
           ),
-          body: Center(
-            child: _widgetOptions.elementAt(_selectedIndex),
+          body: Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(
+                  top: 8,
+                  right: 8,
+                  left: 8,
+                ),
+                child: TextField(
+                  controller: _controller,
+                  onSubmitted: (String value) async {},
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
+                    prefixIcon: Icon(
+                      Icons.search,
+                      color: AppTheme.accentSecondary,
+                    ),
+                    hintText: 'Search',
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: _widgetOptions.elementAt(_selectedIndex),
+              )
+            ],
           ),
           bottomNavigationBar: BottomAppBar(
               color: Color.fromRGBO(44, 44, 60, 1),

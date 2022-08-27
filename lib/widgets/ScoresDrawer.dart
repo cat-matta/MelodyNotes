@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:musescore/themedata.dart';
+import 'package:file_picker/file_picker.dart';
 
 class ScoreDrawer extends StatefulWidget {
   @override
@@ -23,6 +24,24 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+//Same from SetlistDrawer.dart
+  late TextEditingController _controller;
+
+  //method called when the stateful widget is inserted in the widget tree
+  //it will only run once and initilize and listeners/variables
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
+
+  //to get rid of the controller when it is no longer needed
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -112,11 +131,9 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
 
     return Scaffold(
       appBar: AppBar(
-
           automaticallyImplyLeading: false,
           centerTitle: false,
           title: const Text(
-
             'Scores Library',
             textAlign: TextAlign.left,
           ),
@@ -131,7 +148,7 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
           actions: [
             Row(
               children: [
-                 TextButton(
+                TextButton(
                     onPressed: () => {},
                     child: const Text('Imports'),
                     style: TextButton.styleFrom(
@@ -244,10 +261,35 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
               ],
             ),
           ),
-          body: Container(
-            child: _widgetOptions.elementAt(_selectedIndex),
-          ),
+          body: Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(
+                  top: 8,
+                  right: 8,
+                  left: 8,
+                ),
+                child: TextField(
+                  controller: _controller,
+                  onSubmitted: (String value) async {},
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
+                    prefixIcon: Icon(
+                      Icons.search,
+                      color: AppTheme.accentSecondary,
+                    ),
+                    hintText: 'Search',
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                ),
               ),
+              Expanded(
+                child: _widgetOptions.elementAt(_selectedIndex),
+              )
+            ],
+          )),
     );
   }
 }
