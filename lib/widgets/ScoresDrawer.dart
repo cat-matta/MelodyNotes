@@ -26,8 +26,32 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
     });
   }
 
-//Same from SetlistDrawer.dart
+  //Same from SetlistDrawer.dart
   late TextEditingController _controller;
+
+  //variable to initialize file picker object & hold the file object
+  FilePickerResult? result;
+  PlatformFile? file;
+
+  Widget fileDetails(PlatformFile file) {
+    final kb = file.size / 1024;
+    final mb = kb / 1024;
+    final size = (mb >= 1)
+        ? '${mb.toStringAsFixed(2)} MB'
+        : '${kb.toStringAsFixed(2)} KB';
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('File Name: ${file.name}'),
+          Text('File Size: $size'),
+          Text('File Extension: ${file.extension}'),
+          Text('File Path: ${file.path}'),
+        ],
+      ),
+    );
+  }
 
   //method called when the stateful widget is inserted in the widget tree
   //it will only run once and initilize and listeners/variables
@@ -149,8 +173,18 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
             Row(
               children: [
                 TextButton(
-                    onPressed: () => {},
-                    child: const Text('Imports'),
+                    onPressed: () async {
+                      result = await FilePicker.platform.pickFiles(
+                        type: FileType.custom,
+                        allowedExtensions: ['pdf'],
+                      );
+                      if (result == null) return;
+
+                      file = result!.files.first;
+
+                      setState(() {});
+                    },
+                    child: const Text('Import'),
                     style: TextButton.styleFrom(
                       primary: Color.fromRGBO(131, 195, 163, 1),
                       backgroundColor: Color.fromRGBO(44, 44, 60, 1),
@@ -285,9 +319,10 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
                   ),
                 ),
               ),
-              Expanded(
-                child: _widgetOptions.elementAt(_selectedIndex),
-              )
+              // Expanded(
+              //   child: _widgetOptions.elementAt(_selectedIndex),
+              // )
+              if (file != null) fileDetails(file!),
             ],
           )),
     );
