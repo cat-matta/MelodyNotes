@@ -1,5 +1,11 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:modal_side_sheet/modal_side_sheet.dart';
+import 'package:musescore/widgets/BookMarkDrawer.dart';
+import 'package:musescore/widgets/ScoresDrawer.dart';
+
+import './widgets/MainDrawer.dart';
+import './widgets/SetlistDrawer.dart';
 import 'package:musescore/screens/scanner_screen.dart';
 import './screens/camera_screen.dart';
 
@@ -30,14 +36,77 @@ class AppEntry extends StatelessWidget {
   }
 }
 
-class TopBar extends StatelessWidget {
+class TopBar extends StatefulWidget {
+  @override
+  State<TopBar> createState() => _TopBarState();
+}
+
+class _TopBarState extends State<TopBar> {
   @override
   Widget build(BuildContext context) {
     final mediaQuerry = MediaQuery.of(context);
+    List<VoidCallback> menuFunctions = [];
+
+    bool isDesktop(BuildContext context) {
+      return mediaQuerry.size.width >= 700;
+    }
+
+    Future showMainDrawer(BuildContext context, Widget body, double width) {
+      return showModalSideSheet(
+        context: context,
+        barrierDismissible: true,
+        body: body,
+        width: mediaQuerry.size.width * width,
+      );
+    }
+
+    Future showSetlistDrawer(BuildContext context, Widget body, double width) {
+      return showModalSideSheet(
+        context: context,
+        barrierDismissible: true,
+        body: body,
+        width: mediaQuerry.size.width * width,
+      );
+    }
+
+    Future showBookMarkDrawer(BuildContext context, Widget body, double width) {
+      return showModalSideSheet(
+        context: context,
+        barrierDismissible: true,
+        withCloseControll: false,
+        body: body,
+        width: mediaQuerry.size.width * width,
+      );
+    }
+
+    Future showScoreDrawer(BuildContext context, Widget body, double width) {
+      return showModalSideSheet(
+        context: context,
+        barrierDismissible: true,
+        withCloseControll: false,
+        body: body,
+        width: mediaQuerry.size.width * width,
+      );
+    }
+
+    Widget buildAppBarIcons(IconData icon, VoidCallback function) {
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: GestureDetector(
+          onTap: function,
+          child: Icon(
+            icon,
+            size: 26.0,
+            color: AppTheme.maintheme().iconTheme.color,
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
         appBar: AppBar(
             centerTitle: true,
-            titleSpacing: 2.3,
+            titleSpacing: 0.0,
             title: Container(
                 // alignment: Alignment.center,
                 width: mediaQuerry.size.width * 0.5,
@@ -52,9 +121,12 @@ class TopBar extends StatelessWidget {
                       icon: Icon(Icons.settings),
                       color: AppTheme.accentSecondary,
                     ),
-                    Text(
-                      "Piece",
-                      style: TextStyle(color: Colors.black),
+                    Flexible(
+                      child: Text(
+                        "River Flows in You",
+                        style: TextStyle(color: Colors.black),
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                     IconButton(
                       onPressed: () => {},
@@ -63,84 +135,49 @@ class TopBar extends StatelessWidget {
                     ),
                   ],
                 )),
-            leadingWidth: mediaQuerry.size.width,
-            leading: Row(
-              // mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Spacer(),
-                IconButton(
-                  icon: const Icon(Icons.display_settings),
-                  color: AppTheme.maintheme().iconTheme.color,
-                  onPressed: () {
-                    // handle the press
-                  },
-                ),
-                Spacer(),
-                IconButton(
-                  icon: const Icon(Icons.music_note),
-                  color: AppTheme.maintheme().iconTheme.color,
-                  onPressed: () {
-                    // handle the press
-                  },
-                ),
-                Spacer(),
-                IconButton(
-                  icon: const Icon(Icons.bookmarks),
-                  color: AppTheme.maintheme().iconTheme.color,
-                  onPressed: () {
-                    // handle the press
-                  },
-                ),
-                Spacer(),
-                IconButton(
-                  icon: const Icon(Icons.collections_bookmark),
-                  color: AppTheme.maintheme().iconTheme.color,
-                  onPressed: () {
-                    // handle the press
-                  },
-                ),
-                Spacer(),
-              ],
-            ),
+            leadingWidth: mediaQuerry.orientation == Orientation.landscape ||
+                    isDesktop(context)
+                ? mediaQuerry.size.width * 0.25
+                : mediaQuerry.size.width * 0.15,
+            leading: mediaQuerry.orientation == Orientation.landscape ||
+                    isDesktop(context)
+                ? Row(
+                    //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      buildAppBarIcons(Icons.photo_camera, () {
+                        Navigator.pushNamed(context, CameraScreen.routeName);
+                      }),
+                      buildAppBarIcons(Icons.draw, () {}),
+                      buildAppBarIcons(Icons.display_settings, () {}),
+                      buildAppBarIcons(Icons.collections_bookmark, () {}),
+                    ],
+                  )
+                : buildAppBarIcons(Icons.draw, () {}),
             actions: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  // Spacer(),
-                  IconButton(
-                    icon: const Icon(Icons.draw),
-                    tooltip: 'Open shopping cart',
-                    onPressed: () {
-                      // handle the press
-                    },
-                  ),
-                  // Spacer(),
-                  IconButton(
-                    icon: const Icon(Icons.library_music),
-                    tooltip: 'Open shopping cart',
-                    onPressed: () {
-                      // handle the press
-                    },
-                  ),
-                  // Spacer(),
-                  IconButton(
-                    icon: const Icon(Icons.photo_camera),
-                    tooltip: 'Open camera screen',
-                    onPressed: () {
-                      Navigator.pushNamed(context, ScannerScreen.routeName);
-                    },
-                  ),
-                  // Spacer(),
-                  IconButton(
-                    icon: const Icon(Icons.menu),
-                    tooltip: 'Open shopping cart',
-                    onPressed: () {
-                      // handle the press
-                    },
-                  ),
-                  // Spacer(),
-                ],
-              )
+              buildAppBarIcons(Icons.library_music, () {
+                showScoreDrawer(
+                  context,
+                  ScoreDrawer(),
+                  0.7,
+                );
+              }),
+              buildAppBarIcons(Icons.music_note, () {
+                showSetlistDrawer(
+                  context,
+                  SetlistDrawer(),
+                  0.7,
+                );
+              }),
+              buildAppBarIcons(Icons.bookmark, () {
+                showBookMarkDrawer(
+                  context,
+                  BookMarkDrawer(),
+                  0.7,
+                );
+              }),
+              buildAppBarIcons(Icons.menu, () {
+                showMainDrawer(context, MainDrawer(), 0.7);
+              }),
             ]),
         body: AppBody());
   }

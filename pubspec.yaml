@@ -37,6 +37,8 @@ dependencies:
   camera: ^0.9.4+21
   image_picker: ^0.8.5+3
   path_provider: ^2.0.10
+  modal_side_sheet: ^0.0.1
+  file_picker: ^5.0.1
   document_scanner_flutter: ^0.2.7
   advance_pdf_viewer: 2.0.0
 
@@ -63,8 +65,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
+  assets:
+    - assets/images/M.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
