@@ -1,3 +1,6 @@
+
+import 'dart:io';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_side_sheet/modal_side_sheet.dart';
@@ -15,12 +18,13 @@ late List<CameraDescription> cameras;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   cameras = await availableCameras();
   runApp(AppEntry());
 }
 
 class AppEntry extends StatelessWidget {
+ 
+  
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -37,6 +41,11 @@ class AppEntry extends StatelessWidget {
 }
 
 class TopBar extends StatefulWidget {
+
+  
+
+  
+  
   @override
   State<TopBar> createState() => _TopBarState();
 }
@@ -184,6 +193,7 @@ class _TopBarState extends State<TopBar> {
 }
 
 class AppBody extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     return Container();

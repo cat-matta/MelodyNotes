@@ -2,12 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:musescore/themedata.dart';
 import 'package:file_picker/file_picker.dart';
 
+import './pdf_viewer_page.dart';
+import 'dart:io';
+
 class ScoreDrawer extends StatefulWidget {
   @override
   State<ScoreDrawer> createState() => _ScoresLibraryWidgetState();
 }
 
 class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
+  // String pathPDF = "";
+  // String landscapePathPdf = "";
+  // String remotePDFpath = "";
+  // String corruptedPathPDF = "";
   //final scaffoldKey = GlobalKey<ScaffoldState>();
 
   //This is for changing color in Second Nav bar each button
@@ -30,28 +37,29 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
   late TextEditingController _controller;
 
   //variable to initialize file picker object & hold the file object
-  FilePickerResult? result;
-  PlatformFile? file;
+  // FilePickerResult? result;
+  // // PlatformFile? file;
+  // File? file;
 
-  Widget fileDetails(PlatformFile file) {
-    final kb = file.size / 1024;
-    final mb = kb / 1024;
-    final size = (mb >= 1)
-        ? '${mb.toStringAsFixed(2)} MB'
-        : '${kb.toStringAsFixed(2)} KB';
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('File Name: ${file.name}'),
-          Text('File Size: $size'),
-          Text('File Extension: ${file.extension}'),
-          Text('File Path: ${file.path}'),
-        ],
-      ),
-    );
-  }
+  // Widget fileDetails(PlatformFile file) {
+  //   final kb = file.size / 1024;
+  //   final mb = kb / 1024;
+  //   final size = (mb >= 1)
+  //       ? '${mb.toStringAsFixed(2)} MB'
+  //       : '${kb.toStringAsFixed(2)} KB';
+  //   return Padding(
+  //     padding: const EdgeInsets.all(8.0),
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         Text('File Name: ${file.name}'),
+  //         Text('File Size: $size'),
+  //         Text('File Extension: ${file.extension}'),
+  //         Text('File Path: ${file.path}'),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   //method called when the stateful widget is inserted in the widget tree
   //it will only run once and initilize and listeners/variables
@@ -174,15 +182,19 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
               children: [
                 TextButton(
                     onPressed: () async {
-                      result = await FilePicker.platform.pickFiles(
-                        type: FileType.custom,
-                        allowedExtensions: ['pdf'],
-                      );
-                      if (result == null) return;
+                      String url = '';
+                      final file = await pickFile();
+                      if (file == null) return;
+                      openPdf(context, file, url);
+                      // result = await FilePicker.platform.pickFiles(
+                      //   type: FileType.custom,
+                      //   allowedExtensions: ['pdf'],
+                      // );
+                      // if (result == null) return;
 
-                      file = result!.files.first;
+                      // file = result!.files.first;
 
-                      setState(() {});
+                      // setState(() {});
                     },
                     child: const Text('Import'),
                     style: TextButton.styleFrom(
@@ -319,12 +331,82 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
                   ),
                 ),
               ),
+//Local
+
+              //  Padding(
+              //   padding: const EdgeInsets.all(8.0),
+              //   child: ElevatedButton(
+              //     style: ButtonStyle(
+              //       backgroundColor:
+              //           MaterialStateProperty.all<Color>(Colors.amber),
+              //     ),
+              //     onPressed: () async {
+              //       String url = '';
+              //       final file = await pickFile();
+              //       if (file == null) return;
+              //       openPdf(context, file, url);
+              //     },
+              //     child: const Padding(
+              //       padding: EdgeInsets.all(8.0),
+              //       child: Text(
+              //         'Press to Pick File from Local',
+              //         style: TextStyle(color: Colors.black),
+              //       ),
+              //     ),
+              //   ),
+              // ),
+
+//External
+
+              // const SizedBox(height: 10),
+              // Padding(
+              //   padding: const EdgeInsets.all(8.0),
+              //   child: ElevatedButton(
+              //     style: ButtonStyle(
+              //       backgroundColor:
+              //           MaterialStateProperty.all<Color>(Colors.amber),
+              //     ),
+              //     onPressed: () async {
+              //       const url =
+              //           "http://www.africau.edu/images/default/sample.pdf";
+              //       final file = await loadPdfFromNetwork(url);
+              //       openPdf(context, file, url);
+              //     },
+              //     child: const Padding(
+              //       padding: EdgeInsets.all(8.0),
+              //       child: Text(
+              //         'Press to Load File from Network',
+              //         style: TextStyle(color: Colors.black),
+              //       ),
+              //     ),
+              //   ),
+              // ),
               // Expanded(
               //   child: _widgetOptions.elementAt(_selectedIndex),
               // )
-              if (file != null) fileDetails(file!),
+              // if (file != null) fileDetails(file!),
             ],
           )),
     );
   }
+
+  Future<File?> pickFile() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf'],
+    );
+    if (result == null) return null;
+    return File(result.paths.first ?? '');
+  }
+
+
+  void openPdf(BuildContext context, File file, String url) =>
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => PdfViewerPage(
+            file: file,
+            url: url,
+          ),
+        ),
+      );
 }

@@ -40,7 +40,10 @@ dependencies:
   modal_side_sheet: ^0.0.1
   file_picker: ^5.0.1
   document_scanner_flutter: ^0.2.7
-  advance_pdf_viewer: 2.0.0
+  advance_pdf_viewer: ^2.0.0
+  flutter_pdfview: ^1.2.1
+  dio: ^4.0.6 
+  permission_handler: ^9.2.0
 
 dev_dependencies:
   flutter_test:
