@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:musescore/themedata.dart';
 import 'package:file_picker/file_picker.dart';
 
+import '../data/drift_db.dart';
+import '../services/scores_service.dart';
+
 class ScoreDrawer extends StatefulWidget {
   @override
   State<ScoreDrawer> createState() => _ScoresLibraryWidgetState();
@@ -181,6 +184,15 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
                       if (result == null) return;
 
                       file = result!.files.first;
+
+                      // sample code on how to insert and fetch from db (DON'T DELETE YET)
+                      // start of sample code
+                      ScoreService servObj = ScoreService();
+                      ScoresCompanion scoreObj = ScoresCompanion.insert(name: file!.name, file: file?.path ?? "no path");
+                      await servObj.insertScore(scoreObj);
+                      List<Score> listsOfScore = await servObj.getAllScores();
+                      print(listsOfScore);
+                      // end of sample code
 
                       setState(() {});
                     },
