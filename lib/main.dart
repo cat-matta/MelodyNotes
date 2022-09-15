@@ -8,6 +8,7 @@ import './widgets/MainDrawer.dart';
 import './widgets/SetlistDrawer.dart';
 import 'package:musescore/screens/scanner_screen.dart';
 import './screens/camera_screen.dart';
+import 'locator.dart' as injector;
 
 import 'themedata.dart';
 
@@ -15,7 +16,7 @@ late List<CameraDescription> cameras;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  await injector.setupLocator();
   cameras = await availableCameras();
   runApp(AppEntry());
 }
