@@ -33,18 +33,25 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.2
-  camera: ^0.9.4+21
-  image_picker: ^0.8.5+3
-  path_provider: ^2.0.10
-  modal_side_sheet: ^0.0.1
-  file_picker: ^5.0.1
-  document_scanner_flutter: ^0.2.7
   advance_pdf_viewer: 2.0.0
+  camera: ^0.9.4+21
+  cupertino_icons: ^1.0.2
+  document_scanner_flutter: ^0.2.7
+  drift: ^2.1.0
+  file_picker: ^5.0.1
+  get_it: ^7.2.0
+  image_picker: ^0.8.5+3
+  modal_side_sheet: ^0.0.1
+  path: ^1.8.2
+  path_provider: ^2.0.10
+  sqlite3_flutter_libs: ^0.5.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+  build_runner: ^2.2.0
+  drift_dev: ^2.1.0
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
