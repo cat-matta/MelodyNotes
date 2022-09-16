@@ -3,6 +3,7 @@ import 'package:musescore/themedata.dart';
 import 'package:file_picker/file_picker.dart';
 import '../data/drift_db.dart';
 import '../services/scores_service.dart';
+import './ScoreListTile.dart';
 
 class ScoreDrawer extends StatefulWidget {
   @override
@@ -52,40 +53,6 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
   Widget build(BuildContext context) {
     final mediaQuerry = MediaQuery.of(context);
 
-    Widget buildListTile(
-      int numItems,
-      String text,
-      VoidCallback mainfunction,
-      VoidCallback editFunction,
-    ) {
-      return ListTile(
-        title: Text(
-          text,
-          style: TextStyle(
-            fontWeight: AppTheme.headerFontWeight,
-            fontSize: 20,
-          ),
-        ),
-        subtitle: Text(
-          "$numItems Item",
-          style: TextStyle(
-            fontWeight: AppTheme.headerFontWeight,
-            fontSize: 16,
-          ),
-        ),
-        leading: IconButton(
-          onPressed: editFunction,
-          icon: Icon(Icons.edit_outlined),
-          color: AppTheme.maintheme().iconTheme.color,
-        ),
-        trailing: Icon(
-          Icons.arrow_forward_ios,
-          color: AppTheme.maintheme().iconTheme.color,
-        ),
-        onTap: mainfunction,
-      );
-    }
-
     // This is for list tile containing the unique composer/genre/tags/labels
     List<Widget> _widgetOptions = <Widget>[
       //scores filtered by composers
@@ -94,8 +61,8 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
 
         //must create this list of list tiles dynamically
         children: [
-          buildListTile(1, "Beethoven", () {}, () {}),
-          buildListTile(4, "Mozart", () {}, () {}),
+          ScoreListTile(1, "Beethoven", () {}, () {}),
+          ScoreListTile(4, "Mozart", () {}, () {}),
         ],
       ),
 
@@ -105,8 +72,8 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
 
         //list needs to be dynamically created
         children: [
-          buildListTile(1, "Pop", () {}, () {}),
-          buildListTile(1, "Classical", () {}, () {}),
+          ScoreListTile(1, "Pop", () {}, () {}),
+          ScoreListTile(1, "Classical", () {}, () {}),
         ],
       ),
 
@@ -116,8 +83,8 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
 
         //list needs to be dynamically created
         children: [
-          buildListTile(1, "Easy", () {}, () {}),
-          buildListTile(1, "Hard", () {}, () {}),
+          ScoreListTile(1, "Easy", () {}, () {}),
+          ScoreListTile(1, "Hard", () {}, () {}),
         ],
       ),
 
@@ -127,8 +94,8 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
 
         //list needs to be dynamically created
         children: [
-          buildListTile(1, "Label 1", () {}, () {}),
-          buildListTile(1, "Label 2", () {}, () {}),
+          ScoreListTile(1, "Label 1", () {}, () {}),
+          ScoreListTile(1, "Label 2", () {}, () {}),
         ],
       ),
     ];
