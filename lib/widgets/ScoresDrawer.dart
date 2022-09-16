@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:musescore/themedata.dart';
 import 'package:file_picker/file_picker.dart';
-
 import '../data/drift_db.dart';
 import '../services/scores_service.dart';
 
@@ -11,49 +10,27 @@ class ScoreDrawer extends StatefulWidget {
 }
 
 class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
-  //final scaffoldKey = GlobalKey<ScaffoldState>();
-
   //This is for changing color in Second Nav bar each button
   bool _hasBeenPressedComposer = true;
   bool _hasBeenPressedGenres = false;
   bool _hasBeenPressedTags = false;
   bool _hasBeenPressedLabels = false;
 
-  // This is for initializing for state indexes
+  //This is for search bar
+  late TextEditingController _controller;
+
+  // This is selected index is for widgets options list
   int _selectedIndex = 0;
+
+  //variable to initialize file picker object & hold the file object
+  FilePickerResult? result;
+  PlatformFile? file;
 
   // Function to control indexes for Body view
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
-  }
-
-  //Same from SetlistDrawer.dart
-  late TextEditingController _controller;
-
-  //variable to initialize file picker object & hold the file object
-  FilePickerResult? result;
-  PlatformFile? file;
-
-  Widget fileDetails(PlatformFile file) {
-    final kb = file.size / 1024;
-    final mb = kb / 1024;
-    final size = (mb >= 1)
-        ? '${mb.toStringAsFixed(2)} MB'
-        : '${kb.toStringAsFixed(2)} KB';
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('File Name: ${file.name}'),
-          Text('File Size: $size'),
-          Text('File Extension: ${file.extension}'),
-          Text('File Path: ${file.path}'),
-        ],
-      ),
-    );
   }
 
   //method called when the stateful widget is inserted in the widget tree
@@ -109,7 +86,7 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
       );
     }
 
-    // This is the body (We have four atm so, there is four list)
+    // This is for list tile containing the unique composer/genre/tags/labels
     List<Widget> _widgetOptions = <Widget>[
       //scores filtered by composers
       ListView(
@@ -165,13 +142,6 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
             textAlign: TextAlign.left,
           ),
           toolbarHeight: 56.0,
-          // leading: TextButton(
-          //     onPressed: () => {},
-          //     child: const Text('Library'),
-          //     style: TextButton.styleFrom(
-          //       primary: Color.fromRGBO(131, 195, 163, 1),
-          //     )),
-          // leadingWidth: 100,
           actions: [
             Row(
               children: [
@@ -182,13 +152,13 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
                         allowedExtensions: ['pdf'],
                       );
                       if (result == null) return;
-
                       file = result!.files.first;
 
                       // sample code on how to insert and fetch from db (DON'T DELETE YET)
                       // start of sample code
                       ScoreService servObj = ScoreService();
-                      ScoresCompanion scoreObj = ScoresCompanion.insert(name: file!.name, file: file?.path ?? "no path");
+                      ScoresCompanion scoreObj = ScoresCompanion.insert(
+                          name: file!.name, file: file?.path ?? "no path");
                       await servObj.insertScore(scoreObj);
                       List<Score> listsOfScore = await servObj.getAllScores();
                       print(listsOfScore);
@@ -198,15 +168,15 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
                     },
                     child: const Text('Import'),
                     style: TextButton.styleFrom(
-                      primary: Color.fromRGBO(131, 195, 163, 1),
-                      backgroundColor: Color.fromRGBO(44, 44, 60, 1),
+                      primary: AppTheme.accentMain,
+                      backgroundColor: AppTheme.darkBackground,
                     )),
                 TextButton(
                     onPressed: () => {Navigator.pushNamed(context, '/')},
                     child: const Text('Back'),
                     style: TextButton.styleFrom(
-                      primary: Color.fromRGBO(131, 195, 163, 1),
-                      backgroundColor: Color.fromRGBO(44, 44, 60, 1),
+                      primary: AppTheme.accentMain,
+                      backgroundColor: AppTheme.darkBackground,
                     )),
               ],
             )
@@ -214,7 +184,7 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
       body: Scaffold(
           appBar: AppBar(
             centerTitle: true,
-            backgroundColor: const Color.fromRGBO(44, 44, 60, 1),
+            backgroundColor: AppTheme.darkBackground,
             toolbarHeight: 35.0,
             automaticallyImplyLeading: false,
             leadingWidth: mediaQuerry.size.width,
@@ -235,11 +205,10 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
                   child: const Text('Composers'),
                   style: TextButton.styleFrom(
                       primary: _hasBeenPressedComposer
-                          ? Color.fromARGB(255, 244, 247, 244)
-                          : Color.fromRGBO(131, 195, 163, 1),
+                          ? AppTheme.lightBackground
+                          : AppTheme.accentMain,
                       backgroundColor: _hasBeenPressedComposer
-                          ? Color.fromARGB(255, 90, 151, 118)
-                          //: Color.fromRGBO(44, 44, 60, 1),
+                          ? AppTheme.accentMain
                           : AppTheme.darkBackground),
                 ),
                 Spacer(),
@@ -256,11 +225,11 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
                     child: const Text('Genres'),
                     style: TextButton.styleFrom(
                       primary: _hasBeenPressedGenres
-                          ? Color.fromARGB(255, 244, 247, 244)
-                          : Color.fromRGBO(131, 195, 163, 1),
+                          ? AppTheme.lightBackground
+                          : AppTheme.accentMain,
                       backgroundColor: _hasBeenPressedGenres
-                          ? Color.fromARGB(255, 90, 151, 118)
-                          : Color.fromRGBO(44, 44, 60, 1),
+                          ? AppTheme.accentMain
+                          : AppTheme.darkBackground,
                     )),
                 Spacer(),
                 TextButton(
@@ -276,11 +245,11 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
                     child: const Text('Tags'),
                     style: TextButton.styleFrom(
                       primary: _hasBeenPressedTags
-                          ? Color.fromARGB(255, 244, 247, 244)
-                          : Color.fromRGBO(131, 195, 163, 1),
+                          ? AppTheme.lightBackground
+                          : AppTheme.accentMain,
                       backgroundColor: _hasBeenPressedTags
-                          ? Color.fromARGB(255, 90, 151, 118)
-                          : Color.fromRGBO(44, 44, 60, 1),
+                          ? AppTheme.accentMain
+                          : AppTheme.darkBackground,
                     )),
                 Spacer(),
                 TextButton(
@@ -296,14 +265,13 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
                     child: const Text('Labels'),
                     style: TextButton.styleFrom(
                       primary: _hasBeenPressedLabels
-                          ? Color.fromARGB(255, 244, 247, 244)
-                          : Color.fromRGBO(131, 195, 163, 1),
+                          ? AppTheme.lightBackground
+                          : AppTheme.accentMain,
                       backgroundColor: _hasBeenPressedLabels
-                          ? Color.fromARGB(255, 90, 151, 118)
-                          : Color.fromRGBO(44, 44, 60, 1),
+                          ? AppTheme.accentMain
+                          : AppTheme.darkBackground,
                     )),
                 Spacer(),
-                //Spacer(),
               ],
             ),
           ),
@@ -331,10 +299,9 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
                   ),
                 ),
               ),
-              // Expanded(
-              //   child: _widgetOptions.elementAt(_selectedIndex),
-              // )
-              if (file != null) fileDetails(file!),
+              Expanded(
+                child: _widgetOptions.elementAt(_selectedIndex),
+              ),
             ],
           )),
     );
