@@ -54,8 +54,6 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
   @override
   Widget build(BuildContext context) {
     final mediaQuerry = MediaQuery.of(context);
-   double unitHeightValue = MediaQuery.of(context).size.height * 0.01;
-
     // This is for list tile containing the unique composer/genre/tags/labels
     List<Widget> _widgetOptions = <Widget>[
       //scores filtered by composers
@@ -157,7 +155,6 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
             backgroundColor: AppTheme.darkBackground,
             toolbarHeight: 35.0,
             automaticallyImplyLeading: false,
-      
             title: Row(
               children: <Widget>[
                 Expanded(
@@ -172,9 +169,8 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
                     })
                   },
                   child: const Text('Composers',
-                  style: TextStyle(
-                     fontWeight: FontWeight.w600,
-                    ), ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                   style: TextButton.styleFrom(
                       primary: _hasBeenPressedComposer
                           ? AppTheme.lightBackground
@@ -194,7 +190,9 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
                       _onItemTapped(1);
                     })
                   },
-                  child: const Text('Genres'),
+                  child: const Text( 'Genres',
+                    overflow: TextOverflow.ellipsis,
+                  ),
                   style: TextButton.styleFrom(
                     primary: _hasBeenPressedGenres
                         ? AppTheme.lightBackground
@@ -215,7 +213,9 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
                       _onItemTapped(2);
                     })
                   },
-                  child: const Text('Tags'),
+                  child: const Text('Tags',
+                    overflow: TextOverflow.ellipsis,
+                  ),
                   style: TextButton.styleFrom(
                     primary: _hasBeenPressedTags
                         ? AppTheme.lightBackground
@@ -236,7 +236,9 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
                       _onItemTapped(3);
                     })
                   },
-                  child: const Text('Labels'),
+                  child: const Text('Labels',
+                    overflow: TextOverflow.ellipsis,
+                  ),
                   style: TextButton.styleFrom(
                     primary: _hasBeenPressedLabels
                         ? AppTheme.lightBackground
