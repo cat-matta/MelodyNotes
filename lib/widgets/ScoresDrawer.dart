@@ -54,6 +54,7 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
   @override
   Widget build(BuildContext context) {
     final mediaQuerry = MediaQuery.of(context);
+   double unitHeightValue = MediaQuery.of(context).size.height * 0.01;
 
     // This is for list tile containing the unique composer/genre/tags/labels
     List<Widget> _widgetOptions = <Widget>[
@@ -156,12 +157,11 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
             backgroundColor: AppTheme.darkBackground,
             toolbarHeight: 35.0,
             automaticallyImplyLeading: false,
-            leadingWidth: mediaQuerry.size.width,
+      
             title: Row(
-              children: [
-                //Spacer(),
-                Spacer(),
-                TextButton(
+              children: <Widget>[
+                Expanded(
+                    child: TextButton(
                   onPressed: () => {
                     setState(() {
                       _hasBeenPressedComposer = true;
@@ -171,7 +171,10 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
                       _onItemTapped(0);
                     })
                   },
-                  child: const Text('Composers'),
+                  child: const Text('Composers',
+                  style: TextStyle(
+                     fontWeight: FontWeight.w600,
+                    ), ),
                   style: TextButton.styleFrom(
                       primary: _hasBeenPressedComposer
                           ? AppTheme.lightBackground
@@ -179,68 +182,70 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
                       backgroundColor: _hasBeenPressedComposer
                           ? AppTheme.accentMain
                           : AppTheme.darkBackground),
-                ),
-                Spacer(),
-                TextButton(
-                    onPressed: () => {
-                          setState(() {
-                            _hasBeenPressedGenres = true;
-                            _hasBeenPressedComposer = false;
-                            _hasBeenPressedTags = false;
-                            _hasBeenPressedLabels = false;
-                            _onItemTapped(1);
-                          })
-                        },
-                    child: const Text('Genres'),
-                    style: TextButton.styleFrom(
-                      primary: _hasBeenPressedGenres
-                          ? AppTheme.lightBackground
-                          : AppTheme.accentMain,
-                      backgroundColor: _hasBeenPressedGenres
-                          ? AppTheme.accentMain
-                          : AppTheme.darkBackground,
-                    )),
-                Spacer(),
-                TextButton(
-                    onPressed: () => {
-                          setState(() {
-                            _hasBeenPressedTags = true;
-                            _hasBeenPressedComposer = false;
-                            _hasBeenPressedGenres = false;
-                            _hasBeenPressedLabels = false;
-                            _onItemTapped(2);
-                          })
-                        },
-                    child: const Text('Tags'),
-                    style: TextButton.styleFrom(
-                      primary: _hasBeenPressedTags
-                          ? AppTheme.lightBackground
-                          : AppTheme.accentMain,
-                      backgroundColor: _hasBeenPressedTags
-                          ? AppTheme.accentMain
-                          : AppTheme.darkBackground,
-                    )),
-                Spacer(),
-                TextButton(
-                    onPressed: () => {
-                          setState(() {
-                            _hasBeenPressedTags = false;
-                            _hasBeenPressedComposer = false;
-                            _hasBeenPressedGenres = false;
-                            _hasBeenPressedLabels = true;
-                            _onItemTapped(3);
-                          })
-                        },
-                    child: const Text('Labels'),
-                    style: TextButton.styleFrom(
-                      primary: _hasBeenPressedLabels
-                          ? AppTheme.lightBackground
-                          : AppTheme.accentMain,
-                      backgroundColor: _hasBeenPressedLabels
-                          ? AppTheme.accentMain
-                          : AppTheme.darkBackground,
-                    )),
-                Spacer(),
+                )),
+                Expanded(
+                    child: TextButton(
+                  onPressed: () => {
+                    setState(() {
+                      _hasBeenPressedGenres = true;
+                      _hasBeenPressedComposer = false;
+                      _hasBeenPressedTags = false;
+                      _hasBeenPressedLabels = false;
+                      _onItemTapped(1);
+                    })
+                  },
+                  child: const Text('Genres'),
+                  style: TextButton.styleFrom(
+                    primary: _hasBeenPressedGenres
+                        ? AppTheme.lightBackground
+                        : AppTheme.accentMain,
+                    backgroundColor: _hasBeenPressedGenres
+                        ? AppTheme.accentMain
+                        : AppTheme.darkBackground,
+                  ),
+                )),
+                Expanded(
+                    child: TextButton(
+                  onPressed: () => {
+                    setState(() {
+                      _hasBeenPressedTags = true;
+                      _hasBeenPressedComposer = false;
+                      _hasBeenPressedGenres = false;
+                      _hasBeenPressedLabels = false;
+                      _onItemTapped(2);
+                    })
+                  },
+                  child: const Text('Tags'),
+                  style: TextButton.styleFrom(
+                    primary: _hasBeenPressedTags
+                        ? AppTheme.lightBackground
+                        : AppTheme.accentMain,
+                    backgroundColor: _hasBeenPressedTags
+                        ? AppTheme.accentMain
+                        : AppTheme.darkBackground,
+                  ),
+                )),
+                Expanded(
+                    child: TextButton(
+                  onPressed: () => {
+                    setState(() {
+                      _hasBeenPressedTags = false;
+                      _hasBeenPressedComposer = false;
+                      _hasBeenPressedGenres = false;
+                      _hasBeenPressedLabels = true;
+                      _onItemTapped(3);
+                    })
+                  },
+                  child: const Text('Labels'),
+                  style: TextButton.styleFrom(
+                    primary: _hasBeenPressedLabels
+                        ? AppTheme.lightBackground
+                        : AppTheme.accentMain,
+                    backgroundColor: _hasBeenPressedLabels
+                        ? AppTheme.accentMain
+                        : AppTheme.darkBackground,
+                  ),
+                )),
               ],
             ),
           ),
