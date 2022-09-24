@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:musescore/themedata.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:modal_side_sheet/modal_side_sheet.dart';
 
 import '../data/drift_db.dart';
 import '../services/scores_service.dart';
+import './ScoreListTile.dart';
 
 class ScoreDrawer extends StatefulWidget {
   @override
@@ -11,49 +13,27 @@ class ScoreDrawer extends StatefulWidget {
 }
 
 class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
-  //final scaffoldKey = GlobalKey<ScaffoldState>();
-
   //This is for changing color in Second Nav bar each button
   bool _hasBeenPressedComposer = true;
   bool _hasBeenPressedGenres = false;
   bool _hasBeenPressedTags = false;
   bool _hasBeenPressedLabels = false;
 
-  // This is for initializing for state indexes
+  //This is for search bar
+  late TextEditingController _controller;
+
+  // This is selected index is for widgets options list
   int _selectedIndex = 0;
+
+  //variable to initialize file picker object & hold the file object
+  FilePickerResult? result;
+  PlatformFile? file;
 
   // Function to control indexes for Body view
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
-  }
-
-  //Same from SetlistDrawer.dart
-  late TextEditingController _controller;
-
-  //variable to initialize file picker object & hold the file object
-  FilePickerResult? result;
-  PlatformFile? file;
-
-  Widget fileDetails(PlatformFile file) {
-    final kb = file.size / 1024;
-    final mb = kb / 1024;
-    final size = (mb >= 1)
-        ? '${mb.toStringAsFixed(2)} MB'
-        : '${kb.toStringAsFixed(2)} KB';
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('File Name: ${file.name}'),
-          Text('File Size: $size'),
-          Text('File Extension: ${file.extension}'),
-          Text('File Path: ${file.path}'),
-        ],
-      ),
-    );
   }
 
   //method called when the stateful widget is inserted in the widget tree
@@ -74,42 +54,7 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
   @override
   Widget build(BuildContext context) {
     final mediaQuerry = MediaQuery.of(context);
-
-    Widget buildListTile(
-      int numItems,
-      String text,
-      VoidCallback mainfunction,
-      VoidCallback editFunction,
-    ) {
-      return ListTile(
-        title: Text(
-          text,
-          style: TextStyle(
-            fontWeight: AppTheme.headerFontWeight,
-            fontSize: 20,
-          ),
-        ),
-        subtitle: Text(
-          "$numItems Item",
-          style: TextStyle(
-            fontWeight: AppTheme.headerFontWeight,
-            fontSize: 16,
-          ),
-        ),
-        leading: IconButton(
-          onPressed: editFunction,
-          icon: Icon(Icons.edit_outlined),
-          color: AppTheme.maintheme().iconTheme.color,
-        ),
-        trailing: Icon(
-          Icons.arrow_forward_ios,
-          color: AppTheme.maintheme().iconTheme.color,
-        ),
-        onTap: mainfunction,
-      );
-    }
-
-    // This is the body (We have four atm so, there is four list)
+    // This is for list tile containing the unique composer/genre/tags/labels
     List<Widget> _widgetOptions = <Widget>[
       //scores filtered by composers
       ListView(
@@ -117,8 +62,8 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
 
         //must create this list of list tiles dynamically
         children: [
-          buildListTile(1, "Beethoven", () {}, () {}),
-          buildListTile(4, "Mozart", () {}, () {}),
+          ScoreListTile(1, "Beethoven", () {}, () {}),
+          ScoreListTile(4, "Mozart", () {}, () {}),
         ],
       ),
 
@@ -128,8 +73,8 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
 
         //list needs to be dynamically created
         children: [
-          buildListTile(1, "Pop", () {}, () {}),
-          buildListTile(1, "Classical", () {}, () {}),
+          ScoreListTile(1, "Pop", () {}, () {}),
+          ScoreListTile(1, "Classical", () {}, () {}),
         ],
       ),
 
@@ -139,8 +84,8 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
 
         //list needs to be dynamically created
         children: [
-          buildListTile(1, "Easy", () {}, () {}),
-          buildListTile(1, "Hard", () {}, () {}),
+          ScoreListTile(1, "Easy", () {}, () {}),
+          ScoreListTile(1, "Hard", () {}, () {}),
         ],
       ),
 
@@ -150,8 +95,8 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
 
         //list needs to be dynamically created
         children: [
-          buildListTile(1, "Label 1", () {}, () {}),
-          buildListTile(1, "Label 2", () {}, () {}),
+          ScoreListTile(1, "Label 1", () {}, () {}),
+          ScoreListTile(1, "Label 2", () {}, () {}),
         ],
       ),
     ];
@@ -165,13 +110,6 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
             textAlign: TextAlign.left,
           ),
           toolbarHeight: 56.0,
-          // leading: TextButton(
-          //     onPressed: () => {},
-          //     child: const Text('Library'),
-          //     style: TextButton.styleFrom(
-          //       primary: Color.fromRGBO(131, 195, 163, 1),
-          //     )),
-          // leadingWidth: 100,
           actions: [
             Row(
               children: [
@@ -182,13 +120,13 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
                         allowedExtensions: ['pdf'],
                       );
                       if (result == null) return;
-
                       file = result!.files.first;
 
                       // sample code on how to insert and fetch from db (DON'T DELETE YET)
                       // start of sample code
                       ScoreService servObj = ScoreService();
-                      ScoresCompanion scoreObj = ScoresCompanion.insert(name: file!.name, file: file?.path ?? "no path");
+                      ScoresCompanion scoreObj = ScoresCompanion.insert(
+                          name: file!.name, file: file?.path ?? "no path");
                       await servObj.insertScore(scoreObj);
                       List<Score> listsOfScore = await servObj.getAllScores();
                       print(listsOfScore);
@@ -198,15 +136,15 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
                     },
                     child: const Text('Import'),
                     style: TextButton.styleFrom(
-                      primary: Color.fromRGBO(131, 195, 163, 1),
-                      backgroundColor: Color.fromRGBO(44, 44, 60, 1),
+                      primary: AppTheme.accentMain,
+                      backgroundColor: AppTheme.darkBackground,
                     )),
                 TextButton(
                     onPressed: () => {Navigator.pushNamed(context, '/')},
                     child: const Text('Back'),
                     style: TextButton.styleFrom(
-                      primary: Color.fromRGBO(131, 195, 163, 1),
-                      backgroundColor: Color.fromRGBO(44, 44, 60, 1),
+                      primary: AppTheme.accentMain,
+                      backgroundColor: AppTheme.darkBackground,
                     )),
               ],
             )
@@ -214,15 +152,13 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
       body: Scaffold(
           appBar: AppBar(
             centerTitle: true,
-            backgroundColor: const Color.fromRGBO(44, 44, 60, 1),
+            backgroundColor: AppTheme.darkBackground,
             toolbarHeight: 35.0,
             automaticallyImplyLeading: false,
-            leadingWidth: mediaQuerry.size.width,
             title: Row(
-              children: [
-                //Spacer(),
-                Spacer(),
-                TextButton(
+              children: <Widget>[
+                Expanded(
+                    child: TextButton(
                   onPressed: () => {
                     setState(() {
                       _hasBeenPressedComposer = true;
@@ -232,78 +168,86 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
                       _onItemTapped(0);
                     })
                   },
-                  child: const Text('Composers'),
+                  child: const Text('Composers',
+                    overflow: TextOverflow.ellipsis,
+                  ),
                   style: TextButton.styleFrom(
                       primary: _hasBeenPressedComposer
-                          ? Color.fromARGB(255, 244, 247, 244)
-                          : Color.fromRGBO(131, 195, 163, 1),
+                          ? AppTheme.lightBackground
+                          : AppTheme.accentMain,
                       backgroundColor: _hasBeenPressedComposer
-                          ? Color.fromARGB(255, 90, 151, 118)
-                          //: Color.fromRGBO(44, 44, 60, 1),
+                          ? AppTheme.accentMain
                           : AppTheme.darkBackground),
-                ),
-                Spacer(),
-                TextButton(
-                    onPressed: () => {
-                          setState(() {
-                            _hasBeenPressedGenres = true;
-                            _hasBeenPressedComposer = false;
-                            _hasBeenPressedTags = false;
-                            _hasBeenPressedLabels = false;
-                            _onItemTapped(1);
-                          })
-                        },
-                    child: const Text('Genres'),
-                    style: TextButton.styleFrom(
-                      primary: _hasBeenPressedGenres
-                          ? Color.fromARGB(255, 244, 247, 244)
-                          : Color.fromRGBO(131, 195, 163, 1),
-                      backgroundColor: _hasBeenPressedGenres
-                          ? Color.fromARGB(255, 90, 151, 118)
-                          : Color.fromRGBO(44, 44, 60, 1),
-                    )),
-                Spacer(),
-                TextButton(
-                    onPressed: () => {
-                          setState(() {
-                            _hasBeenPressedTags = true;
-                            _hasBeenPressedComposer = false;
-                            _hasBeenPressedGenres = false;
-                            _hasBeenPressedLabels = false;
-                            _onItemTapped(2);
-                          })
-                        },
-                    child: const Text('Tags'),
-                    style: TextButton.styleFrom(
-                      primary: _hasBeenPressedTags
-                          ? Color.fromARGB(255, 244, 247, 244)
-                          : Color.fromRGBO(131, 195, 163, 1),
-                      backgroundColor: _hasBeenPressedTags
-                          ? Color.fromARGB(255, 90, 151, 118)
-                          : Color.fromRGBO(44, 44, 60, 1),
-                    )),
-                Spacer(),
-                TextButton(
-                    onPressed: () => {
-                          setState(() {
-                            _hasBeenPressedTags = false;
-                            _hasBeenPressedComposer = false;
-                            _hasBeenPressedGenres = false;
-                            _hasBeenPressedLabels = true;
-                            _onItemTapped(3);
-                          })
-                        },
-                    child: const Text('Labels'),
-                    style: TextButton.styleFrom(
-                      primary: _hasBeenPressedLabels
-                          ? Color.fromARGB(255, 244, 247, 244)
-                          : Color.fromRGBO(131, 195, 163, 1),
-                      backgroundColor: _hasBeenPressedLabels
-                          ? Color.fromARGB(255, 90, 151, 118)
-                          : Color.fromRGBO(44, 44, 60, 1),
-                    )),
-                Spacer(),
-                //Spacer(),
+                )),
+                Expanded(
+                    child: TextButton(
+                  onPressed: () => {
+                    setState(() {
+                      _hasBeenPressedGenres = true;
+                      _hasBeenPressedComposer = false;
+                      _hasBeenPressedTags = false;
+                      _hasBeenPressedLabels = false;
+                      _onItemTapped(1);
+                    })
+                  },
+                  child: const Text( 'Genres',
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  style: TextButton.styleFrom(
+                    primary: _hasBeenPressedGenres
+                        ? AppTheme.lightBackground
+                        : AppTheme.accentMain,
+                    backgroundColor: _hasBeenPressedGenres
+                        ? AppTheme.accentMain
+                        : AppTheme.darkBackground,
+                  ),
+                )),
+                Expanded(
+                    child: TextButton(
+                  onPressed: () => {
+                    setState(() {
+                      _hasBeenPressedTags = true;
+                      _hasBeenPressedComposer = false;
+                      _hasBeenPressedGenres = false;
+                      _hasBeenPressedLabels = false;
+                      _onItemTapped(2);
+                    })
+                  },
+                  child: const Text('Tags',
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  style: TextButton.styleFrom(
+                    primary: _hasBeenPressedTags
+                        ? AppTheme.lightBackground
+                        : AppTheme.accentMain,
+                    backgroundColor: _hasBeenPressedTags
+                        ? AppTheme.accentMain
+                        : AppTheme.darkBackground,
+                  ),
+                )),
+                Expanded(
+                    child: TextButton(
+                  onPressed: () => {
+                    setState(() {
+                      _hasBeenPressedTags = false;
+                      _hasBeenPressedComposer = false;
+                      _hasBeenPressedGenres = false;
+                      _hasBeenPressedLabels = true;
+                      _onItemTapped(3);
+                    })
+                  },
+                  child: const Text('Labels',
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  style: TextButton.styleFrom(
+                    primary: _hasBeenPressedLabels
+                        ? AppTheme.lightBackground
+                        : AppTheme.accentMain,
+                    backgroundColor: _hasBeenPressedLabels
+                        ? AppTheme.accentMain
+                        : AppTheme.darkBackground,
+                  ),
+                )),
               ],
             ),
           ),
@@ -331,10 +275,9 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
                   ),
                 ),
               ),
-              // Expanded(
-              //   child: _widgetOptions.elementAt(_selectedIndex),
-              // )
-              if (file != null) fileDetails(file!),
+              Expanded(
+                child: _widgetOptions.elementAt(_selectedIndex),
+              ),
             ],
           )),
     );
