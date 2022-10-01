@@ -54,6 +54,7 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
   @override
   Widget build(BuildContext context) {
     final mediaQuerry = MediaQuery.of(context);
+    int test = 1; // mapping starts here
     // This is for list tile containing the unique composer/genre/tags/labels
     List<Widget> _widgetOptions = <Widget>[
       //scores filtered by composers
@@ -126,7 +127,7 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
                       // start of sample code
                       ScoreService servObj = ScoreService();
                       ScoresCompanion scoreObj = ScoresCompanion.insert(
-                          name: file!.name, file: file?.path ?? "no path");
+                           name: file!.name, file: file?.path ?? "no path", composer: 'no composer');
                       await servObj.insertScore(scoreObj);
                       List<Score> listsOfScore = await servObj.getAllScores();
                       print(listsOfScore);
