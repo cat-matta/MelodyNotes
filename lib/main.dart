@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:modal_side_sheet/modal_side_sheet.dart';
 import 'package:musescore/widgets/BookMarkDrawer.dart';
 import 'package:musescore/widgets/ScoresDrawer.dart';
+import 'package:musescore/widgets/SpecificationsDrawer.dart';
 
 import './widgets/MainDrawer.dart';
 import './widgets/SetlistDrawer.dart';
@@ -89,6 +90,15 @@ class _TopBarState extends State<TopBar> {
         width: mediaQuerry.size.width * width,
       );
     }
+      Future showSpecificationsDrawer(BuildContext context, Widget body, double width) {
+      return showModalSideSheet(
+        context: context,
+        barrierDismissible: true,
+        withCloseControll: false,
+        body: body,
+        width: mediaQuerry.size.width * width,
+      );
+    }
 
     Widget buildAppBarIcons(IconData icon, VoidCallback function) {
       return Padding(
@@ -150,7 +160,14 @@ class _TopBarState extends State<TopBar> {
                       }),
                       buildAppBarIcons(Icons.draw, () {}),
                       buildAppBarIcons(Icons.display_settings, () {}),
-                      buildAppBarIcons(Icons.collections_bookmark, () {}),
+                      
+                      buildAppBarIcons(Icons.collections_bookmark, () {
+                      showSpecificationsDrawer(
+                          context,
+                          SpecificationsDrawer(),
+                          0.7,
+                        );
+                      }),
                     ],
                   )
                 : buildAppBarIcons(Icons.draw, () {}),
