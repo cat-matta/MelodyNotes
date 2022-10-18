@@ -22,19 +22,11 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
   //This is for search bar
   late TextEditingController _controller;
 
-  // This is selected index is for widgets options list
-  int _selectedIndex = 0;
-
   //variable to initialize file picker object & hold the file object
   FilePickerResult? result;
   PlatformFile? file;
 
-  // Function to control indexes for Body view
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
+  late Map<String,List<Score>> sortedScoresMap = {};
 
   //method called when the stateful widget is inserted in the widget tree
   //it will only run once and initilize and listeners/variables
@@ -51,56 +43,35 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
     super.dispose();
   }
 
+  Future<Map<String,List<Score>>> getMappedScores(String filter) async {
+    ScoreService servObj = ScoreService();
+    List<Score> listsOfScore = await servObj.getAllScores();
+    Map<String,List<Score>> mappedScores = {};
+
+    if(filter == 'composer'){
+      listsOfScore.forEach((score){
+        if(mappedScores[score.composer] == null){mappedScores[score.composer] = [];}
+        mappedScores[score.composer]!.add(score);
+      });
+    }
+    return mappedScores;
+  }
+
+  List<ScoreListTile> createListOfScoreListTileWidgets(){
+    List<ScoreListTile> listOfWidgets = [];
+    sortedScoresMap.forEach((k,v)=> listOfWidgets.add(ScoreListTile(v.length,k,(){}, (){})));
+    return listOfWidgets;
+  }
+
   @override
   Widget build(BuildContext context) {
     final mediaQuerry = MediaQuery.of(context);
-    int test = 1; // mapping starts here
     // This is for list tile containing the unique composer/genre/tags/labels
-    List<Widget> _widgetOptions = <Widget>[
-      //scores filtered by composers
-      ListView(
-        padding: EdgeInsets.zero,
 
-        //must create this list of list tiles dynamically
-        children: [
-          ScoreListTile(1, "Beethoven", () {}, () {}),
-          ScoreListTile(4, "Mozart", () {}, () {}),
-        ],
-      ),
-
-      //scores filtered by genres
-      ListView(
-        padding: EdgeInsets.zero,
-
-        //list needs to be dynamically created
-        children: [
-          ScoreListTile(1, "Pop", () {}, () {}),
-          ScoreListTile(1, "Classical", () {}, () {}),
-        ],
-      ),
-
-      //scores filtered by tags
-      ListView(
-        padding: EdgeInsets.zero,
-
-        //list needs to be dynamically created
-        children: [
-          ScoreListTile(1, "Easy", () {}, () {}),
-          ScoreListTile(1, "Hard", () {}, () {}),
-        ],
-      ),
-
-      //scores for labels
-      ListView(
-        padding: EdgeInsets.zero,
-
-        //list needs to be dynamically created
-        children: [
-          ScoreListTile(1, "Label 1", () {}, () {}),
-          ScoreListTile(1, "Label 2", () {}, () {}),
-        ],
-      ),
-    ];
+    ListView listOfScoreListTiles = ListView(
+      padding: EdgeInsets.zero,
+      children: createListOfScoreListTileWidgets(),
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -123,15 +94,16 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
                       if (result == null) return;
                       file = result!.files.first;
 
-                      // sample code on how to insert and fetch from db (DON'T DELETE YET)
-                      // start of sample code
                       ScoreService servObj = ScoreService();
                       ScoresCompanion scoreObj = ScoresCompanion.insert(
                            name: file!.name, file: file?.path ?? "no path", composer: 'no composer');
                       await servObj.insertScore(scoreObj);
+
+                      // use to test and show data storage in terminal
                       List<Score> listsOfScore = await servObj.getAllScores();
                       print(listsOfScore);
-                      // end of sample code
+
+                      sortedScoresMap = await getMappedScores("composer");
 
                       setState(() {});
                     },
@@ -160,13 +132,14 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
               children: <Widget>[
                 Expanded(
                     child: TextButton(
-                  onPressed: () => {
+                  onPressed: () async => {
+                    sortedScoresMap = await getMappedScores("composer"),
                     setState(() {
                       _hasBeenPressedComposer = true;
                       _hasBeenPressedTags = false;
                       _hasBeenPressedGenres = false;
                       _hasBeenPressedLabels = false;
-                      _onItemTapped(0);
+                      //_onItemTapped(0);
                     })
                   },
                   child: const Text('Composers',
@@ -188,7 +161,7 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
                       _hasBeenPressedComposer = false;
                       _hasBeenPressedTags = false;
                       _hasBeenPressedLabels = false;
-                      _onItemTapped(1);
+                      //_onItemTapped(1);
                     })
                   },
                   child: const Text( 'Genres',
@@ -211,7 +184,7 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
                       _hasBeenPressedComposer = false;
                       _hasBeenPressedGenres = false;
                       _hasBeenPressedLabels = false;
-                      _onItemTapped(2);
+                      //_onItemTapped(2);
                     })
                   },
                   child: const Text('Tags',
@@ -234,7 +207,7 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
                       _hasBeenPressedComposer = false;
                       _hasBeenPressedGenres = false;
                       _hasBeenPressedLabels = true;
-                      _onItemTapped(3);
+                      //_onItemTapped(3);
                     })
                   },
                   child: const Text('Labels',
@@ -277,7 +250,7 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
                 ),
               ),
               Expanded(
-                child: _widgetOptions.elementAt(_selectedIndex),
+                child: listOfScoreListTiles,
               ),
             ],
           )),
