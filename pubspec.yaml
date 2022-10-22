@@ -44,6 +44,7 @@ dependencies:
   flutter_pdfview: ^1.2.1
   dio: ^4.0.6 
   permission_handler: ^9.2.0
+  pdftron_flutter: ^1.0.0-beta.52
 
 dev_dependencies:
   flutter_test:

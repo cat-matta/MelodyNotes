@@ -387,6 +387,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.8.3"
+  pdftron_flutter:
+    dependency: "direct main"
+    description:
+      name: pdftron_flutter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0-beta.52"
   pedantic:
     dependency: transitive
     description:
