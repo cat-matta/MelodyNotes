@@ -67,7 +67,8 @@ class _FilterScoresState extends State<FilterScores> {
                       // start of sample code
                       ScoreService servObj = ScoreService();
                       ScoresCompanion scoreObj = ScoresCompanion.insert(
-                          name: file!.name, file: file?.path ?? "no path");
+                          name: file!.name, file: file?.path ?? "no path",
+                          composer: 'no composer');
                       await servObj.insertScore(scoreObj);
                       List<Score> listsOfScore = await servObj.getAllScores();
                       print(listsOfScore);

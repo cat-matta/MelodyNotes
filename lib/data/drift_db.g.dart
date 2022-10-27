@@ -11,13 +11,19 @@ class Score extends DataClass implements Insertable<Score> {
   final int id;
   final String name;
   final String file;
-  const Score({required this.id, required this.name, required this.file});
+  final String composer;
+  const Score(
+      {required this.id,
+      required this.name,
+      required this.file,
+      required this.composer});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['name'] = Variable<String>(name);
     map['file'] = Variable<String>(file);
+    map['composer'] = Variable<String>(composer);
     return map;
   }
 
@@ -26,6 +32,7 @@ class Score extends DataClass implements Insertable<Score> {
       id: Value(id),
       name: Value(name),
       file: Value(file),
+      composer: Value(composer),
     );
   }
 
@@ -36,6 +43,7 @@ class Score extends DataClass implements Insertable<Score> {
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       file: serializer.fromJson<String>(json['file']),
+      composer: serializer.fromJson<String>(json['composer']),
     );
   }
   @override
@@ -45,68 +53,83 @@ class Score extends DataClass implements Insertable<Score> {
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
       'file': serializer.toJson<String>(file),
+      'composer': serializer.toJson<String>(composer),
     };
   }
 
-  Score copyWith({int? id, String? name, String? file}) => Score(
+  Score copyWith({int? id, String? name, String? file, String? composer}) =>
+      Score(
         id: id ?? this.id,
         name: name ?? this.name,
         file: file ?? this.file,
+        composer: composer ?? this.composer,
       );
   @override
   String toString() {
     return (StringBuffer('Score(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('file: $file')
+          ..write('file: $file, ')
+          ..write('composer: $composer')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, name, file);
+  int get hashCode => Object.hash(id, name, file, composer);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Score &&
           other.id == this.id &&
           other.name == this.name &&
-          other.file == this.file);
+          other.file == this.file &&
+          other.composer == this.composer);
 }
 
 class ScoresCompanion extends UpdateCompanion<Score> {
   final Value<int> id;
   final Value<String> name;
   final Value<String> file;
+  final Value<String> composer;
   const ScoresCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.file = const Value.absent(),
+    this.composer = const Value.absent(),
   });
   ScoresCompanion.insert({
     this.id = const Value.absent(),
     required String name,
     required String file,
+    required String composer,
   })  : name = Value(name),
-        file = Value(file);
+        file = Value(file),
+        composer = Value(composer);
   static Insertable<Score> custom({
     Expression<int>? id,
     Expression<String>? name,
     Expression<String>? file,
+    Expression<String>? composer,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (file != null) 'file': file,
+      if (composer != null) 'composer': composer,
     });
   }
 
   ScoresCompanion copyWith(
-      {Value<int>? id, Value<String>? name, Value<String>? file}) {
+      {Value<int>? id,
+      Value<String>? name,
+      Value<String>? file,
+      Value<String>? composer}) {
     return ScoresCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       file: file ?? this.file,
+      composer: composer ?? this.composer,
     );
   }
 
@@ -122,6 +145,9 @@ class ScoresCompanion extends UpdateCompanion<Score> {
     if (file.present) {
       map['file'] = Variable<String>(file.value);
     }
+    if (composer.present) {
+      map['composer'] = Variable<String>(composer.value);
+    }
     return map;
   }
 
@@ -130,7 +156,8 @@ class ScoresCompanion extends UpdateCompanion<Score> {
     return (StringBuffer('ScoresCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('file: $file')
+          ..write('file: $file, ')
+          ..write('composer: $composer')
           ..write(')'))
         .toString();
   }
@@ -161,8 +188,13 @@ class $ScoresTable extends Scores with TableInfo<$ScoresTable, Score> {
   late final GeneratedColumn<String> file = GeneratedColumn<String>(
       'file', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
+  final VerificationMeta _composerMeta = const VerificationMeta('composer');
   @override
-  List<GeneratedColumn> get $columns => [id, name, file];
+  late final GeneratedColumn<String> composer = GeneratedColumn<String>(
+      'composer', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, name, file, composer];
   @override
   String get aliasedName => _alias ?? 'scores';
   @override
@@ -187,6 +219,12 @@ class $ScoresTable extends Scores with TableInfo<$ScoresTable, Score> {
     } else if (isInserting) {
       context.missing(_fileMeta);
     }
+    if (data.containsKey('composer')) {
+      context.handle(_composerMeta,
+          composer.isAcceptableOrUnknown(data['composer']!, _composerMeta));
+    } else if (isInserting) {
+      context.missing(_composerMeta);
+    }
     return context;
   }
 
@@ -202,6 +240,8 @@ class $ScoresTable extends Scores with TableInfo<$ScoresTable, Score> {
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       file: attachedDatabase.options.types
           .read(DriftSqlType.string, data['${effectivePrefix}file'])!,
+      composer: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}composer'])!,
     );
   }
 
