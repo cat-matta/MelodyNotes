@@ -33,6 +33,7 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
   @override
   void initState() {
     super.initState();
+    setup();
     _controller = TextEditingController();
   }
 
@@ -61,6 +62,11 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
     List<ScoreListTile> listOfWidgets = [];
     sortedScoresMap.forEach((k,v)=> listOfWidgets.add(ScoreListTile(v.length,k,(){}, (){})));
     return listOfWidgets;
+  }
+
+  void setup() async {
+    sortedScoresMap = await getMappedScores("composer");
+    setState(() {});
   }
 
   @override
