@@ -42,7 +42,7 @@ dependencies:
   get_it: ^7.2.0
   image_picker: ^0.8.5+3
   modal_side_sheet: ^0.0.1
-  path: ^1.8.2
+  path: ^1.8.1
   path_provider: ^2.0.10
   sqlite3_flutter_libs: ^0.5.0
 
