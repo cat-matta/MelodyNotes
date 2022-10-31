@@ -3,19 +3,18 @@ import 'package:musescore/themedata.dart';
 import 'package:file_picker/file_picker.dart';
 import '../data/drift_db.dart';
 import '../services/scores_service.dart';
-import './ScoreListTile.dart';
-
-class FilterScores extends StatefulWidget {
+import './ScoreTile.dart';
+class FilterScoresDrawer extends StatefulWidget {
   String headername;
-  List<ScoreListTile> scores;
+  List<ScoreTile> scores;
 
-  FilterScores(this.headername, this.scores);
+  FilterScoresDrawer(this.headername, this.scores);
 
   @override
-  State<FilterScores> createState() => _FilterScoresState();
+  State<FilterScoresDrawer> createState() => _FilterScoresDrawerState();
 }
 
-class _FilterScoresState extends State<FilterScores> {
+class _FilterScoresDrawerState extends State<FilterScoresDrawer> {
   //This is for search bar
   late TextEditingController _controller;
 
@@ -82,10 +81,7 @@ class _FilterScoresState extends State<FilterScores> {
                       backgroundColor: AppTheme.darkBackground,
                     )),
                 TextButton(
-                    // clicking on back button should lead back to ScoresDrawer
-                    // ie. the previous modal side sheet
-                    //needs to be fixed
-                    onPressed: () => {Navigator.pushNamed(context, '/')},
+                    onPressed: () => {Navigator.of(context).pop()},
                     child: const Text('Back'),
                     style: TextButton.styleFrom(
                       primary: AppTheme.accentMain,

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:musescore/themedata.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:modal_side_sheet/modal_side_sheet.dart';
-
 import '../data/drift_db.dart';
 import '../services/scores_service.dart';
 import './ScoreListTile.dart';
@@ -60,7 +58,7 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
 
   List<ScoreListTile> createListOfScoreListTileWidgets(){
     List<ScoreListTile> listOfWidgets = [];
-    sortedScoresMap.forEach((k,v)=> listOfWidgets.add(ScoreListTile(v.length,k,(){}, (){})));
+    sortedScoresMap.forEach((key, listOfScores) => listOfWidgets.add(ScoreListTile(listOfScores.length, key, listOfScores,(){} ,(){})));
     return listOfWidgets;
   }
 
@@ -71,7 +69,6 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    final mediaQuerry = MediaQuery.of(context);
     // This is for list tile containing the unique composer/genre/tags/labels
 
     ListView listOfScoreListTiles = ListView(
