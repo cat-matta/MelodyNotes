@@ -18,7 +18,7 @@ class ScoreListTile extends StatelessWidget {
 
   List<ScoreTile> createScoreTiles(){
     List<ScoreTile> listOfScoreTileWidgets = [];
-    listOfScores.forEach((score) => listOfScoreTileWidgets.add(ScoreTile("score name", score,(){},(){},(){})));
+    listOfScores.forEach((score) => listOfScoreTileWidgets.add(ScoreTile(score.name, score,(){},(){},(){})));
     return listOfScoreTileWidgets;
   }
 
