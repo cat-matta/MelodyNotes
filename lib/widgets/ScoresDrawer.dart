@@ -58,7 +58,7 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
 
   List<ScoreListTile> createListOfScoreListTileWidgets(){
     List<ScoreListTile> listOfWidgets = [];
-    sortedScoresMap.forEach((key, listOfScores) => listOfWidgets.add(ScoreListTile(listOfScores.length, key, listOfScores,(){} ,(){})));
+    sortedScoresMap.forEach((key, listOfScores) => listOfWidgets.add(ScoreListTile(listOfScores.length, key, listOfScores,(){},(){})));
     return listOfWidgets;
   }
 
