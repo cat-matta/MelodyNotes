@@ -58,7 +58,16 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
 
   List<ScoreListTile> createListOfScoreListTileWidgets(){
     List<ScoreListTile> listOfWidgets = [];
-    sortedScoresMap.forEach((key, listOfScores) => listOfWidgets.add(ScoreListTile(listOfScores.length, key, listOfScores,(){},(){})));
+    sortedScoresMap.forEach((key, listOfScores) => listOfWidgets.add(ScoreListTile(listOfScores.length, key, listOfScores,(){},()async{
+      // turn this into a delete function in this file to make it cleaner
+      List<int> listOfIds = [];
+      listOfScores.forEach((score) => listOfIds.add(score.id));
+      await ScoreService().deleteListOfScores(listOfIds);
+      Map<String,List<Score>> testing = await getMappedScores("composer");
+      setState(() {
+        sortedScoresMap = testing;
+      });
+    })));
     return listOfWidgets;
   }
 
@@ -116,7 +125,7 @@ class _ScoresLibraryWidgetState extends State<ScoreDrawer> {
                       backgroundColor: AppTheme.darkBackground,
                     )),
                 TextButton(
-                    onPressed: () => {Navigator.pushNamed(context, '/')},
+                    onPressed: () => {Navigator.of(context).pop()},//Navigator.pushNamed(context, '/')}, // pushName vs pop?
                     child: const Text('Back'),
                     style: TextButton.styleFrom(
                       primary: AppTheme.accentMain,

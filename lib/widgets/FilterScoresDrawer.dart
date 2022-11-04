@@ -1,12 +1,14 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:musescore/themedata.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:musescore/widgets/ScoresDrawer.dart';
 import '../data/drift_db.dart';
 import '../services/scores_service.dart';
 import './ScoreTile.dart';
 class FilterScoresDrawer extends StatefulWidget {
   String headername;
-  List<ScoreTile> scores;
+  List<Score> scores;
 
   FilterScoresDrawer(this.headername, this.scores);
 
@@ -37,9 +39,43 @@ class _FilterScoresDrawerState extends State<FilterScoresDrawer> {
     super.dispose();
   }
 
+  List<ScoreTile> createListOfScoreTileWidgets(){
+    List<ScoreTile> listOfWidgets = [];
+    widget.scores.forEach((score)=> listOfWidgets.add(ScoreTile(score.name,score,(){},(){},()async{
+      // delete callback function
+      List<int> listOfIds = [];
+      listOfIds.add(score.id);
+      ScoreService servObj = ScoreService();
+      await servObj.deleteListOfScores(listOfIds);
+      // get mapped function, need to rewrite as a dynamic function
+          List<Score> listsOfScore = await servObj.getAllScores();
+          Map<String, List<Score>> mappedScores = {};
+          listsOfScore.forEach((score) {
+            if (mappedScores[score.composer] == null) {
+              mappedScores[score.composer] = [];
+            }
+            mappedScores[score.composer]!.add(score);
+          });
+          // end of mapped function
+          // this is just test to delete,code needs heavy clean up to be dynamic
+          if(mappedScores == {}){setState((){widget.scores = [];});}
+          else{
+            setState(() {
+              widget.scores = mappedScores[score.composer]!;
+            });
+          }
+    })));
+    return listOfWidgets;
+  }
+
   @override
   Widget build(BuildContext context) {
     final mediaQuerry = MediaQuery.of(context);
+
+    ListView listOfScoreTiles = ListView(
+      padding: EdgeInsets.zero,
+      children: createListOfScoreTileWidgets(),
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -81,7 +117,13 @@ class _FilterScoresDrawerState extends State<FilterScoresDrawer> {
                       backgroundColor: AppTheme.darkBackground,
                     )),
                 TextButton(
-                    onPressed: () => {Navigator.of(context).pop()},
+                    onPressed: () {
+                      // Excuse the really bad code
+                      // this can probably work with better use of routing
+                      // Needs to rebuild scoresDrawer widget from here
+                      Navigator.of(context).pop();
+                      ScoreDrawer();
+                    },
                     child: const Text('Back'),
                     style: TextButton.styleFrom(
                       primary: AppTheme.accentMain,
@@ -117,10 +159,7 @@ class _FilterScoresDrawerState extends State<FilterScoresDrawer> {
           ),
           // list tiles
           Expanded(
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: widget.scores,
-            ),
+            child: listOfScoreTiles
           ),
         ],
       ),
