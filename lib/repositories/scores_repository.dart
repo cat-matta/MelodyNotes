@@ -13,4 +13,8 @@ class ScoreRepo {
   Future<List<Score>> getAllScores() {
     return this.drift.allScoresDb;
   }
+
+  Future deleteListOfScores(List<int> listOfIds){
+    return this.drift.deleteListOfScoresDB(listOfIds);
+  }
 }

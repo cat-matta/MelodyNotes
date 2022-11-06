@@ -1,21 +1,23 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:musescore/providers/ScoresListProvider.dart';
 import 'package:musescore/themedata.dart';
 import 'package:file_picker/file_picker.dart';
 import '../data/drift_db.dart';
 import '../services/scores_service.dart';
-import './ScoreListTile.dart';
-
-class FilterScores extends StatefulWidget {
+import './ScoreTile.dart';
+class FilterScoresDrawer extends ConsumerStatefulWidget {
   String headername;
-  List<ScoreListTile> scores;
+  List<Score> scores;
 
-  FilterScores(this.headername, this.scores);
+  FilterScoresDrawer(this.headername, this.scores);
 
   @override
-  State<FilterScores> createState() => _FilterScoresState();
+  ConsumerState<FilterScoresDrawer> createState() => _FilterScoresDrawerState();
 }
 
-class _FilterScoresState extends State<FilterScores> {
+class _FilterScoresDrawerState extends ConsumerState<FilterScoresDrawer> {
   //This is for search bar
   late TextEditingController _controller;
 
@@ -38,9 +40,25 @@ class _FilterScoresState extends State<FilterScores> {
     super.dispose();
   }
 
+  List<ScoreTile> createListOfScoreTileWidgets(){
+    List<ScoreTile> listOfWidgets = [];
+    widget.scores.forEach((score)=> listOfWidgets.add(ScoreTile(score.name,score,(){},(){},()async{
+      ref.read(scoresListProvider.notifier).removeScore([score], 'composer');
+    })));
+    return listOfWidgets;
+  }
+
   @override
   Widget build(BuildContext context) {
     final mediaQuerry = MediaQuery.of(context);
+
+    Map<String, List<Score>> mapSortedScores = ref.watch(scoresListProvider);
+    widget.scores = (mapSortedScores[widget.headername] == null) ? []: mapSortedScores[widget.headername]!;
+
+    ListView listOfScoreTiles = ListView(
+      padding: EdgeInsets.zero,
+      children: createListOfScoreTileWidgets(),
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -63,18 +81,13 @@ class _FilterScoresState extends State<FilterScores> {
                       if (result == null) return;
                       file = result!.files.first;
 
-                      // sample code on how to insert and fetch from db (DON'T DELETE YET)
-                      // start of sample code
                       ScoreService servObj = ScoreService();
                       ScoresCompanion scoreObj = ScoresCompanion.insert(
-                          name: file!.name, file: file?.path ?? "no path",
-                          composer: 'no composer');
-                      await servObj.insertScore(scoreObj);
+                          name: file!.name, file: file?.path ?? "no path", composer: widget.headername);
+
+                      ref.read(scoresListProvider.notifier).insertScore(scoreObj,"composer"); // need to fix for dynamic if provider works
                       List<Score> listsOfScore = await servObj.getAllScores();
                       print(listsOfScore);
-                      // end of sample code
-
-                      setState(() {});
                     },
                     child: const Text('Import'),
                     style: TextButton.styleFrom(
@@ -82,10 +95,10 @@ class _FilterScoresState extends State<FilterScores> {
                       backgroundColor: AppTheme.darkBackground,
                     )),
                 TextButton(
-                    // clicking on back button should lead back to ScoresDrawer
-                    // ie. the previous modal side sheet
-                    //needs to be fixed
-                    onPressed: () => {Navigator.pushNamed(context, '/')},
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      //ScoreDrawer(); // This is most likely not needed
+                    },
                     child: const Text('Back'),
                     style: TextButton.styleFrom(
                       primary: AppTheme.accentMain,
@@ -121,10 +134,7 @@ class _FilterScoresState extends State<FilterScores> {
           ),
           // list tiles
           Expanded(
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: widget.scores,
-            ),
+            child: listOfScoreTiles
           ),
         ],
       ),

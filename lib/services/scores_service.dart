@@ -13,4 +13,8 @@ class ScoreService {
   Future<List<Score>> getAllScores() {
     return this.repo.getAllScores();
   }
+
+  Future deleteListOfScores(List<int> listOfIds){
+    return this.repo.deleteListOfScores(listOfIds);
+  }
 }
