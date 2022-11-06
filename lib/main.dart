@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:modal_side_sheet/modal_side_sheet.dart';
 import 'package:musescore/widgets/BookMarkDrawer.dart';
 import 'package:musescore/widgets/ScoresDrawer.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import './widgets/MainDrawer.dart';
 import './widgets/SetlistDrawer.dart';
@@ -18,7 +19,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await injector.setupLocator();
   cameras = await availableCameras();
-  runApp(AppEntry());
+  runApp(ProviderScope(child: AppEntry()));
 }
 
 class AppEntry extends StatelessWidget {
@@ -39,10 +40,10 @@ class AppEntry extends StatelessWidget {
 
 class TopBar extends StatefulWidget {
   @override
-  State<TopBar> createState() => _TopBarState();
+  State<StatefulWidget> createState() => _TopBarState();
 }
 
-class _TopBarState extends State<TopBar> {
+class _TopBarState extends State {
   @override
   Widget build(BuildContext context) {
     final mediaQuerry = MediaQuery.of(context);

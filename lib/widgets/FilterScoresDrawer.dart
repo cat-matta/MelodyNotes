@@ -1,22 +1,23 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:musescore/providers/ScoresListProvider.dart';
 import 'package:musescore/themedata.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:musescore/widgets/ScoresDrawer.dart';
 import '../data/drift_db.dart';
 import '../services/scores_service.dart';
 import './ScoreTile.dart';
-class FilterScoresDrawer extends StatefulWidget {
+class FilterScoresDrawer extends ConsumerStatefulWidget {
   String headername;
   List<Score> scores;
 
   FilterScoresDrawer(this.headername, this.scores);
 
   @override
-  State<FilterScoresDrawer> createState() => _FilterScoresDrawerState();
+  ConsumerState<FilterScoresDrawer> createState() => _FilterScoresDrawerState();
 }
 
-class _FilterScoresDrawerState extends State<FilterScoresDrawer> {
+class _FilterScoresDrawerState extends ConsumerState<FilterScoresDrawer> {
   //This is for search bar
   late TextEditingController _controller;
 
@@ -42,28 +43,7 @@ class _FilterScoresDrawerState extends State<FilterScoresDrawer> {
   List<ScoreTile> createListOfScoreTileWidgets(){
     List<ScoreTile> listOfWidgets = [];
     widget.scores.forEach((score)=> listOfWidgets.add(ScoreTile(score.name,score,(){},(){},()async{
-      // delete callback function
-      List<int> listOfIds = [];
-      listOfIds.add(score.id);
-      ScoreService servObj = ScoreService();
-      await servObj.deleteListOfScores(listOfIds);
-      // get mapped function, need to rewrite as a dynamic function
-          List<Score> listsOfScore = await servObj.getAllScores();
-          Map<String, List<Score>> mappedScores = {};
-          listsOfScore.forEach((score) {
-            if (mappedScores[score.composer] == null) {
-              mappedScores[score.composer] = [];
-            }
-            mappedScores[score.composer]!.add(score);
-          });
-          // end of mapped function
-          // this is just test to delete,code needs heavy clean up to be dynamic
-          if(mappedScores == {}){setState((){widget.scores = [];});}
-          else{
-            setState(() {
-              widget.scores = mappedScores[score.composer]!;
-            });
-          }
+      ref.read(scoresListProvider.notifier).removeScore([score], 'composer');
     })));
     return listOfWidgets;
   }
@@ -71,6 +51,9 @@ class _FilterScoresDrawerState extends State<FilterScoresDrawer> {
   @override
   Widget build(BuildContext context) {
     final mediaQuerry = MediaQuery.of(context);
+
+    Map<String, List<Score>> mapSortedScores = ref.watch(scoresListProvider);
+    widget.scores = (mapSortedScores[widget.headername] == null) ? []: mapSortedScores[widget.headername]!;
 
     ListView listOfScoreTiles = ListView(
       padding: EdgeInsets.zero,
@@ -98,18 +81,13 @@ class _FilterScoresDrawerState extends State<FilterScoresDrawer> {
                       if (result == null) return;
                       file = result!.files.first;
 
-                      // sample code on how to insert and fetch from db (DON'T DELETE YET)
-                      // start of sample code
                       ScoreService servObj = ScoreService();
                       ScoresCompanion scoreObj = ScoresCompanion.insert(
-                          name: file!.name, file: file?.path ?? "no path",
-                          composer: 'no composer');
-                      await servObj.insertScore(scoreObj);
+                          name: file!.name, file: file?.path ?? "no path", composer: widget.headername);
+
+                      ref.read(scoresListProvider.notifier).insertScore(scoreObj,"composer"); // need to fix for dynamic if provider works
                       List<Score> listsOfScore = await servObj.getAllScores();
                       print(listsOfScore);
-                      // end of sample code
-
-                      setState(() {});
                     },
                     child: const Text('Import'),
                     style: TextButton.styleFrom(
@@ -118,11 +96,8 @@ class _FilterScoresDrawerState extends State<FilterScoresDrawer> {
                     )),
                 TextButton(
                     onPressed: () {
-                      // Excuse the really bad code
-                      // this can probably work with better use of routing
-                      // Needs to rebuild scoresDrawer widget from here
                       Navigator.of(context).pop();
-                      ScoreDrawer();
+                      //ScoreDrawer(); // This is most likely not needed
                     },
                     child: const Text('Back'),
                     style: TextButton.styleFrom(
