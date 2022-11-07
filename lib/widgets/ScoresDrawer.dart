@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:musescore/providers/PdfFileProvider.dart';
 import 'package:musescore/providers/ScoresListProvider.dart';
 import 'package:musescore/themedata.dart';
 import 'package:file_picker/file_picker.dart';
@@ -8,12 +9,12 @@ import '../services/scores_service.dart';
 import './ScoreListTile.dart';
 
 class ScoreDrawer extends ConsumerStatefulWidget {
-  ScoreDrawer({Key? key}): super(key: key);
-   @override
-   ConsumerState<ScoreDrawer> createState() => _ScoresLibraryWidgetState();
- }
+  ScoreDrawer({Key? key}) : super(key: key);
+  @override
+  ConsumerState<ScoreDrawer> createState() => _ScoresLibraryWidgetState();
+}
 
- class _ScoresLibraryWidgetState extends ConsumerState<ScoreDrawer> {
+class _ScoresLibraryWidgetState extends ConsumerState<ScoreDrawer> {
   //This is for changing color in Second Nav bar each button
   bool _hasBeenPressedComposer = true;
   bool _hasBeenPressedGenres = false;
@@ -51,8 +52,12 @@ class ScoreDrawer extends ConsumerStatefulWidget {
   List<ScoreListTile> createListOfScoreListTileWidgets() {
     Map<String, List<Score>> mapSortedScores = ref.watch(scoresListProvider);
     List<ScoreListTile> listOfWidgets = [];
-    mapSortedScores.forEach((key, listOfScores) => listOfWidgets.add(ScoreListTile(listOfScores.length, key, listOfScores, () {}, () async {
-          ref.read(scoresListProvider.notifier).removeScore(listOfScores, "composer");
+    mapSortedScores.forEach((key, listOfScores) => listOfWidgets.add(
+            ScoreListTile(listOfScores.length, key, listOfScores, () {},
+                () async {
+          ref
+              .read(scoresListProvider.notifier)
+              .removeScore(listOfScores, "composer");
         })));
     return listOfWidgets;
   }
@@ -89,10 +94,18 @@ class ScoreDrawer extends ConsumerStatefulWidget {
 
                       ScoreService servObj = ScoreService();
                       ScoresCompanion scoreObj = ScoresCompanion.insert(
-                           name: file!.name, file: file?.path ?? "no path", composer: 'no composer');
+                          name: file!.name,
+                          file: file?.path ?? "no path",
+                          composer: 'no composer');
 
-                      ref.read(scoresListProvider.notifier).insertScore(scoreObj,"composer"); // need to fix for dynamic if provider works
-
+                      ref.read(scoresListProvider.notifier).insertScore(
+                          scoreObj,
+                          "composer"); // need to fix for dynamic if provider works
+                      ref
+                          .read(pdfFileProvider.notifier)
+                          .giveFile(file!.path as String);
+                      // print(
+                      //     "We chose: ${ref.read(pdfFileProvider.notifier).getFile()}");
                       // use to test and show data storage in terminal
                       List<Score> listsOfScore = await servObj.getAllScores();
                       print(listsOfScore);
@@ -103,7 +116,9 @@ class ScoreDrawer extends ConsumerStatefulWidget {
                       backgroundColor: AppTheme.darkBackground,
                     )),
                 TextButton(
-                    onPressed: () => {Navigator.of(context).pop()},//Navigator.pushNamed(context, '/')}, // pushName vs pop?
+                    onPressed: () => {
+                          Navigator.of(context).pop()
+                        }, //Navigator.pushNamed(context, '/')}, // pushName vs pop?
                     child: const Text('Back'),
                     style: TextButton.styleFrom(
                       primary: AppTheme.accentMain,
@@ -123,13 +138,16 @@ class ScoreDrawer extends ConsumerStatefulWidget {
                 Expanded(
                     child: TextButton(
                   onPressed: () async {
-                    ref.read(scoresListProvider.notifier).getMappedScores("composer");
+                    ref
+                        .read(scoresListProvider.notifier)
+                        .getMappedScores("composer");
                     _hasBeenPressedComposer = true;
                     _hasBeenPressedTags = false;
                     _hasBeenPressedGenres = false;
                     _hasBeenPressedLabels = false;
                   },
-                  child: const Text('Composers',
+                  child: const Text(
+                    'Composers',
                     overflow: TextOverflow.ellipsis,
                   ),
                   style: TextButton.styleFrom(
@@ -143,13 +161,16 @@ class ScoreDrawer extends ConsumerStatefulWidget {
                 Expanded(
                     child: TextButton(
                   onPressed: () {
-                    ref.read(scoresListProvider.notifier).getMappedScores("test");
+                    ref
+                        .read(scoresListProvider.notifier)
+                        .getMappedScores("test");
                     _hasBeenPressedGenres = true;
                     _hasBeenPressedComposer = false;
                     _hasBeenPressedTags = false;
                     _hasBeenPressedLabels = false;
                   },
-                  child: const Text( 'Genres',
+                  child: const Text(
+                    'Genres',
                     overflow: TextOverflow.ellipsis,
                   ),
                   style: TextButton.styleFrom(
@@ -164,13 +185,16 @@ class ScoreDrawer extends ConsumerStatefulWidget {
                 Expanded(
                     child: TextButton(
                   onPressed: () {
-                    ref.read(scoresListProvider.notifier).getMappedScores("test");
+                    ref
+                        .read(scoresListProvider.notifier)
+                        .getMappedScores("test");
                     _hasBeenPressedTags = true;
                     _hasBeenPressedComposer = false;
                     _hasBeenPressedGenres = false;
                     _hasBeenPressedLabels = false;
                   },
-                  child: const Text('Tags',
+                  child: const Text(
+                    'Tags',
                     overflow: TextOverflow.ellipsis,
                   ),
                   style: TextButton.styleFrom(
@@ -185,13 +209,16 @@ class ScoreDrawer extends ConsumerStatefulWidget {
                 Expanded(
                     child: TextButton(
                   onPressed: () {
-                    ref.read(scoresListProvider.notifier).getMappedScores("test");
+                    ref
+                        .read(scoresListProvider.notifier)
+                        .getMappedScores("test");
                     _hasBeenPressedTags = false;
                     _hasBeenPressedComposer = false;
                     _hasBeenPressedGenres = false;
                     _hasBeenPressedLabels = true;
                   },
-                  child: const Text('Labels',
+                  child: const Text(
+                    'Labels',
                     overflow: TextOverflow.ellipsis,
                   ),
                   style: TextButton.styleFrom(

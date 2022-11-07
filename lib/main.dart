@@ -1,9 +1,14 @@
+import 'dart:io';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:modal_side_sheet/modal_side_sheet.dart';
+import 'package:musescore/providers/PdfFileProvider.dart';
 import 'package:musescore/widgets/BookMarkDrawer.dart';
 import 'package:musescore/widgets/ScoresDrawer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:musescore/widgets/pdf_viewer_page.dart';
 
 import './widgets/MainDrawer.dart';
 import './widgets/SetlistDrawer.dart';
@@ -185,9 +190,39 @@ class _TopBarState extends State<TopBar> {
   }
 }
 
-class AppBody extends StatelessWidget {
+// class AppBody extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container();
+//   }
+// }
+
+class AppBody extends ConsumerStatefulWidget {
+  // const AppBody({super.key});
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _AppBodyState();
+}
+
+class _AppBodyState extends ConsumerState<AppBody> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    var currentFile = ref.read(pdfFileProvider.notifier).getFile();
+    // print("Chosen: $currentFile");
+    // var currOrientation = MediaQuery.of(context).orientation;
+    // runApp(ProviderScope(child: AppEntry()));
+    return currentFile.when(
+        data: (currentFile) {
+          return Text("$currentFile");
+          // return Container(
+          //   child: PDFView(
+          //     filePath: currentFile,
+          //   ),
+          // );
+        },
+        error: ((error, stackTrace) => Text("Err: $error")),
+        loading: () => Center(
+              child: CircularProgressIndicator(),
+            ));
   }
 }
