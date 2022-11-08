@@ -114,34 +114,7 @@ class _TopBarState extends State<TopBar> {
         appBar: AppBar(
             centerTitle: true,
             titleSpacing: 0.0,
-            title: Container(
-                // alignment: Alignment.center,
-                width: mediaQuerry.size.width * 0.5,
-                decoration: BoxDecoration(
-                    color: AppTheme.lightBackground,
-                    borderRadius: BorderRadius.circular(20)),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    IconButton(
-                      onPressed: () => {},
-                      icon: Icon(Icons.settings),
-                      color: AppTheme.accentSecondary,
-                    ),
-                    Flexible(
-                      child: Text(
-                        "River Flows in You",
-                        style: TextStyle(color: Colors.black),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () => {},
-                      icon: Icon(Icons.search),
-                      color: AppTheme.accentSecondary,
-                    ),
-                  ],
-                )),
+            title: ScoreTitle(mediaQuerry: mediaQuerry),
             leadingWidth: mediaQuerry.orientation == Orientation.landscape ||
                     isDesktop(context)
                 ? mediaQuerry.size.width * 0.25
@@ -190,6 +163,60 @@ class _TopBarState extends State<TopBar> {
   }
 }
 
+class ScoreTitle extends ConsumerWidget {
+  const ScoreTitle({
+    Key? key,
+    required this.mediaQuerry,
+  }) : super(key: key);
+
+  final MediaQueryData mediaQuerry;
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    var currentFile = ref.watch(pdfFileProvider);
+
+    return Container(
+        // alignment: Alignment.center,
+        width: mediaQuerry.size.width * 0.5,
+        decoration: BoxDecoration(
+            color: AppTheme.lightBackground,
+            borderRadius: BorderRadius.circular(20)),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            IconButton(
+              onPressed: () => {},
+              icon: Icon(Icons.settings),
+              color: AppTheme.accentSecondary,
+            ),
+            Flexible(
+              child: currentFile.when(
+                data: (data) => Text(
+                  data.split('/').last.split('.').first.split('-').last,
+                  style: TextStyle(color: Colors.black),
+                  overflow: TextOverflow.ellipsis,
+                ),
+                error: ((error, stackTrace) => Text(
+                      "Error picking file",
+                      style: TextStyle(color: Colors.black),
+                      overflow: TextOverflow.ellipsis,
+                    )),
+                loading: () => Text(
+                  "",
+                  style: TextStyle(color: Colors.black),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ),
+            IconButton(
+              onPressed: () => {},
+              icon: Icon(Icons.search),
+              color: AppTheme.accentSecondary,
+            ),
+          ],
+        ));
+  }
+}
+
 // class AppBody extends StatelessWidget {
 //   @override
 //   Widget build(BuildContext context) {
@@ -207,10 +234,8 @@ class AppBody extends ConsumerStatefulWidget {
 class _AppBodyState extends ConsumerState<AppBody> {
   @override
   Widget build(BuildContext context) {
-    var currentFile = ref.read(pdfFileProvider.notifier).getFile();
-    // print("Chosen: $currentFile");
-    // var currOrientation = MediaQuery.of(context).orientation;
-    // runApp(ProviderScope(child: AppEntry()));
+    var currentFile = ref.watch(pdfFileProvider);
+
     return currentFile.when(
         data: (currentFile) {
           return Text("$currentFile");
