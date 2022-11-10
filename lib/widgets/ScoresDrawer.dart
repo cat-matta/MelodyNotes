@@ -94,9 +94,9 @@ class _ScoresLibraryWidgetState extends ConsumerState<ScoreDrawer> {
 
                       ScoreService servObj = ScoreService();
                       ScoresCompanion scoreObj = ScoresCompanion.insert(
-                          name: file!.name,
+                          name: file!.name.split(".").first,
                           file: file?.path ?? "no path",
-                          composer: 'no composer');
+                          composer: 'No composer');
 
                       ref.read(scoresListProvider.notifier).insertScore(
                           scoreObj,

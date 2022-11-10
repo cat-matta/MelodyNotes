@@ -48,7 +48,9 @@ class _FilterScoresDrawerState extends ConsumerState<FilterScoresDrawer> {
         .forEach((score) => listOfWidgets.add(ScoreTile(score.name, score, () {
               print('click');
               // choose the pdf file based on what got clicked
+              print(score.file);
               ref.read(pdfFileProvider.notifier).giveFile(score.file);
+              // print(ref.read(pdfFileProvider.notifier).getFile());
             }, () {
               print('edit');
             }, () async {
@@ -100,9 +102,13 @@ class _FilterScoresDrawerState extends ConsumerState<FilterScoresDrawer> {
                           file: file?.path ?? "no path",
                           composer: widget.headername);
 
-                      ref.read(scoresListProvider.notifier).insertScore(
-                          scoreObj,
-                          "composer"); // need to fix for dynamic if provider works
+                      ref
+                          .read(scoresListProvider.notifier)
+                          .insertScore(scoreObj, "composer");
+                      ref
+                          .read(pdfFileProvider.notifier)
+                          .giveFile(file!.path as String);
+                      // need to fix for dynamic if provider works
                       List<Score> listsOfScore = await servObj.getAllScores();
                       print(listsOfScore);
                     },

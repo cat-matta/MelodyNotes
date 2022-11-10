@@ -166,7 +166,7 @@ class _BookMarksWidgetState extends State<BookMarkDrawer> {
             Row(
               children: [
                 TextButton(
-                    onPressed: () => {Navigator.pushNamed(context, '/')},
+                    onPressed: () => Navigator.of(context).pop(),
                     child: const Text('Back'),
                     style: TextButton.styleFrom(
                       primary: Color.fromRGBO(131, 195, 163, 1),
