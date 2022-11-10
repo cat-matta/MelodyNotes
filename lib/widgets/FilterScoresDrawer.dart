@@ -1,12 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:musescore/providers/PdfFileProvider.dart';
 import 'package:musescore/providers/ScoresListProvider.dart';
 import 'package:musescore/themedata.dart';
 import 'package:file_picker/file_picker.dart';
 import '../data/drift_db.dart';
 import '../services/scores_service.dart';
 import './ScoreTile.dart';
+
 class FilterScoresDrawer extends ConsumerStatefulWidget {
   String headername;
   List<Score> scores;
@@ -40,11 +42,22 @@ class _FilterScoresDrawerState extends ConsumerState<FilterScoresDrawer> {
     super.dispose();
   }
 
-  List<ScoreTile> createListOfScoreTileWidgets(){
+  List<ScoreTile> createListOfScoreTileWidgets() {
     List<ScoreTile> listOfWidgets = [];
-    widget.scores.forEach((score)=> listOfWidgets.add(ScoreTile(score.name,score,(){},(){},()async{
-      ref.read(scoresListProvider.notifier).removeScore([score], 'composer');
-    })));
+    widget.scores
+        .forEach((score) => listOfWidgets.add(ScoreTile(score.name, score, () {
+              print('click');
+              // choose the pdf file based on what got clicked
+              print(score.file);
+              ref.read(pdfFileProvider.notifier).giveFile(score.file);
+              // print(ref.read(pdfFileProvider.notifier).getFile());
+            }, () {
+              print('edit');
+            }, () async {
+              ref
+                  .read(scoresListProvider.notifier)
+                  .removeScore([score], 'composer');
+            })));
     return listOfWidgets;
   }
 
@@ -53,7 +66,9 @@ class _FilterScoresDrawerState extends ConsumerState<FilterScoresDrawer> {
     final mediaQuerry = MediaQuery.of(context);
 
     Map<String, List<Score>> mapSortedScores = ref.watch(scoresListProvider);
-    widget.scores = (mapSortedScores[widget.headername] == null) ? []: mapSortedScores[widget.headername]!;
+    widget.scores = (mapSortedScores[widget.headername] == null)
+        ? []
+        : mapSortedScores[widget.headername]!;
 
     ListView listOfScoreTiles = ListView(
       padding: EdgeInsets.zero,
@@ -83,9 +98,23 @@ class _FilterScoresDrawerState extends ConsumerState<FilterScoresDrawer> {
 
                       ScoreService servObj = ScoreService();
                       ScoresCompanion scoreObj = ScoresCompanion.insert(
-                          name: file!.name, file: file?.path ?? "no path", composer: widget.headername);
+                          name: file!.name
+                              .split('/')
+                              .last
+                              .split('.')
+                              .first
+                              .split('-')
+                              .last,
+                          file: file?.path ?? "no path",
+                          composer: widget.headername);
 
-                      ref.read(scoresListProvider.notifier).insertScore(scoreObj,"composer"); // need to fix for dynamic if provider works
+                      ref
+                          .read(scoresListProvider.notifier)
+                          .insertScore(scoreObj, "composer");
+                      ref
+                          .read(pdfFileProvider.notifier)
+                          .giveFile(file!.path as String);
+                      // need to fix for dynamic if provider works
                       List<Score> listsOfScore = await servObj.getAllScores();
                       print(listsOfScore);
                     },
@@ -133,9 +162,7 @@ class _FilterScoresDrawerState extends ConsumerState<FilterScoresDrawer> {
             ),
           ),
           // list tiles
-          Expanded(
-            child: listOfScoreTiles
-          ),
+          Expanded(child: listOfScoreTiles),
         ],
       ),
     );
