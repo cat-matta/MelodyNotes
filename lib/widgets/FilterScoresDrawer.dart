@@ -98,7 +98,13 @@ class _FilterScoresDrawerState extends ConsumerState<FilterScoresDrawer> {
 
                       ScoreService servObj = ScoreService();
                       ScoresCompanion scoreObj = ScoresCompanion.insert(
-                          name: file!.name,
+                          name: file!.name
+                              .split('/')
+                              .last
+                              .split('.')
+                              .first
+                              .split('-')
+                              .last,
                           file: file?.path ?? "no path",
                           composer: widget.headername);
 

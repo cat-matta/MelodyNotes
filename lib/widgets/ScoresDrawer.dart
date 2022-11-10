@@ -94,7 +94,13 @@ class _ScoresLibraryWidgetState extends ConsumerState<ScoreDrawer> {
 
                       ScoreService servObj = ScoreService();
                       ScoresCompanion scoreObj = ScoresCompanion.insert(
-                          name: file!.name.split(".").first,
+                          name: file!.name
+                              .split('/')
+                              .last
+                              .split('.')
+                              .first
+                              .split('-')
+                              .last,
                           file: file?.path ?? "no path",
                           composer: 'No composer');
 

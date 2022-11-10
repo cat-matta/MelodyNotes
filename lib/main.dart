@@ -2,15 +2,12 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:modal_side_sheet/modal_side_sheet.dart';
 import 'package:musescore/providers/PdfFileProvider.dart';
 import 'package:musescore/widgets/BookMarkDrawer.dart';
 import 'package:musescore/widgets/ScoresDrawer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:musescore/widgets/pdf_viewer_page.dart';
-import 'package:musescore/widgets/pdfkit_viewer.dart';
-import 'package:pspdfkit_flutter/widgets/pspdfkit_widget.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 import './widgets/MainDrawer.dart';
 import './widgets/SetlistDrawer.dart';
@@ -38,7 +35,7 @@ class AppEntry extends StatelessWidget {
       initialRoute: '/',
       routes: {
         CameraScreen.routeName: (ctx) => CameraScreen(cameras: cameras),
-        ScannerScreen.routeName: (ctx) => ScannerScreen(),
+        // ScannerScreen.routeName: (ctx) => ScannerScreen(),
       },
     );
   }
@@ -125,9 +122,7 @@ class _TopBarState extends State<TopBar> {
                 ? Row(
                     //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      buildAppBarIcons(Icons.photo_camera, () {
-                        Navigator.pushNamed(context, CameraScreen.routeName);
-                      }),
+                      buildAppBarIcons(Icons.photo_camera, () {}),
                       buildAppBarIcons(Icons.draw, () {}),
                       buildAppBarIcons(Icons.display_settings, () {}),
                       buildAppBarIcons(Icons.collections_bookmark, () {}),
@@ -241,12 +236,10 @@ class _AppBodyState extends ConsumerState<AppBody> {
         data: (currentFile) {
           // return Text("$currentFile");
 
-          // return PspdfkitWidget(documentPath: currentFile);
           return Container(
-            child: PDFPage(
-              documentPath: (currentFile),
-            ),
-          );
+              child: SfPdfViewer.file(
+            File(currentFile),
+          ));
         },
         error: ((error, stackTrace) => Text("Err: $error")),
         loading: () => Center(
