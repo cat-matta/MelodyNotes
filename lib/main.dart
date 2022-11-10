@@ -9,13 +9,14 @@ import 'package:musescore/widgets/BookMarkDrawer.dart';
 import 'package:musescore/widgets/ScoresDrawer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:musescore/widgets/pdf_viewer_page.dart';
+import 'package:musescore/widgets/pdfkit_viewer.dart';
+import 'package:pspdfkit_flutter/widgets/pspdfkit_widget.dart';
 
 import './widgets/MainDrawer.dart';
 import './widgets/SetlistDrawer.dart';
 import 'package:musescore/screens/scanner_screen.dart';
 import './screens/camera_screen.dart';
 import 'locator.dart' as injector;
-
 import 'themedata.dart';
 
 late List<CameraDescription> cameras;
@@ -238,16 +239,73 @@ class _AppBodyState extends ConsumerState<AppBody> {
 
     return currentFile.when(
         data: (currentFile) {
-          return Text("$currentFile");
-          // return Container(
-          //   child: PDFView(
-          //     filePath: currentFile,
-          //   ),
-          // );
+          // return Text("$currentFile");
+
+          // return PspdfkitWidget(documentPath: currentFile);
+          return Container(
+            child: PDFPage(
+              documentPath: (currentFile),
+            ),
+          );
         },
         error: ((error, stackTrace) => Text("Err: $error")),
         loading: () => Center(
-              child: CircularProgressIndicator(),
+              child: Container(
+                  height: MediaQuery.of(context).size.height,
+                  decoration: BoxDecoration(color: AppTheme.darkBackground),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Spacer(),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.music_note),
+                          Icon(Icons.music_note),
+                          Icon(Icons.music_note),
+                        ],
+                      ),
+                      Spacer(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            child: Text(
+                              "Welcome to MelodyScore! You can import a file by clicking on the ",
+                              style: TextStyle(
+                                  color: AppTheme.accentMain, fontSize: 20),
+                            ),
+                          ),
+                          Icon(Icons.library_music),
+                          Text(
+                            " above",
+                            style: TextStyle(
+                                color: AppTheme.accentMain, fontSize: 20),
+                          ),
+                        ],
+                      ),
+                      Spacer(),
+                      Text(
+                        "Happy Playing!",
+                        style:
+                            TextStyle(color: AppTheme.accentMain, fontSize: 20),
+                      ),
+                      Spacer(),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.music_note),
+                          Icon(Icons.music_note),
+                          Icon(Icons.music_note),
+                        ],
+                      ),
+                      Spacer(),
+                    ],
+                  )),
             ));
   }
 }
