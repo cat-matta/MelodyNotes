@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:musescore/services/scores_service.dart';
-import 'package:musescore/widgets/ScoresDrawer.dart';
+import 'package:melodyscore/services/scores_service.dart';
+import 'package:melodyscore/widgets/ScoresDrawer.dart';
 
 class PdfStateNotifier extends StateNotifier<AsyncValue<String>> {
   PdfStateNotifier() : super(AsyncLoading());

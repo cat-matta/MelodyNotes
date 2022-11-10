@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:musescore/themedata.dart';
+import 'package:melodyscore/themedata.dart';
 import '../data/drift_db.dart';
 
 class ScoreTile extends StatelessWidget {
@@ -9,7 +9,8 @@ class ScoreTile extends StatelessWidget {
   VoidCallback editFunction; // calls edit ui widget
   VoidCallback deleteFunction; // calls delete of score tile
 
-  ScoreTile(this.text, this.scoreInfo, this.mainfunction, this.editFunction, this.deleteFunction);
+  ScoreTile(this.text, this.scoreInfo, this.mainfunction, this.editFunction,
+      this.deleteFunction);
 
   @override
   Widget build(BuildContext context) {

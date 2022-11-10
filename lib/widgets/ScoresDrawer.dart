@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:musescore/providers/PdfFileProvider.dart';
-import 'package:musescore/providers/ScoresListProvider.dart';
-import 'package:musescore/themedata.dart';
+import 'package:melodyscore/providers/PdfFileProvider.dart';
+import 'package:melodyscore/providers/ScoresListProvider.dart';
+import 'package:melodyscore/themedata.dart';
 import 'package:file_picker/file_picker.dart';
 import '../data/drift_db.dart';
 import '../services/scores_service.dart';

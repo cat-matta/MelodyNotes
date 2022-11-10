@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:musescore/themedata.dart';
+import 'package:melodyscore/themedata.dart';
 
 class SetlistDrawer extends StatelessWidget {
   @override
