@@ -646,6 +646,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.2.4"
+  pspdfkit_flutter:
+    dependency: "direct main"
+    description:
+      name: pspdfkit_flutter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.3.0"
   pub_semver:
     dependency: transitive
     description:
@@ -891,4 +898,4 @@ packages:
     version: "3.1.1"
 sdks:
   dart: ">=2.17.0 <3.0.0"
-  flutter: ">=3.0.0"
+  flutter: ">=3.0.4"
