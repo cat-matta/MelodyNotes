@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart' as driftPackage;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -83,7 +84,7 @@ class _FilterScoresDrawerState extends ConsumerState<FilterScoresDrawer> {
 
                       ScoreService servObj = ScoreService();
                       ScoresCompanion scoreObj = ScoresCompanion.insert(
-                          name: file!.name, file: file?.path ?? "no path", composer: widget.headername);
+                          name: file!.name, file: file?.path ?? "no path", composer: driftPackage.Value(widget.headername));
 
                       ref.read(scoresListProvider.notifier).insertScore(scoreObj,"composer"); // need to fix for dynamic if provider works
                       List<Score> listsOfScore = await servObj.getAllScores();

@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart' as driftPackage;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:musescore/providers/ScoresListProvider.dart';
@@ -89,7 +90,7 @@ class ScoreDrawer extends ConsumerStatefulWidget {
 
                       ScoreService servObj = ScoreService();
                       ScoresCompanion scoreObj = ScoresCompanion.insert(
-                           name: file!.name, file: file?.path ?? "no path", composer: 'no composer');
+                           name: file!.name, file: file?.path ?? "no path", composer: driftPackage.Value("test composer"));
 
                       ref.read(scoresListProvider.notifier).insertScore(scoreObj,"composer"); // need to fix for dynamic if provider works
 

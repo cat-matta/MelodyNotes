@@ -17,4 +17,8 @@ class ScoreRepo {
   Future deleteListOfScores(List<int> listOfIds){
     return this.drift.deleteListOfScoresDB(listOfIds);
   }
+
+  Future updateScore(ScoresCompanion updatedScore){
+    return this.drift.updateScoreDB(updatedScore);
+  }
 }

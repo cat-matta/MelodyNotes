@@ -17,4 +17,8 @@ class ScoreService {
   Future deleteListOfScores(List<int> listOfIds){
     return this.repo.deleteListOfScores(listOfIds);
   }
+
+  Future updateScore(ScoresCompanion updatedScore){
+    return this.repo.updateScore(updatedScore);
+  }
 }

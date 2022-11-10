@@ -10,7 +10,13 @@ class Scores extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get name => text().withLength(min: 1, max: 100)();
   TextColumn get file => text()();
-  TextColumn get composer => text()();
+  TextColumn get composer => text().withDefault(const Constant("No Composer"))();
+  TextColumn get genre => text().withDefault(const Constant("No Genre"))();
+  TextColumn get tag => text().withDefault(const Constant("No Tag"))();
+  TextColumn get label => text().withDefault(const Constant("No Label"))();
+  TextColumn get reference => text().withDefault(const Constant("No Reference"))();
+  IntColumn get rating => integer().withDefault(const Constant(0)).check(rating.isBetween(Constant(0), Constant(5)))(); // range 0-5
+  //DateTimeColumn get time => dateTime()(); // need to figure out correct way to store length of score, ex: 8:23
 }
 
 @DriftDatabase(tables: [Scores])
@@ -28,6 +34,10 @@ class AppDb extends _$AppDb {
   // delete records by bulk or individual
   Future deleteListOfScoresDB(List<int> listOfIds){
     return (delete(scores)..where((score)=>score.id.isIn(listOfIds))).go();
+  }
+  // update individual record
+  Future updateScoreDB(ScoresCompanion updatedScore){
+    return update(scores).replace(updatedScore);
   }
 
   // Note: this is for migration, so not applicable yet.
