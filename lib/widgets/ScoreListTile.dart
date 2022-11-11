@@ -1,42 +1,61 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:modal_side_sheet/modal_side_sheet.dart';
+import 'package:melodyscore/themedata.dart';
+import '../data/drift_db.dart';
+import './FilterScoresDrawer.dart';
 
-import 'package:musescore/themedata.dart';
-
-class ScoreListTile extends StatelessWidget {
-  int numItems;
+class ScoreListTile extends StatefulWidget {
+  int numItems; // this might be removed since you can take length of listofScores
   String text;
-  VoidCallback mainfunction;
+  List<Score> listOfScores;
   VoidCallback editFunction;
+  AsyncCallback deleteFunction;
 
-  ScoreListTile(this.numItems, this.text, this.mainfunction, this.editFunction);
+  ScoreListTile(this.numItems, this.text, this.listOfScores, this.editFunction,
+      this.deleteFunction);
 
   @override
+  State<ScoreListTile> createState() => _ScoreListTileState();
+}
+
+class _ScoreListTileState extends State<ScoreListTile> {
+  @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
     return ListTile(
       title: Text(
-        text,
+        widget.text,
         style: TextStyle(
           fontWeight: AppTheme.headerFontWeight,
           fontSize: 20,
         ),
       ),
       subtitle: Text(
-        "$numItems Item",
+        "${widget.numItems} Item",
         style: TextStyle(
           fontWeight: AppTheme.headerFontWeight,
           fontSize: 16,
         ),
       ),
       leading: IconButton(
-        onPressed: editFunction,
+        onPressed: widget.editFunction,
         icon: Icon(Icons.edit_outlined),
         color: AppTheme.maintheme().iconTheme.color,
       ),
-      trailing: Icon(
-        Icons.arrow_forward_ios,
+      trailing: IconButton(
+        onPressed: widget.deleteFunction,
+        icon: Icon(Icons.delete),
         color: AppTheme.maintheme().iconTheme.color,
       ),
-      onTap: mainfunction,
+      onTap: () {
+        showModalSideSheet(
+          context: context,
+          body: FilterScoresDrawer(widget.text, widget.listOfScores),
+          width: mediaQuery.size.width * 0.70,
+          withCloseControll: false,
+        );
+      },
     );
   }
 }

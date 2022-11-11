@@ -25,6 +25,10 @@ class AppDb extends _$AppDb {
   }
   // get all score records
   Future<List<Score>> get allScoresDb => select(scores).get();
+  // delete records by bulk or individual
+  Future deleteListOfScoresDB(List<int> listOfIds){
+    return (delete(scores)..where((score)=>score.id.isIn(listOfIds))).go();
+  }
 
   // Note: this is for migration, so not applicable yet.
   // you should bump this number whenever you change or add a table definition.
