@@ -261,24 +261,49 @@ class _AppBodyState extends ConsumerState<AppBody> {
                         ],
                       ),
                       Spacer(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            child: Text(
-                              "Welcome to MelodyScore! You can import a file by clicking on the ",
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.center,
+                      //   crossAxisAlignment: CrossAxisAlignment.center,
+                      //   children: [
+                      //     Container(
+                      //       child: Text(
+                      //         "Welcome to MelodyScore! You can import a file by clicking on the ",
+                      //         style: TextStyle(
+                      //             color: AppTheme.accentMain, fontSize: 20),
+                      //       ),
+                      //     ),
+                      //     Icon(Icons.library_music),
+                      //     Text(
+                      //       " above",
+                      //       style: TextStyle(
+                      //           color: AppTheme.accentMain, fontSize: 20),
+                      //     ),
+                      //   ],
+                      // ),
+                      RichText(
+                        textAlign: TextAlign.center,
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text:
+                                  "Welcome to MelodyScore! You can import a file by clicking on the ",
                               style: TextStyle(
-                                  color: AppTheme.accentMain, fontSize: 20),
+                                color: AppTheme.accentMain,
+                                fontSize: 20,
+                              ),
                             ),
-                          ),
-                          Icon(Icons.library_music),
-                          Text(
-                            " above",
-                            style: TextStyle(
-                                color: AppTheme.accentMain, fontSize: 20),
-                          ),
-                        ],
+                            WidgetSpan(
+                              child: Icon(Icons.library_music, size: 20),
+                            ),
+                            TextSpan(
+                              text: " above",
+                              style: TextStyle(
+                                color: AppTheme.accentMain,
+                                fontSize: 20,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                       Spacer(),
                       Text(
