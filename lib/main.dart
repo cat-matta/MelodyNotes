@@ -236,10 +236,14 @@ class _AppBodyState extends ConsumerState<AppBody> {
         data: (currentFile) {
           // return Text("$currentFile");
 
-          return Container(
-              child: SfPdfViewer.file(
-            File(currentFile),
-          ));
+          return OrientationBuilder(
+              builder: (BuildContext context, Orientation orientation) {
+            if (orientation == Orientation.landscape)
+              return SfPdfViewer.file(File(currentFile));
+            else
+              return SfPdfViewer.file(File(currentFile),
+                  pageLayoutMode: PdfPageLayoutMode.single);
+          });
         },
         error: ((error, stackTrace) => Text("Err: $error")),
         loading: () => Center(

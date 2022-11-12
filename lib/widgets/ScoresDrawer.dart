@@ -107,11 +107,10 @@ class _ScoresLibraryWidgetState extends ConsumerState<ScoreDrawer> {
                       ref.read(scoresListProvider.notifier).insertScore(
                           scoreObj,
                           "composer"); // need to fix for dynamic if provider works
+                      // print(scoreObj.);
                       ref
                           .read(pdfFileProvider.notifier)
                           .giveFile(file!.path as String);
-                      // print(
-                      //     "We chose: ${ref.read(pdfFileProvider.notifier).getFile()}");
                       // use to test and show data storage in terminal
                       List<Score> listsOfScore = await servObj.getAllScores();
                       print(listsOfScore);
