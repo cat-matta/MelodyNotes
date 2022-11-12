@@ -15,6 +15,16 @@ class ScoreListNotifier extends StateNotifier<Map<String, List<Score>>> {
     state = {...mappedScores};
   }
 
+  void updateScore(ScoresCompanion score) async {
+    ScoreService servObj = ScoreService();
+    await servObj.updateScore(score);
+
+    // note: any filter can be used, just need to trigger helper function
+    Map<String, List<Score>> mappedScored = await getMappedScoresHelper("composer");
+
+    state = {...mappedScored};
+  }
+
   void removeScore(List<Score> listOfScores, String filter) async {
     List<int> listOfIds = [];
     listOfScores.forEach((score) {

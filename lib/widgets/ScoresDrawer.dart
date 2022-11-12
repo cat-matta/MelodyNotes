@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart' as driftHelper;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:melodyscore/providers/PdfFileProvider.dart';
@@ -102,7 +103,7 @@ class _ScoresLibraryWidgetState extends ConsumerState<ScoreDrawer> {
                               .split('-')
                               .last,
                           file: file?.path ?? "no path",
-                          composer: 'No composer');
+                          composer: driftHelper.Value('No composer'));
 
                       ref.read(scoresListProvider.notifier).insertScore(
                           scoreObj,

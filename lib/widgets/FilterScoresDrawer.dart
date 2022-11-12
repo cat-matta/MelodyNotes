@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:drift/drift.dart' as driftHelper;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:melodyscore/providers/PdfFileProvider.dart';
@@ -53,6 +53,7 @@ class _FilterScoresDrawerState extends ConsumerState<FilterScoresDrawer> {
               // print(ref.read(pdfFileProvider.notifier).getFile());
             }, () {
               print('edit');
+              // don't need this edit callback function for editDrawer. can be removed
             }, () async {
               ref
                   .read(scoresListProvider.notifier)
@@ -63,7 +64,6 @@ class _FilterScoresDrawerState extends ConsumerState<FilterScoresDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    final mediaQuerry = MediaQuery.of(context);
 
     Map<String, List<Score>> mapSortedScores = ref.watch(scoresListProvider);
     widget.scores = (mapSortedScores[widget.headername] == null)
@@ -106,7 +106,7 @@ class _FilterScoresDrawerState extends ConsumerState<FilterScoresDrawer> {
                               .split('-')
                               .last,
                           file: file?.path ?? "no path",
-                          composer: widget.headername);
+                          composer: driftHelper.Value(widget.headername));
 
                       ref
                           .read(scoresListProvider.notifier)

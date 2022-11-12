@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:melodyscore/themedata.dart';
+import 'package:melodyscore/widgets/EditScoreDrawer.dart';
+import 'package:modal_side_sheet/modal_side_sheet.dart';
 import '../data/drift_db.dart';
 
 class ScoreTile extends StatelessWidget {
@@ -14,6 +16,7 @@ class ScoreTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
     return ListTile(
       title: Text(
         text,
@@ -23,7 +26,15 @@ class ScoreTile extends StatelessWidget {
         ),
       ),
       leading: IconButton(
-        onPressed: editFunction,
+        onPressed: (){
+          showModalSideSheet(
+            context: context,
+            body: EditScoreDrawer(scoreInfo),
+            width: mediaQuery.size.width * 0.70,
+            barrierDismissible: true,
+            withCloseControll: false,
+          );
+        }, //editFunction,
         icon: Icon(Icons.edit_outlined),
         color: AppTheme.maintheme().iconTheme.color,
       ),
