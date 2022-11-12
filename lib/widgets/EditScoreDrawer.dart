@@ -1,33 +1,46 @@
+import 'package:drift/drift.dart' as driftHelper;
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:musescore/data/drift_db.dart';
+import 'package:musescore/providers/ScoresListProvider.dart';
+import 'package:musescore/services/scores_service.dart';
 import 'package:musescore/themedata.dart';
-import 'package:modal_side_sheet/modal_side_sheet.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
-class EditScoreDrawer extends StatefulWidget {
-  // Score scoreInfo;
+class EditScoreDrawer extends ConsumerStatefulWidget {
+  Score scoreInfo;
 
-  // EditScoreDrawer(this.scoreInfo);
-
-  EditScoreDrawer();
+  EditScoreDrawer(this.scoreInfo);
 
   @override
-  State<EditScoreDrawer> createState() => _EditScoreWidget();
+  ConsumerState<EditScoreDrawer> createState() => _EditScoreWidget();
 }
 
-class _EditScoreWidget extends State<EditScoreDrawer> {
+class _EditScoreWidget extends ConsumerState<EditScoreDrawer> {
   // the bools can change to a map of Booleans. Ex: Map<String,bool>
-  bool editTitle = false;
-  bool editComposer = false;
-  bool editGenres = false;
-  bool editTags = false;
-  bool editLabels = false;
-  bool editReference = false;
-  bool editRating = false;
-  bool editDifficulty = false;
-  bool editTime = false;
+  // bool editTitle = false;
+  // bool editComposer = false;
+  // bool editGenres = false;
+  // bool editTags = false;
+  // bool editLabels = false;
+  // bool editReference = false;
+  // bool editRating = false;
+  // bool editDifficulty = false;
+   bool editTime = false;
 
-  Map<String,dynamic> testMap = {
+  Map<String,bool> fieldUpdateFlag = {
+    "title": false,
+    "composer": false,
+    "genre": false,
+    "tag": false,
+    "label": false,
+    "reference": false,
+    "rating": false,
+    "difficulty": false,
+    // "editTime":false, need correct field type for db
+  };
+
+  Map<String,dynamic> updatedScore = {
     "title": "",
     "composer": "",
     "genre": "",
@@ -38,11 +51,33 @@ class _EditScoreWidget extends State<EditScoreDrawer> {
     "difficulty": "",
   };
 
-  final testController = TextEditingController();
+  late TextEditingController titleController;
+  late TextEditingController composerController;
+  late TextEditingController genreController;
+  late TextEditingController tagController;
+  late TextEditingController labelController;
+  late TextEditingController referenceController;
+
+  @override
+  void initState() {
+    super.initState();
+    titleController = TextEditingController();
+    composerController = TextEditingController();
+    genreController = TextEditingController();
+    tagController = TextEditingController();
+    labelController = TextEditingController();
+    referenceController = TextEditingController();
+    updatedScore["title"] =  widget.scoreInfo.name;
+  }
 
   @override
   void dispose() {
-    testController.dispose();
+    titleController.dispose();
+    composerController.dispose();
+    genreController.dispose();
+    tagController.dispose();
+    labelController.dispose();
+    referenceController.dispose();
     super.dispose();
   }
 
@@ -51,7 +86,7 @@ class _EditScoreWidget extends State<EditScoreDrawer> {
     final mediaQuerry = MediaQuery.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('No Title'),
+        title: Text(widget.scoreInfo.name),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -74,12 +109,12 @@ class _EditScoreWidget extends State<EditScoreDrawer> {
                     ),
                     Checkbox(
                       activeColor: AppTheme.accentMain,
-                      value: editTitle,
+                      value: fieldUpdateFlag["title"]!,
                       onChanged: (bool? value) {
                         setState(() {
-                          editTitle = value!;
-                          testMap["title"] = Text(testController.text);
-                          print(testMap);
+                          fieldUpdateFlag["title"] = value!;
+                          updatedScore["title"] = titleController.text;
+                          print(fieldUpdateFlag);
                         });
                       },
                     ),
@@ -87,9 +122,9 @@ class _EditScoreWidget extends State<EditScoreDrawer> {
                       textAlign: TextAlign.left,
                       decoration: InputDecoration(
                         border: InputBorder.none,
-                        hintText: 'No Title',
+                        hintText: widget.scoreInfo.name,
                       ),
-                      controller: testController,
+                      controller: titleController,
                     ),
                   ]),
                   TableRow(children: [
@@ -100,10 +135,11 @@ class _EditScoreWidget extends State<EditScoreDrawer> {
                     ),
                     Checkbox(
                       activeColor: AppTheme.accentMain,
-                      value: editComposer,
+                      value: fieldUpdateFlag["composer"]!,
                       onChanged: (bool? value) {
                         setState(() {
-                          editComposer = value!;
+                          fieldUpdateFlag["composer"] = value!;
+                          updatedScore["composer"] = composerController.text;
                         });
                       },
                     ),
@@ -111,8 +147,9 @@ class _EditScoreWidget extends State<EditScoreDrawer> {
                       textAlign: TextAlign.left,
                       decoration: InputDecoration(
                         border: InputBorder.none,
-                        hintText: 'No Composer',
+                        hintText: widget.scoreInfo.composer,
                       ),
+                      controller: composerController,
                     ),
                   ]),
                   TableRow(children: [
@@ -123,10 +160,11 @@ class _EditScoreWidget extends State<EditScoreDrawer> {
                     ),
                     Checkbox(
                       activeColor: AppTheme.accentMain,
-                      value: editGenres,
+                      value: fieldUpdateFlag["genre"]!,
                       onChanged: (bool? value) {
                         setState(() {
-                          editGenres = value!;
+                          fieldUpdateFlag["genre"] = value!;
+                          updatedScore["genre"] = genreController.text;
                         });
                       },
                     ),
@@ -134,8 +172,9 @@ class _EditScoreWidget extends State<EditScoreDrawer> {
                       textAlign: TextAlign.left,
                       decoration: InputDecoration(
                         border: InputBorder.none,
-                        hintText: 'No Genres',
+                        hintText: widget.scoreInfo.genre,
                       ),
+                      controller: genreController,
                     ),
                   ]),
                   TableRow(children: [
@@ -146,10 +185,11 @@ class _EditScoreWidget extends State<EditScoreDrawer> {
                     ),
                     Checkbox(
                       activeColor: AppTheme.accentMain,
-                      value: editTags,
+                      value: fieldUpdateFlag["tag"]!,
                       onChanged: (bool? value) {
                         setState(() {
-                          editTags = value!;
+                          fieldUpdateFlag["tag"] = value!;
+                          updatedScore["tag"] = tagController.text;
                         });
                       },
                     ),
@@ -157,8 +197,9 @@ class _EditScoreWidget extends State<EditScoreDrawer> {
                       textAlign: TextAlign.left,
                       decoration: InputDecoration(
                         border: InputBorder.none,
-                        hintText: 'No Tags',
+                        hintText: widget.scoreInfo.tag,
                       ),
+                      controller: tagController,
                     ),
                   ]),
                   TableRow(children: [
@@ -169,10 +210,11 @@ class _EditScoreWidget extends State<EditScoreDrawer> {
                     ),
                     Checkbox(
                       activeColor: AppTheme.accentMain,
-                      value: editLabels,
+                      value: fieldUpdateFlag["label"]!,
                       onChanged: (bool? value) {
                         setState(() {
-                          editLabels = value!;
+                          fieldUpdateFlag["label"] = value!;
+                          updatedScore["label"] = labelController.text;
                         });
                       },
                     ),
@@ -180,8 +222,9 @@ class _EditScoreWidget extends State<EditScoreDrawer> {
                       textAlign: TextAlign.left,
                       decoration: InputDecoration(
                         border: InputBorder.none,
-                        hintText: 'No Labels',
+                        hintText: widget.scoreInfo.label,
                       ),
+                      controller: labelController,
                     ),
                   ]),
                   TableRow(children: [
@@ -192,10 +235,11 @@ class _EditScoreWidget extends State<EditScoreDrawer> {
                     ),
                     Checkbox(
                       activeColor: AppTheme.accentMain,
-                      value: editReference,
+                      value: fieldUpdateFlag["reference"]!,
                       onChanged: (bool? value) {
                         setState(() {
-                          editReference = value!;
+                          fieldUpdateFlag["reference"] = value!;
+                          updatedScore["reference"] = referenceController.text;
                         });
                       },
                     ),
@@ -203,8 +247,9 @@ class _EditScoreWidget extends State<EditScoreDrawer> {
                       textAlign: TextAlign.left,
                       decoration: InputDecoration(
                         border: InputBorder.none,
-                        hintText: 'No Reference',
+                        hintText: widget.scoreInfo.reference,
                       ),
+                      controller: referenceController,
                     ),
                   ]),
                   TableRow(children: [
@@ -215,15 +260,15 @@ class _EditScoreWidget extends State<EditScoreDrawer> {
                     ),
                     Checkbox(
                       activeColor: AppTheme.accentMain,
-                      value: editRating,
+                      value: fieldUpdateFlag["rating"]!,
                       onChanged: (bool? value) {
                         setState(() {
-                          editRating = value!;
+                          fieldUpdateFlag["rating"] = value!;
                         });
                       },
                     ),
                     RatingBar.builder(
-                      initialRating: 0,
+                      initialRating: widget.scoreInfo.rating,
                       minRating: 0,
                       direction: Axis.horizontal,
                       allowHalfRating: true,
@@ -232,7 +277,7 @@ class _EditScoreWidget extends State<EditScoreDrawer> {
                         Icons.star,
                         color: AppTheme.accentMain,
                       ),
-                      onRatingUpdate: (rating) {},
+                      onRatingUpdate: (rating) {updatedScore["rating"] = rating;}
                     ),
                   ]),
                   TableRow(children: [
@@ -243,15 +288,15 @@ class _EditScoreWidget extends State<EditScoreDrawer> {
                     ),
                     Checkbox(
                       activeColor: AppTheme.accentMain,
-                      value: editDifficulty,
+                      value: fieldUpdateFlag["difficulty"]!,
                       onChanged: (bool? value) {
                         setState(() {
-                          editDifficulty = value!;
+                          fieldUpdateFlag["difficulty"] = value!;
                         });
                       },
                     ),
                     RatingBar.builder(
-                      initialRating: 0,
+                      initialRating: widget.scoreInfo.difficulty,
                       minRating: 0,
                       direction: Axis.horizontal,
                       allowHalfRating: true,
@@ -260,7 +305,9 @@ class _EditScoreWidget extends State<EditScoreDrawer> {
                         Icons.circle,
                         color: AppTheme.accentMain,
                       ),
-                      onRatingUpdate: (rating) {},
+                      onRatingUpdate: (rating) {
+                        updatedScore["difficulty"] = rating;
+                      },
                     ),
                   ]),
                   TableRow(children: [
@@ -270,13 +317,15 @@ class _EditScoreWidget extends State<EditScoreDrawer> {
                       textScaleFactor: 1.3,
                     ),
                     Checkbox(
-                      activeColor: AppTheme.accentMain,
-                      value: editTime,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          editTime = value!;
-                        });
-                      },
+                       activeColor: AppTheme.accentMain,
+                       value: editTime,
+                       onChanged: (bool? value) {
+                    //     setState(() {
+                    //       //fieldUpdateFlag["time"] = value!;
+                    //       //updatedScore["time"] =
+                    //       fieldUpdateFlag["time"] = false; 
+                    //     });
+                       },
                     ),
                     TextField(
                       textAlign: TextAlign.left,
@@ -289,7 +338,28 @@ class _EditScoreWidget extends State<EditScoreDrawer> {
                 ],
               ),
               TextButton(
-                onPressed: () => {},
+                onPressed: () async {
+                  ScoresCompanion scoreObj = ScoresCompanion.insert(
+                    id: driftHelper.Value(widget.scoreInfo.id),
+                    name: updatedScore["title"],
+                    file: widget.scoreInfo.file,
+                    composer: driftHelper.Value(updatedScore["composer"]),
+                    genre: driftHelper.Value(updatedScore["genre"]),
+                    tag: driftHelper.Value(updatedScore["tag"]),
+                    label: driftHelper.Value(updatedScore["label"]),
+                    reference: driftHelper.Value(updatedScore["reference"]),
+                    //rating: driftHelper.Value(updatedScore["rating"]),
+                    //difficulty: driftHelper.Value(updatedScore["difficulty"]),
+                  );
+
+                  ref.watch(scoresListProvider.notifier).updateScore(scoreObj);
+
+                 //await ScoreService().updateScore(scoreObj);
+
+                 print("help it works");
+                 //Navigator.of(context).pop();
+                 //setState(() {});
+                },
                 child: const Text(
                   'Submit',
                   overflow: TextOverflow.ellipsis,

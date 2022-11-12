@@ -16,7 +16,8 @@ class Score extends DataClass implements Insertable<Score> {
   final String tag;
   final String label;
   final String reference;
-  final int rating;
+  final double rating;
+  final double difficulty;
   const Score(
       {required this.id,
       required this.name,
@@ -26,7 +27,8 @@ class Score extends DataClass implements Insertable<Score> {
       required this.tag,
       required this.label,
       required this.reference,
-      required this.rating});
+      required this.rating,
+      required this.difficulty});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -38,7 +40,8 @@ class Score extends DataClass implements Insertable<Score> {
     map['tag'] = Variable<String>(tag);
     map['label'] = Variable<String>(label);
     map['reference'] = Variable<String>(reference);
-    map['rating'] = Variable<int>(rating);
+    map['rating'] = Variable<double>(rating);
+    map['difficulty'] = Variable<double>(difficulty);
     return map;
   }
 
@@ -53,6 +56,7 @@ class Score extends DataClass implements Insertable<Score> {
       label: Value(label),
       reference: Value(reference),
       rating: Value(rating),
+      difficulty: Value(difficulty),
     );
   }
 
@@ -68,7 +72,8 @@ class Score extends DataClass implements Insertable<Score> {
       tag: serializer.fromJson<String>(json['tag']),
       label: serializer.fromJson<String>(json['label']),
       reference: serializer.fromJson<String>(json['reference']),
-      rating: serializer.fromJson<int>(json['rating']),
+      rating: serializer.fromJson<double>(json['rating']),
+      difficulty: serializer.fromJson<double>(json['difficulty']),
     );
   }
   @override
@@ -83,7 +88,8 @@ class Score extends DataClass implements Insertable<Score> {
       'tag': serializer.toJson<String>(tag),
       'label': serializer.toJson<String>(label),
       'reference': serializer.toJson<String>(reference),
-      'rating': serializer.toJson<int>(rating),
+      'rating': serializer.toJson<double>(rating),
+      'difficulty': serializer.toJson<double>(difficulty),
     };
   }
 
@@ -96,7 +102,8 @@ class Score extends DataClass implements Insertable<Score> {
           String? tag,
           String? label,
           String? reference,
-          int? rating}) =>
+          double? rating,
+          double? difficulty}) =>
       Score(
         id: id ?? this.id,
         name: name ?? this.name,
@@ -107,6 +114,7 @@ class Score extends DataClass implements Insertable<Score> {
         label: label ?? this.label,
         reference: reference ?? this.reference,
         rating: rating ?? this.rating,
+        difficulty: difficulty ?? this.difficulty,
       );
   @override
   String toString() {
@@ -119,14 +127,15 @@ class Score extends DataClass implements Insertable<Score> {
           ..write('tag: $tag, ')
           ..write('label: $label, ')
           ..write('reference: $reference, ')
-          ..write('rating: $rating')
+          ..write('rating: $rating, ')
+          ..write('difficulty: $difficulty')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(
-      id, name, file, composer, genre, tag, label, reference, rating);
+  int get hashCode => Object.hash(id, name, file, composer, genre, tag, label,
+      reference, rating, difficulty);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -139,7 +148,8 @@ class Score extends DataClass implements Insertable<Score> {
           other.tag == this.tag &&
           other.label == this.label &&
           other.reference == this.reference &&
-          other.rating == this.rating);
+          other.rating == this.rating &&
+          other.difficulty == this.difficulty);
 }
 
 class ScoresCompanion extends UpdateCompanion<Score> {
@@ -151,7 +161,8 @@ class ScoresCompanion extends UpdateCompanion<Score> {
   final Value<String> tag;
   final Value<String> label;
   final Value<String> reference;
-  final Value<int> rating;
+  final Value<double> rating;
+  final Value<double> difficulty;
   const ScoresCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
@@ -162,6 +173,7 @@ class ScoresCompanion extends UpdateCompanion<Score> {
     this.label = const Value.absent(),
     this.reference = const Value.absent(),
     this.rating = const Value.absent(),
+    this.difficulty = const Value.absent(),
   });
   ScoresCompanion.insert({
     this.id = const Value.absent(),
@@ -173,6 +185,7 @@ class ScoresCompanion extends UpdateCompanion<Score> {
     this.label = const Value.absent(),
     this.reference = const Value.absent(),
     this.rating = const Value.absent(),
+    this.difficulty = const Value.absent(),
   })  : name = Value(name),
         file = Value(file);
   static Insertable<Score> custom({
@@ -184,7 +197,8 @@ class ScoresCompanion extends UpdateCompanion<Score> {
     Expression<String>? tag,
     Expression<String>? label,
     Expression<String>? reference,
-    Expression<int>? rating,
+    Expression<double>? rating,
+    Expression<double>? difficulty,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -196,6 +210,7 @@ class ScoresCompanion extends UpdateCompanion<Score> {
       if (label != null) 'label': label,
       if (reference != null) 'reference': reference,
       if (rating != null) 'rating': rating,
+      if (difficulty != null) 'difficulty': difficulty,
     });
   }
 
@@ -208,7 +223,8 @@ class ScoresCompanion extends UpdateCompanion<Score> {
       Value<String>? tag,
       Value<String>? label,
       Value<String>? reference,
-      Value<int>? rating}) {
+      Value<double>? rating,
+      Value<double>? difficulty}) {
     return ScoresCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
@@ -219,6 +235,7 @@ class ScoresCompanion extends UpdateCompanion<Score> {
       label: label ?? this.label,
       reference: reference ?? this.reference,
       rating: rating ?? this.rating,
+      difficulty: difficulty ?? this.difficulty,
     );
   }
 
@@ -250,7 +267,10 @@ class ScoresCompanion extends UpdateCompanion<Score> {
       map['reference'] = Variable<String>(reference.value);
     }
     if (rating.present) {
-      map['rating'] = Variable<int>(rating.value);
+      map['rating'] = Variable<double>(rating.value);
+    }
+    if (difficulty.present) {
+      map['difficulty'] = Variable<double>(difficulty.value);
     }
     return map;
   }
@@ -266,7 +286,8 @@ class ScoresCompanion extends UpdateCompanion<Score> {
           ..write('tag: $tag, ')
           ..write('label: $label, ')
           ..write('reference: $reference, ')
-          ..write('rating: $rating')
+          ..write('rating: $rating, ')
+          ..write('difficulty: $difficulty')
           ..write(')'))
         .toString();
   }
@@ -334,15 +355,33 @@ class $ScoresTable extends Scores with TableInfo<$ScoresTable, Score> {
       defaultValue: const Constant("No Reference"));
   final VerificationMeta _ratingMeta = const VerificationMeta('rating');
   @override
-  late final GeneratedColumn<int> rating = GeneratedColumn<int>(
+  late final GeneratedColumn<double> rating = GeneratedColumn<double>(
       'rating', aliasedName, false,
       check: () => rating.isBetween(Constant(0), Constant(5)),
-      type: DriftSqlType.int,
+      type: DriftSqlType.double,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  final VerificationMeta _difficultyMeta = const VerificationMeta('difficulty');
+  @override
+  late final GeneratedColumn<double> difficulty = GeneratedColumn<double>(
+      'difficulty', aliasedName, false,
+      check: () => rating.isBetween(Constant(0), Constant(3)),
+      type: DriftSqlType.double,
       requiredDuringInsert: false,
       defaultValue: const Constant(0));
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, name, file, composer, genre, tag, label, reference, rating];
+  List<GeneratedColumn> get $columns => [
+        id,
+        name,
+        file,
+        composer,
+        genre,
+        tag,
+        label,
+        reference,
+        rating,
+        difficulty
+      ];
   @override
   String get aliasedName => _alias ?? 'scores';
   @override
@@ -391,6 +430,12 @@ class $ScoresTable extends Scores with TableInfo<$ScoresTable, Score> {
       context.handle(_ratingMeta,
           rating.isAcceptableOrUnknown(data['rating']!, _ratingMeta));
     }
+    if (data.containsKey('difficulty')) {
+      context.handle(
+          _difficultyMeta,
+          difficulty.isAcceptableOrUnknown(
+              data['difficulty']!, _difficultyMeta));
+    }
     return context;
   }
 
@@ -417,7 +462,9 @@ class $ScoresTable extends Scores with TableInfo<$ScoresTable, Score> {
       reference: attachedDatabase.options.types
           .read(DriftSqlType.string, data['${effectivePrefix}reference'])!,
       rating: attachedDatabase.options.types
-          .read(DriftSqlType.int, data['${effectivePrefix}rating'])!,
+          .read(DriftSqlType.double, data['${effectivePrefix}rating'])!,
+      difficulty: attachedDatabase.options.types
+          .read(DriftSqlType.double, data['${effectivePrefix}difficulty'])!,
     );
   }
 

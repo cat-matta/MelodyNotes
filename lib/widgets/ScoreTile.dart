@@ -28,7 +28,7 @@ class ScoreTile extends StatelessWidget {
         onPressed: (){
           showModalSideSheet(
           context: context,
-          body: EditScoreDrawer(),
+          body: EditScoreDrawer(scoreInfo),
           width: mediaQuery.size.width * 0.70,
           barrierDismissible: true,
           withCloseControll: false,

@@ -2,9 +2,11 @@ import 'package:drift/drift.dart' as driftPackage;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:modal_side_sheet/modal_side_sheet.dart';
 import 'package:musescore/providers/ScoresListProvider.dart';
 import 'package:musescore/themedata.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:musescore/widgets/EditScoreDrawer.dart';
 import '../data/drift_db.dart';
 import '../services/scores_service.dart';
 import './ScoreTile.dart';
@@ -41,9 +43,18 @@ class _FilterScoresDrawerState extends ConsumerState<FilterScoresDrawer> {
     super.dispose();
   }
 
-  List<ScoreTile> createListOfScoreTileWidgets(){
+  List<ScoreTile> createListOfScoreTileWidgets(mediaQuery){
     List<ScoreTile> listOfWidgets = [];
-    widget.scores.forEach((score)=> listOfWidgets.add(ScoreTile(score.name,score,(){},(){},()async{
+    widget.scores.forEach((score)=> listOfWidgets.add(ScoreTile(score.name,score,(){},(){
+              showModalSideSheet(
+                context: context,
+                body: EditScoreDrawer(score),
+                width: mediaQuery.size.width * 0.70,
+                barrierDismissible: true,
+                withCloseControll: false,
+              );
+              ref.read(scoresListProvider.notifier).getMappedScores('composer');
+    },()async{
       ref.read(scoresListProvider.notifier).removeScore([score], 'composer');
     })));
     return listOfWidgets;
@@ -51,14 +62,14 @@ class _FilterScoresDrawerState extends ConsumerState<FilterScoresDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    final mediaQuerry = MediaQuery.of(context);
+    final mediaQuery = MediaQuery.of(context);
 
     Map<String, List<Score>> mapSortedScores = ref.watch(scoresListProvider);
     widget.scores = (mapSortedScores[widget.headername] == null) ? []: mapSortedScores[widget.headername]!;
 
     ListView listOfScoreTiles = ListView(
       padding: EdgeInsets.zero,
-      children: createListOfScoreTileWidgets(),
+      children: createListOfScoreTileWidgets(mediaQuery),
     );
 
     return Scaffold(
