@@ -213,13 +213,6 @@ class ScoreTitle extends ConsumerWidget {
   }
 }
 
-// class AppBody extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container();
-//   }
-// }
-
 class AppBody extends ConsumerStatefulWidget {
   // const AppBody({super.key});
 
@@ -236,10 +229,14 @@ class _AppBodyState extends ConsumerState<AppBody> {
         data: (currentFile) {
           // return Text("$currentFile");
 
-          return Container(
-              child: SfPdfViewer.file(
-            File(currentFile),
-          ));
+          return OrientationBuilder(
+              builder: (BuildContext context, Orientation orientation) {
+            if (orientation == Orientation.landscape)
+              return SfPdfViewer.file(File(currentFile));
+            else
+              return SfPdfViewer.file(File(currentFile),
+                  pageLayoutMode: PdfPageLayoutMode.single);
+          });
         },
         error: ((error, stackTrace) => Text("Err: $error")),
         loading: () => Center(
@@ -261,24 +258,30 @@ class _AppBodyState extends ConsumerState<AppBody> {
                         ],
                       ),
                       Spacer(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            child: Text(
-                              "Welcome to MelodyScore! You can import a file by clicking on the ",
+                      RichText(
+                        textAlign: TextAlign.center,
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text:
+                                  "Welcome to MelodyScore! You can import a file by clicking on the ",
                               style: TextStyle(
-                                  color: AppTheme.accentMain, fontSize: 20),
+                                color: AppTheme.accentMain,
+                                fontSize: 20,
+                              ),
                             ),
-                          ),
-                          Icon(Icons.library_music),
-                          Text(
-                            " above",
-                            style: TextStyle(
-                                color: AppTheme.accentMain, fontSize: 20),
-                          ),
-                        ],
+                            WidgetSpan(
+                              child: Icon(Icons.library_music, size: 20),
+                            ),
+                            TextSpan(
+                              text: " above",
+                              style: TextStyle(
+                                color: AppTheme.accentMain,
+                                fontSize: 20,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                       Spacer(),
                       Text(

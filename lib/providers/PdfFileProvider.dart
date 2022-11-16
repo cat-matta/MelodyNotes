@@ -5,7 +5,7 @@ import 'package:melodyscore/widgets/ScoresDrawer.dart';
 
 class PdfStateNotifier extends StateNotifier<AsyncValue<String>> {
   PdfStateNotifier() : super(AsyncLoading());
-  void giveFile(String file) async {
+  void giveFile(String file) {
     state = AsyncData(file);
   }
 
@@ -15,6 +15,8 @@ class PdfStateNotifier extends StateNotifier<AsyncValue<String>> {
 }
 
 final pdfFileProvider =
-    StateNotifierProvider<PdfStateNotifier, AsyncValue<String>>((ref) {
+    StateNotifierProvider.autoDispose<PdfStateNotifier, AsyncValue<String>>(
+        (ref) {
+  ref.keepAlive();
   return PdfStateNotifier();
 });

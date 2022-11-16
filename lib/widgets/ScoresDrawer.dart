@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:drift/drift.dart' as driftHelper;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,6 +7,8 @@ import 'package:melodyscore/providers/PdfFileProvider.dart';
 import 'package:melodyscore/providers/ScoresListProvider.dart';
 import 'package:melodyscore/themedata.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as p;
 import '../data/drift_db.dart';
 import '../services/scores_service.dart';
 import './ScoreListTile.dart';
@@ -92,6 +96,20 @@ class _ScoresLibraryWidgetState extends ConsumerState<ScoreDrawer> {
                       );
                       if (result == null) return;
                       file = result!.files.first;
+                      // print("PICKED FILE: ${file!.path!}");
+                      String pickedFile = file!.path!;
+                      if (Platform.isIOS) {
+                        final appPath =
+                            await getApplicationDocumentsDirectory();
+                        final newFilePath = (p.join(appPath.path, file!.name));
+                        final newFile = File(pickedFile).rename(newFilePath);
+                        file = await newFile.then((value) => PlatformFile(
+                            name: value.path.split('/').last,
+                            size: value.lengthSync(),
+                            path: value.path));
+                        // print("OUR NEW FILE: ${file!.path!}");
+                      }
+                      // print("OUTSIDE NEW FILE: ${file!.path!}");
 
                       ScoreService servObj = ScoreService();
                       ScoresCompanion scoreObj = ScoresCompanion.insert(
