@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_side_sheet/modal_side_sheet.dart';
-import 'package:melodyscore/themedata.dart';
+import 'package:melodynotes/themedata.dart';
 import '../data/drift_db.dart';
 import './FilterScoresDrawer.dart';
 

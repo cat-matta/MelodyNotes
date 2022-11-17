@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.musescore">
+    package="com.example.melodynotes">
    <application
-        android:label="musescore"
-        android:name="${applicationName}"
+        android:label="MelodyNotes"
+        android:name="${MelodyNotes}"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

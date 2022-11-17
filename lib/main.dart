@@ -320,7 +320,7 @@ class _AppBodyState extends ConsumerState<AppBody> {
                           children: [
                             TextSpan(
                               text:
-                                  "Welcome to MelodyScore! You can import a file by clicking on the ",
+                                  "Welcome to MelodyNotes! You can import a file by clicking on the ",
                               style: TextStyle(
                                 color: AppTheme.accentMain,
                                 fontSize: 20,
