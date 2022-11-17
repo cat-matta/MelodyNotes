@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:drift/drift.dart' as driftHelper;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:melodyscore/providers/CurrentFilesProvider.dart';
 import 'package:melodyscore/providers/PdfFileProvider.dart';
 import 'package:melodyscore/providers/ScoresListProvider.dart';
 import 'package:melodyscore/themedata.dart';
@@ -136,12 +135,6 @@ class _ScoresLibraryWidgetState extends ConsumerState<ScoreDrawer> {
                       // use to test and show data storage in terminal
                       List<Score> listsOfScore = await servObj.getAllScores();
                       Score score = (listsOfScore.last);
-                      ref.read(pdfFileProvider.notifier).giveFile(score);
-                      ref
-                          .read(currentScoresListProvider.notifier)
-                          .addScore(score);
-                      print(
-                          "Current list${ref.read(currentScoresListProvider.notifier).state}");
 
                       // print(listsOfScore);
                     },
@@ -198,7 +191,7 @@ class _ScoresLibraryWidgetState extends ConsumerState<ScoreDrawer> {
                   onPressed: () {
                     ref
                         .read(scoresListProvider.notifier)
-                        .getMappedScores("test");
+                        .getMappedScores("genre");
                     _hasBeenPressedGenres = true;
                     _hasBeenPressedComposer = false;
                     _hasBeenPressedTags = false;
@@ -222,7 +215,7 @@ class _ScoresLibraryWidgetState extends ConsumerState<ScoreDrawer> {
                   onPressed: () {
                     ref
                         .read(scoresListProvider.notifier)
-                        .getMappedScores("test");
+                        .getMappedScores("tags");
                     _hasBeenPressedTags = true;
                     _hasBeenPressedComposer = false;
                     _hasBeenPressedGenres = false;
@@ -246,7 +239,7 @@ class _ScoresLibraryWidgetState extends ConsumerState<ScoreDrawer> {
                   onPressed: () {
                     ref
                         .read(scoresListProvider.notifier)
-                        .getMappedScores("test");
+                        .getMappedScores("labels");
                     _hasBeenPressedTags = false;
                     _hasBeenPressedComposer = false;
                     _hasBeenPressedGenres = false;

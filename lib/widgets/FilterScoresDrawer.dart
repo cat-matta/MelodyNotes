@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:drift/drift.dart' as driftHelper;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:melodyscore/providers/CurrentFilesProvider.dart';
 import 'package:melodyscore/providers/PdfFileProvider.dart';
 import 'package:melodyscore/providers/ScoresListProvider.dart';
 import 'package:melodyscore/themedata.dart';
@@ -56,8 +55,6 @@ class _FilterScoresDrawerState extends ConsumerState<FilterScoresDrawer> {
               // print(score.file);
 
               ref.read(pdfFileProvider.notifier).giveFile(score);
-              ref.read(currentScoresListProvider.notifier).addScore(score);
-              print(ref.read(currentScoresListProvider.notifier).state);
               // print(ref.read(pdfFileProvider.notifier).getFile());
             }, () {
               print('edit');
@@ -66,11 +63,12 @@ class _FilterScoresDrawerState extends ConsumerState<FilterScoresDrawer> {
               ref
                   .read(scoresListProvider.notifier)
                   .removeScore([score], 'composer');
-
-              ref.read(currentScoresListProvider.notifier).removeScore(score);
-              print(ref
-                  .read(currentScoresListProvider.notifier)
-                  .state); // need to fix for dynamic if provider works
+              var currentScore =
+                  ref.read(pdfFileProvider.notifier).getPrevFile();
+              currentScore.whenData((value) {
+                if (value.id == score.id)
+                  ref.read(pdfFileProvider.notifier).removeFile(score);
+              });
             })));
     return listOfWidgets;
   }
@@ -140,10 +138,7 @@ class _FilterScoresDrawerState extends ConsumerState<FilterScoresDrawer> {
                       List<Score> listsOfScore = await servObj.getAllScores();
                       Score score = (listsOfScore.last);
 
-                      ref.read(pdfFileProvider.notifier).giveFile(score);
-                      ref
-                          .read(currentScoresListProvider.notifier)
-                          .addScore(score);
+                      // ref.read(pdfFileProvider.notifier).giveFile(score);
 
                       // need to fix for dynamic if provider works
                       // print(listsOfScore);

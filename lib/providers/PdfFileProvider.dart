@@ -17,6 +17,10 @@ class PdfStateNotifier extends StateNotifier<AsyncValue<Score>> {
     return state;
   }
 
+  void removeFile(Score score) {
+    state = AsyncLoading();
+  }
+
   void setCache(int id) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt('file_id', id);
