@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:drift/drift.dart' as driftHelper;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:melodyscore/providers/CurrentFilesProvider.dart';
 import 'package:melodyscore/providers/PdfFileProvider.dart';
 import 'package:melodyscore/providers/ScoresListProvider.dart';
 import 'package:melodyscore/themedata.dart';
@@ -134,20 +135,15 @@ class _ScoresLibraryWidgetState extends ConsumerState<ScoreDrawer> {
                       //     "We chose: ${ref.read(pdfFileProvider.notifier).getFile()}");
                       // use to test and show data storage in terminal
                       List<Score> listsOfScore = await servObj.getAllScores();
-                      Score mostRecent = (listsOfScore.last);
-                      ref.read(pdfFileProvider.notifier).giveFile(Score(
-                            id: mostRecent.id,
-                            name: mostRecent.name,
-                            file: mostRecent.file,
-                            composer: mostRecent.composer,
-                            genre: mostRecent.genre,
-                            tag: mostRecent.tag,
-                            label: mostRecent.label,
-                            reference: mostRecent.reference,
-                            rating: mostRecent.rating,
-                            difficulty: mostRecent.difficulty,
-                          ));
-                      print(listsOfScore);
+                      Score score = (listsOfScore.last);
+                      ref.read(pdfFileProvider.notifier).giveFile(score);
+                      ref
+                          .read(currentScoresListProvider.notifier)
+                          .addScore(score);
+                      print(
+                          "Current list${ref.read(currentScoresListProvider.notifier).state}");
+
+                      // print(listsOfScore);
                     },
                     child: const Text('Import'),
                     style: TextButton.styleFrom(

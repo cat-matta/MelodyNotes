@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:melodyscore/providers/CurrentFilesProvider.dart';
 import 'package:melodyscore/providers/ScoresListProvider.dart';
 import 'package:melodyscore/services/scores_service.dart';
 import 'package:modal_side_sheet/modal_side_sheet.dart';
@@ -178,15 +179,21 @@ class _ScoreTitleState extends ConsumerState<ScoreTitle> {
   void setup() async {
     super.initState();
     final prefs = await SharedPreferences.getInstance();
-    final int? file_id = prefs.getInt('file_id');
-    ScoreService servObj = ScoreService();
-    List<Score> listsOfScores = await servObj.getAllScores();
-    if (file_id != null) {
+    final int? fileId = prefs.getInt('file_id');
+    final List<String>? items = prefs.getStringList('saved_scores');
+    if (fileId == null || items == null)
+      return;
+    else {
+      ScoreService servObj = ScoreService();
+      List<Score> listsOfScores = await servObj.getAllScores();
+
       Score cachedScore = ref
           .read(scoresListProvider.notifier)
-          .getScorefromID(listsOfScores, file_id);
-      print("cached score id: $file_id");
+          .getScorefromID(listsOfScores, fileId);
+      print("cached score id: $fileId");
       ref.read(pdfFileProvider.notifier).giveFile(cachedScore);
+      ref.read(currentScoresListProvider.notifier).getCache(items);
+      print("Cached items: ${items}");
     }
   }
 
@@ -257,15 +264,21 @@ class _AppBodyState extends ConsumerState<AppBody> {
   void setup() async {
     super.initState();
     final prefs = await SharedPreferences.getInstance();
-    final int? file_id = prefs.getInt('file_id');
-    ScoreService servObj = ScoreService();
-    List<Score> listsOfScores = await servObj.getAllScores();
-    if (file_id != null) {
+    final int? fileId = prefs.getInt('file_id');
+    final List<String>? items = prefs.getStringList('saved_scores');
+    if (fileId == null || items == null)
+      return;
+    else {
+      ScoreService servObj = ScoreService();
+      List<Score> listsOfScores = await servObj.getAllScores();
+
       Score cachedScore = ref
           .read(scoresListProvider.notifier)
-          .getScorefromID(listsOfScores, file_id);
-      print("cached score id: $file_id");
+          .getScorefromID(listsOfScores, fileId);
+      print("cached score id: $fileId");
       ref.read(pdfFileProvider.notifier).giveFile(cachedScore);
+      ref.read(currentScoresListProvider.notifier).getCache(items);
+      print("Cached items: ${items}");
     }
   }
 
