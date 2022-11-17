@@ -2,6 +2,7 @@ import 'package:drift/drift.dart' as driftHelper;
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:melodyscore/providers/PdfFileProvider.dart';
 import 'package:melodyscore/themedata.dart';
 
 import '../data/drift_db.dart';
@@ -346,6 +347,18 @@ class _EditScoreWidget extends ConsumerState<EditScoreDrawer> {
                   );
 
                   ref.watch(scoresListProvider.notifier).updateScore(scoreObj);
+                  ref.read(pdfFileProvider.notifier).giveFile(Score(
+                        id: scoreObj.id.value,
+                        name: scoreObj.name.value,
+                        file: scoreObj.file.value,
+                        composer: scoreObj.composer.value,
+                        genre: scoreObj.genre.value,
+                        tag: scoreObj.tag.value,
+                        label: scoreObj.label.value,
+                        reference: scoreObj.reference.value,
+                        rating: scoreObj.rating.value,
+                        difficulty: scoreObj.difficulty.value,
+                      ));
 
                   // this is to test that the db updated
                   print("updated score successfully");

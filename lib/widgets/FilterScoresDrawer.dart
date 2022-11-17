@@ -52,8 +52,9 @@ class _FilterScoresDrawerState extends ConsumerState<FilterScoresDrawer> {
         .forEach((score) => listOfWidgets.add(ScoreTile(score.name, score, () {
               print('click');
               // choose the pdf file based on what got clicked
-              print(score.file);
-              ref.read(pdfFileProvider.notifier).giveFile(score.file);
+              // print(score.file);
+
+              ref.read(pdfFileProvider.notifier).giveFile(score);
               // print(ref.read(pdfFileProvider.notifier).getFile());
             }, () {
               print('edit');
@@ -128,11 +129,21 @@ class _FilterScoresDrawerState extends ConsumerState<FilterScoresDrawer> {
                       ref
                           .read(scoresListProvider.notifier)
                           .insertScore(scoreObj, "composer");
-                      ref
-                          .read(pdfFileProvider.notifier)
-                          .giveFile(file!.path as String);
-                      // need to fix for dynamic if provider works
                       List<Score> listsOfScore = await servObj.getAllScores();
+                      Score mostRecent = (listsOfScore.last);
+                      ref.read(pdfFileProvider.notifier).giveFile(Score(
+                            id: mostRecent.id,
+                            name: mostRecent.name,
+                            file: mostRecent.file,
+                            composer: mostRecent.composer,
+                            genre: mostRecent.genre,
+                            tag: mostRecent.tag,
+                            label: mostRecent.label,
+                            reference: mostRecent.reference,
+                            rating: mostRecent.rating,
+                            difficulty: mostRecent.difficulty,
+                          ));
+                      // need to fix for dynamic if provider works
                       print(listsOfScore);
                     },
                     child: const Text('Import'),

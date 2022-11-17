@@ -187,7 +187,7 @@ class ScoreTitle extends ConsumerWidget {
             Flexible(
               child: currentFile.when(
                 data: (data) => Text(
-                  data.split('/').last.split('.').first.split('-').last,
+                  data.name,
                   style: TextStyle(color: Colors.black),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -228,13 +228,14 @@ class _AppBodyState extends ConsumerState<AppBody> {
     return currentFile.when(
         data: (currentFile) {
           // return Text("$currentFile");
+          print("Currently on: $currentFile");
 
           return OrientationBuilder(
               builder: (BuildContext context, Orientation orientation) {
             if (orientation == Orientation.landscape)
-              return SfPdfViewer.file(File(currentFile));
+              return SfPdfViewer.file(File(currentFile.file));
             else
-              return SfPdfViewer.file(File(currentFile),
+              return SfPdfViewer.file(File(currentFile.file),
                   pageLayoutMode: PdfPageLayoutMode.single);
           });
         },

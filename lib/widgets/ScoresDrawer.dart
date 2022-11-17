@@ -126,13 +126,24 @@ class _ScoresLibraryWidgetState extends ConsumerState<ScoreDrawer> {
                       ref.read(scoresListProvider.notifier).insertScore(
                           scoreObj,
                           "composer"); // need to fix for dynamic if provider works
-                      ref
-                          .read(pdfFileProvider.notifier)
-                          .giveFile(file!.path as String);
+
                       // print(
                       //     "We chose: ${ref.read(pdfFileProvider.notifier).getFile()}");
                       // use to test and show data storage in terminal
                       List<Score> listsOfScore = await servObj.getAllScores();
+                      Score mostRecent = (listsOfScore.last);
+                      ref.read(pdfFileProvider.notifier).giveFile(Score(
+                            id: mostRecent.id,
+                            name: mostRecent.name,
+                            file: mostRecent.file,
+                            composer: mostRecent.composer,
+                            genre: mostRecent.genre,
+                            tag: mostRecent.tag,
+                            label: mostRecent.label,
+                            reference: mostRecent.reference,
+                            rating: mostRecent.rating,
+                            difficulty: mostRecent.difficulty,
+                          ));
                       print(listsOfScore);
                     },
                     child: const Text('Import'),
