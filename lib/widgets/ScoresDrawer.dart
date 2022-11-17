@@ -9,6 +9,7 @@ import 'package:melodyscore/themedata.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
+import 'package:shared_preferences/shared_preferences.dart';
 import '../data/drift_db.dart';
 import '../services/scores_service.dart';
 import './ScoreListTile.dart';
@@ -52,6 +53,8 @@ class _ScoresLibraryWidgetState extends ConsumerState<ScoreDrawer> {
   void setup() async {
     super.initState();
     ref.read(scoresListProvider.notifier).getMappedScores("composer");
+
+    // ref.read(pdfFileProvider.notifier).giveFile(score);
   }
 
   List<ScoreListTile> createListOfScoreListTileWidgets() {

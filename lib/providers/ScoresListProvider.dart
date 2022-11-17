@@ -19,6 +19,10 @@ class ScoreListNotifier extends StateNotifier<Map<String, List<Score>>> {
     return state[filter]!.last;
   }
 
+  Score getScorefromID(List<Score> listOfScores, int id) {
+    return listOfScores.firstWhere((element) => element.id == id);
+  }
+
   void updateScore(ScoresCompanion score) async {
     ScoreService servObj = ScoreService();
     await servObj.updateScore(score);

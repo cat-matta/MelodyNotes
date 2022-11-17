@@ -48,6 +48,7 @@ dependencies:
   sqlite3_flutter_libs: ^0.5.0
   permission_handler: ^10.2.0
   syncfusion_flutter_pdfviewer: ^20.3.56
+  shared_preferences: ^2.0.15
 
 dev_dependencies:
   flutter_test:

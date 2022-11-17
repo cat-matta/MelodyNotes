@@ -2,17 +2,21 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:melodyscore/providers/ScoresListProvider.dart';
+import 'package:melodyscore/services/scores_service.dart';
 import 'package:modal_side_sheet/modal_side_sheet.dart';
 import 'package:melodyscore/providers/PdfFileProvider.dart';
 import 'package:melodyscore/widgets/BookMarkDrawer.dart';
 import 'package:melodyscore/widgets/ScoresDrawer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 import './widgets/MainDrawer.dart';
 import './widgets/SetlistDrawer.dart';
 import 'package:melodyscore/screens/scanner_screen.dart';
 import './screens/camera_screen.dart';
+import 'data/drift_db.dart';
 import 'locator.dart' as injector;
 import 'themedata.dart';
 
@@ -112,7 +116,7 @@ class _TopBarState extends State<TopBar> {
         appBar: AppBar(
             centerTitle: true,
             titleSpacing: 0.0,
-            title: ScoreTitle(mediaQuerry: mediaQuerry),
+            title: ScoreTitle(),
             leadingWidth: mediaQuerry.orientation == Orientation.landscape ||
                     isDesktop(context)
                 ? mediaQuerry.size.width * 0.25
@@ -159,16 +163,39 @@ class _TopBarState extends State<TopBar> {
   }
 }
 
-class ScoreTitle extends ConsumerWidget {
-  const ScoreTitle({
-    Key? key,
-    required this.mediaQuerry,
-  }) : super(key: key);
-
-  final MediaQueryData mediaQuerry;
+class ScoreTitle extends ConsumerStatefulWidget {
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConsumerStatefulWidget> createState() => _ScoreTitleState();
+}
+
+class _ScoreTitleState extends ConsumerState<ScoreTitle> {
+  @override
+  void initState() {
+    super.initState();
+    setup();
+  }
+
+  void setup() async {
+    super.initState();
+    final prefs = await SharedPreferences.getInstance();
+    final int? file_id = prefs.getInt('file_id');
+    ScoreService servObj = ScoreService();
+    List<Score> listsOfScores = await servObj.getAllScores();
+    if (file_id != null) {
+      Score cachedScore = ref
+          .read(scoresListProvider.notifier)
+          .getScorefromID(listsOfScores, file_id);
+      print("cached score id: $file_id");
+      ref.read(pdfFileProvider.notifier).giveFile(cachedScore);
+    }
+  }
+
+  @override
+  Widget build(
+    BuildContext context,
+  ) {
     var currentFile = ref.watch(pdfFileProvider);
+    final MediaQueryData mediaQuerry = MediaQuery.of(context);
 
     return Container(
         // alignment: Alignment.center,
@@ -221,6 +248,27 @@ class AppBody extends ConsumerStatefulWidget {
 }
 
 class _AppBodyState extends ConsumerState<AppBody> {
+  @override
+  void initState() {
+    super.initState();
+    setup();
+  }
+
+  void setup() async {
+    super.initState();
+    final prefs = await SharedPreferences.getInstance();
+    final int? file_id = prefs.getInt('file_id');
+    ScoreService servObj = ScoreService();
+    List<Score> listsOfScores = await servObj.getAllScores();
+    if (file_id != null) {
+      Score cachedScore = ref
+          .read(scoresListProvider.notifier)
+          .getScorefromID(listsOfScores, file_id);
+      print("cached score id: $file_id");
+      ref.read(pdfFileProvider.notifier).giveFile(cachedScore);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var currentFile = ref.watch(pdfFileProvider);
