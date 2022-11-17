@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:melodyscore/themedata.dart';
-import 'package:melodyscore/widgets/EditScoreDrawer.dart';
+import 'package:melodynotes/themedata.dart';
+import 'package:melodynotes/widgets/EditScoreDrawer.dart';
 import 'package:modal_side_sheet/modal_side_sheet.dart';
 import '../data/drift_db.dart';
 
@@ -26,7 +26,7 @@ class ScoreTile extends StatelessWidget {
         ),
       ),
       leading: IconButton(
-        onPressed: (){
+        onPressed: () {
           showModalSideSheet(
             context: context,
             body: EditScoreDrawer(scoreInfo),

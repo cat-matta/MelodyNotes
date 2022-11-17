@@ -1,4 +1,4 @@
-import 'package:melodyscore/data/drift_db.dart';
+import 'package:melodynotes/data/drift_db.dart';
 
 class ScoreRepo {
   final AppDb drift;

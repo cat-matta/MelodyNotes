@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:melodyscore/data/drift_db.dart';
-import 'package:melodyscore/providers/ScoresListProvider.dart';
-import 'package:melodyscore/services/scores_service.dart';
-import 'package:melodyscore/widgets/ScoresDrawer.dart';
+import 'package:melodynotes/data/drift_db.dart';
+import 'package:melodynotes/providers/ScoresListProvider.dart';
+import 'package:melodynotes/services/scores_service.dart';
+import 'package:melodynotes/widgets/ScoresDrawer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PdfStateNotifier extends StateNotifier<AsyncValue<Score>> {

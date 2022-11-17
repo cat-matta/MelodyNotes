@@ -2,19 +2,19 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:melodyscore/providers/ScoresListProvider.dart';
-import 'package:melodyscore/services/scores_service.dart';
+import 'package:melodynotes/providers/ScoresListProvider.dart';
+import 'package:melodynotes/services/scores_service.dart';
 import 'package:modal_side_sheet/modal_side_sheet.dart';
-import 'package:melodyscore/providers/PdfFileProvider.dart';
-import 'package:melodyscore/widgets/BookMarkDrawer.dart';
-import 'package:melodyscore/widgets/ScoresDrawer.dart';
+import 'package:melodynotes/providers/PdfFileProvider.dart';
+import 'package:melodynotes/widgets/BookMarkDrawer.dart';
+import 'package:melodynotes/widgets/ScoresDrawer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 import './widgets/MainDrawer.dart';
 import './widgets/SetlistDrawer.dart';
-import 'package:melodyscore/screens/scanner_screen.dart';
+import 'package:melodynotes/screens/scanner_screen.dart';
 import './screens/camera_screen.dart';
 import 'data/drift_db.dart';
 import 'locator.dart' as injector;

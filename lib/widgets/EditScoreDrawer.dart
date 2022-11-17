@@ -2,8 +2,8 @@ import 'package:drift/drift.dart' as driftHelper;
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:melodyscore/providers/PdfFileProvider.dart';
-import 'package:melodyscore/themedata.dart';
+import 'package:melodynotes/providers/PdfFileProvider.dart';
+import 'package:melodynotes/themedata.dart';
 
 import '../data/drift_db.dart';
 import '../providers/ScoresListProvider.dart';

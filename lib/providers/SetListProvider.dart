@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:melodyscore/services/scores_service.dart';
+import 'package:melodynotes/services/scores_service.dart';
 
 import '../data/drift_db.dart';
 

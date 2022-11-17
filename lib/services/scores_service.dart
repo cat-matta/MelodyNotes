@@ -1,4 +1,4 @@
-import 'package:melodyscore/data/drift_db.dart';
+import 'package:melodynotes/data/drift_db.dart';
 import '../repositories/scores_repository.dart';
 import '../locator.dart';
 
