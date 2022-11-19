@@ -1,10 +1,15 @@
-import 'package:flutter/foundation.dart';
+import 'dart:io';
+
+import 'package:drift/drift.dart' as driftHelper;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:melodyscore/providers/CurrentFilesProvider.dart';
 import 'package:melodyscore/providers/PdfFileProvider.dart';
 import 'package:melodyscore/providers/ScoresListProvider.dart';
 import 'package:melodyscore/themedata.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as p;
 import '../data/drift_db.dart';
 import '../services/scores_service.dart';
 import './ScoreTile.dart';
@@ -48,23 +53,30 @@ class _FilterScoresDrawerState extends ConsumerState<FilterScoresDrawer> {
         .forEach((score) => listOfWidgets.add(ScoreTile(score.name, score, () {
               print('click');
               // choose the pdf file based on what got clicked
-              print(score.file);
-              ref.read(pdfFileProvider.notifier).giveFile(score.file);
+              // print(score.file);
+
+              ref.read(pdfFileProvider.notifier).giveFile(score);
+              ref.read(currentScoresListProvider.notifier).addScore(score);
+              print(ref.read(currentScoresListProvider.notifier).state);
               // print(ref.read(pdfFileProvider.notifier).getFile());
             }, () {
               print('edit');
+              // don't need this edit callback function for editDrawer. can be removed
             }, () async {
               ref
                   .read(scoresListProvider.notifier)
                   .removeScore([score], 'composer');
+
+              ref.read(currentScoresListProvider.notifier).removeScore(score);
+              print(ref
+                  .read(currentScoresListProvider.notifier)
+                  .state); // need to fix for dynamic if provider works
             })));
     return listOfWidgets;
   }
 
   @override
   Widget build(BuildContext context) {
-    final mediaQuerry = MediaQuery.of(context);
-
     Map<String, List<Score>> mapSortedScores = ref.watch(scoresListProvider);
     widget.scores = (mapSortedScores[widget.headername] == null)
         ? []
@@ -95,6 +107,20 @@ class _FilterScoresDrawerState extends ConsumerState<FilterScoresDrawer> {
                       );
                       if (result == null) return;
                       file = result!.files.first;
+                      // print("PICKED FILE: ${file!.path!}");
+                      String pickedFile = file!.path!;
+                      if (Platform.isIOS) {
+                        final appPath =
+                            await getApplicationDocumentsDirectory();
+                        final newFilePath = (p.join(appPath.path, file!.name));
+                        final newFile = File(pickedFile).rename(newFilePath);
+                        file = await newFile.then((value) => PlatformFile(
+                            name: value.path.split('/').last,
+                            size: value.lengthSync(),
+                            path: value.path));
+                        // print("OUR NEW FILE: ${file!.path!}");
+                      }
+                      // print("OUTSIDE NEW FILE: ${file!.path!}");
 
                       ScoreService servObj = ScoreService();
                       ScoresCompanion scoreObj = ScoresCompanion.insert(
@@ -106,17 +132,21 @@ class _FilterScoresDrawerState extends ConsumerState<FilterScoresDrawer> {
                               .split('-')
                               .last,
                           file: file?.path ?? "no path",
-                          composer: widget.headername);
+                          composer: driftHelper.Value(widget.headername));
 
                       ref
                           .read(scoresListProvider.notifier)
                           .insertScore(scoreObj, "composer");
-                      ref
-                          .read(pdfFileProvider.notifier)
-                          .giveFile(file!.path as String);
-                      // need to fix for dynamic if provider works
                       List<Score> listsOfScore = await servObj.getAllScores();
-                      print(listsOfScore);
+                      Score score = (listsOfScore.last);
+
+                      ref.read(pdfFileProvider.notifier).giveFile(score);
+                      ref
+                          .read(currentScoresListProvider.notifier)
+                          .addScore(score);
+
+                      // need to fix for dynamic if provider works
+                      // print(listsOfScore);
                     },
                     child: const Text('Import'),
                     style: TextButton.styleFrom(

@@ -1,9 +1,16 @@
+import 'dart:io';
+
+import 'package:drift/drift.dart' as driftHelper;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:melodyscore/providers/CurrentFilesProvider.dart';
 import 'package:melodyscore/providers/PdfFileProvider.dart';
 import 'package:melodyscore/providers/ScoresListProvider.dart';
 import 'package:melodyscore/themedata.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as p;
+import 'package:shared_preferences/shared_preferences.dart';
 import '../data/drift_db.dart';
 import '../services/scores_service.dart';
 import './ScoreListTile.dart';
@@ -47,6 +54,8 @@ class _ScoresLibraryWidgetState extends ConsumerState<ScoreDrawer> {
   void setup() async {
     super.initState();
     ref.read(scoresListProvider.notifier).getMappedScores("composer");
+
+    // ref.read(pdfFileProvider.notifier).giveFile(score);
   }
 
   List<ScoreListTile> createListOfScoreListTileWidgets() {
@@ -91,6 +100,20 @@ class _ScoresLibraryWidgetState extends ConsumerState<ScoreDrawer> {
                       );
                       if (result == null) return;
                       file = result!.files.first;
+                      // print("PICKED FILE: ${file!.path!}");
+                      String pickedFile = file!.path!;
+                      if (Platform.isIOS) {
+                        final appPath =
+                            await getApplicationDocumentsDirectory();
+                        final newFilePath = (p.join(appPath.path, file!.name));
+                        final newFile = File(pickedFile).rename(newFilePath);
+                        file = await newFile.then((value) => PlatformFile(
+                            name: value.path.split('/').last,
+                            size: value.lengthSync(),
+                            path: value.path));
+                        // print("OUR NEW FILE: ${file!.path!}");
+                      }
+                      // print("OUTSIDE NEW FILE: ${file!.path!}");
 
                       ScoreService servObj = ScoreService();
                       ScoresCompanion scoreObj = ScoresCompanion.insert(
@@ -102,19 +125,25 @@ class _ScoresLibraryWidgetState extends ConsumerState<ScoreDrawer> {
                               .split('-')
                               .last,
                           file: file?.path ?? "no path",
-                          composer: 'No composer');
+                          composer: driftHelper.Value('No composer'));
 
                       ref.read(scoresListProvider.notifier).insertScore(
                           scoreObj,
                           "composer"); // need to fix for dynamic if provider works
-                      ref
-                          .read(pdfFileProvider.notifier)
-                          .giveFile(file!.path as String);
+
                       // print(
                       //     "We chose: ${ref.read(pdfFileProvider.notifier).getFile()}");
                       // use to test and show data storage in terminal
                       List<Score> listsOfScore = await servObj.getAllScores();
-                      print(listsOfScore);
+                      Score score = (listsOfScore.last);
+                      ref.read(pdfFileProvider.notifier).giveFile(score);
+                      ref
+                          .read(currentScoresListProvider.notifier)
+                          .addScore(score);
+                      print(
+                          "Current list${ref.read(currentScoresListProvider.notifier).state}");
+
+                      // print(listsOfScore);
                     },
                     child: const Text('Import'),
                     style: TextButton.styleFrom(

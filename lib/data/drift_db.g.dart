@@ -12,11 +12,23 @@ class Score extends DataClass implements Insertable<Score> {
   final String name;
   final String file;
   final String composer;
+  final String genre;
+  final String tag;
+  final String label;
+  final String reference;
+  final double rating;
+  final double difficulty;
   const Score(
       {required this.id,
       required this.name,
       required this.file,
-      required this.composer});
+      required this.composer,
+      required this.genre,
+      required this.tag,
+      required this.label,
+      required this.reference,
+      required this.rating,
+      required this.difficulty});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -24,6 +36,12 @@ class Score extends DataClass implements Insertable<Score> {
     map['name'] = Variable<String>(name);
     map['file'] = Variable<String>(file);
     map['composer'] = Variable<String>(composer);
+    map['genre'] = Variable<String>(genre);
+    map['tag'] = Variable<String>(tag);
+    map['label'] = Variable<String>(label);
+    map['reference'] = Variable<String>(reference);
+    map['rating'] = Variable<double>(rating);
+    map['difficulty'] = Variable<double>(difficulty);
     return map;
   }
 
@@ -33,6 +51,12 @@ class Score extends DataClass implements Insertable<Score> {
       name: Value(name),
       file: Value(file),
       composer: Value(composer),
+      genre: Value(genre),
+      tag: Value(tag),
+      label: Value(label),
+      reference: Value(reference),
+      rating: Value(rating),
+      difficulty: Value(difficulty),
     );
   }
 
@@ -44,6 +68,12 @@ class Score extends DataClass implements Insertable<Score> {
       name: serializer.fromJson<String>(json['name']),
       file: serializer.fromJson<String>(json['file']),
       composer: serializer.fromJson<String>(json['composer']),
+      genre: serializer.fromJson<String>(json['genre']),
+      tag: serializer.fromJson<String>(json['tag']),
+      label: serializer.fromJson<String>(json['label']),
+      reference: serializer.fromJson<String>(json['reference']),
+      rating: serializer.fromJson<double>(json['rating']),
+      difficulty: serializer.fromJson<double>(json['difficulty']),
     );
   }
   @override
@@ -54,15 +84,37 @@ class Score extends DataClass implements Insertable<Score> {
       'name': serializer.toJson<String>(name),
       'file': serializer.toJson<String>(file),
       'composer': serializer.toJson<String>(composer),
+      'genre': serializer.toJson<String>(genre),
+      'tag': serializer.toJson<String>(tag),
+      'label': serializer.toJson<String>(label),
+      'reference': serializer.toJson<String>(reference),
+      'rating': serializer.toJson<double>(rating),
+      'difficulty': serializer.toJson<double>(difficulty),
     };
   }
 
-  Score copyWith({int? id, String? name, String? file, String? composer}) =>
+  Score copyWith(
+          {int? id,
+          String? name,
+          String? file,
+          String? composer,
+          String? genre,
+          String? tag,
+          String? label,
+          String? reference,
+          double? rating,
+          double? difficulty}) =>
       Score(
         id: id ?? this.id,
         name: name ?? this.name,
         file: file ?? this.file,
         composer: composer ?? this.composer,
+        genre: genre ?? this.genre,
+        tag: tag ?? this.tag,
+        label: label ?? this.label,
+        reference: reference ?? this.reference,
+        rating: rating ?? this.rating,
+        difficulty: difficulty ?? this.difficulty,
       );
   @override
   String toString() {
@@ -70,13 +122,20 @@ class Score extends DataClass implements Insertable<Score> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('file: $file, ')
-          ..write('composer: $composer')
+          ..write('composer: $composer, ')
+          ..write('genre: $genre, ')
+          ..write('tag: $tag, ')
+          ..write('label: $label, ')
+          ..write('reference: $reference, ')
+          ..write('rating: $rating, ')
+          ..write('difficulty: $difficulty')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, name, file, composer);
+  int get hashCode => Object.hash(id, name, file, composer, genre, tag, label,
+      reference, rating, difficulty);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -84,7 +143,13 @@ class Score extends DataClass implements Insertable<Score> {
           other.id == this.id &&
           other.name == this.name &&
           other.file == this.file &&
-          other.composer == this.composer);
+          other.composer == this.composer &&
+          other.genre == this.genre &&
+          other.tag == this.tag &&
+          other.label == this.label &&
+          other.reference == this.reference &&
+          other.rating == this.rating &&
+          other.difficulty == this.difficulty);
 }
 
 class ScoresCompanion extends UpdateCompanion<Score> {
@@ -92,31 +157,60 @@ class ScoresCompanion extends UpdateCompanion<Score> {
   final Value<String> name;
   final Value<String> file;
   final Value<String> composer;
+  final Value<String> genre;
+  final Value<String> tag;
+  final Value<String> label;
+  final Value<String> reference;
+  final Value<double> rating;
+  final Value<double> difficulty;
   const ScoresCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.file = const Value.absent(),
     this.composer = const Value.absent(),
+    this.genre = const Value.absent(),
+    this.tag = const Value.absent(),
+    this.label = const Value.absent(),
+    this.reference = const Value.absent(),
+    this.rating = const Value.absent(),
+    this.difficulty = const Value.absent(),
   });
   ScoresCompanion.insert({
     this.id = const Value.absent(),
     required String name,
     required String file,
-    required String composer,
+    this.composer = const Value.absent(),
+    this.genre = const Value.absent(),
+    this.tag = const Value.absent(),
+    this.label = const Value.absent(),
+    this.reference = const Value.absent(),
+    this.rating = const Value.absent(),
+    this.difficulty = const Value.absent(),
   })  : name = Value(name),
-        file = Value(file),
-        composer = Value(composer);
+        file = Value(file);
   static Insertable<Score> custom({
     Expression<int>? id,
     Expression<String>? name,
     Expression<String>? file,
     Expression<String>? composer,
+    Expression<String>? genre,
+    Expression<String>? tag,
+    Expression<String>? label,
+    Expression<String>? reference,
+    Expression<double>? rating,
+    Expression<double>? difficulty,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (file != null) 'file': file,
       if (composer != null) 'composer': composer,
+      if (genre != null) 'genre': genre,
+      if (tag != null) 'tag': tag,
+      if (label != null) 'label': label,
+      if (reference != null) 'reference': reference,
+      if (rating != null) 'rating': rating,
+      if (difficulty != null) 'difficulty': difficulty,
     });
   }
 
@@ -124,12 +218,24 @@ class ScoresCompanion extends UpdateCompanion<Score> {
       {Value<int>? id,
       Value<String>? name,
       Value<String>? file,
-      Value<String>? composer}) {
+      Value<String>? composer,
+      Value<String>? genre,
+      Value<String>? tag,
+      Value<String>? label,
+      Value<String>? reference,
+      Value<double>? rating,
+      Value<double>? difficulty}) {
     return ScoresCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       file: file ?? this.file,
       composer: composer ?? this.composer,
+      genre: genre ?? this.genre,
+      tag: tag ?? this.tag,
+      label: label ?? this.label,
+      reference: reference ?? this.reference,
+      rating: rating ?? this.rating,
+      difficulty: difficulty ?? this.difficulty,
     );
   }
 
@@ -148,6 +254,24 @@ class ScoresCompanion extends UpdateCompanion<Score> {
     if (composer.present) {
       map['composer'] = Variable<String>(composer.value);
     }
+    if (genre.present) {
+      map['genre'] = Variable<String>(genre.value);
+    }
+    if (tag.present) {
+      map['tag'] = Variable<String>(tag.value);
+    }
+    if (label.present) {
+      map['label'] = Variable<String>(label.value);
+    }
+    if (reference.present) {
+      map['reference'] = Variable<String>(reference.value);
+    }
+    if (rating.present) {
+      map['rating'] = Variable<double>(rating.value);
+    }
+    if (difficulty.present) {
+      map['difficulty'] = Variable<double>(difficulty.value);
+    }
     return map;
   }
 
@@ -157,7 +281,13 @@ class ScoresCompanion extends UpdateCompanion<Score> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('file: $file, ')
-          ..write('composer: $composer')
+          ..write('composer: $composer, ')
+          ..write('genre: $genre, ')
+          ..write('tag: $tag, ')
+          ..write('label: $label, ')
+          ..write('reference: $reference, ')
+          ..write('rating: $rating, ')
+          ..write('difficulty: $difficulty')
           ..write(')'))
         .toString();
   }
@@ -192,9 +322,76 @@ class $ScoresTable extends Scores with TableInfo<$ScoresTable, Score> {
   @override
   late final GeneratedColumn<String> composer = GeneratedColumn<String>(
       'composer', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 100),
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant("No Composer"));
+  final VerificationMeta _genreMeta = const VerificationMeta('genre');
   @override
-  List<GeneratedColumn> get $columns => [id, name, file, composer];
+  late final GeneratedColumn<String> genre = GeneratedColumn<String>(
+      'genre', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 100),
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant("No Genre"));
+  final VerificationMeta _tagMeta = const VerificationMeta('tag');
+  @override
+  late final GeneratedColumn<String> tag = GeneratedColumn<String>(
+      'tag', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 100),
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant("No Tag"));
+  final VerificationMeta _labelMeta = const VerificationMeta('label');
+  @override
+  late final GeneratedColumn<String> label = GeneratedColumn<String>(
+      'label', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 100),
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant("No Label"));
+  final VerificationMeta _referenceMeta = const VerificationMeta('reference');
+  @override
+  late final GeneratedColumn<String> reference = GeneratedColumn<String>(
+      'reference', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 100),
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant("No Reference"));
+  final VerificationMeta _ratingMeta = const VerificationMeta('rating');
+  @override
+  late final GeneratedColumn<double> rating = GeneratedColumn<double>(
+      'rating', aliasedName, false,
+      check: () => rating.isBetween(Constant(0), Constant(5)),
+      type: DriftSqlType.double,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  final VerificationMeta _difficultyMeta = const VerificationMeta('difficulty');
+  @override
+  late final GeneratedColumn<double> difficulty = GeneratedColumn<double>(
+      'difficulty', aliasedName, false,
+      check: () => difficulty.isBetween(Constant(0), Constant(3)),
+      type: DriftSqlType.double,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        name,
+        file,
+        composer,
+        genre,
+        tag,
+        label,
+        reference,
+        rating,
+        difficulty
+      ];
   @override
   String get aliasedName => _alias ?? 'scores';
   @override
@@ -222,8 +419,32 @@ class $ScoresTable extends Scores with TableInfo<$ScoresTable, Score> {
     if (data.containsKey('composer')) {
       context.handle(_composerMeta,
           composer.isAcceptableOrUnknown(data['composer']!, _composerMeta));
-    } else if (isInserting) {
-      context.missing(_composerMeta);
+    }
+    if (data.containsKey('genre')) {
+      context.handle(
+          _genreMeta, genre.isAcceptableOrUnknown(data['genre']!, _genreMeta));
+    }
+    if (data.containsKey('tag')) {
+      context.handle(
+          _tagMeta, tag.isAcceptableOrUnknown(data['tag']!, _tagMeta));
+    }
+    if (data.containsKey('label')) {
+      context.handle(
+          _labelMeta, label.isAcceptableOrUnknown(data['label']!, _labelMeta));
+    }
+    if (data.containsKey('reference')) {
+      context.handle(_referenceMeta,
+          reference.isAcceptableOrUnknown(data['reference']!, _referenceMeta));
+    }
+    if (data.containsKey('rating')) {
+      context.handle(_ratingMeta,
+          rating.isAcceptableOrUnknown(data['rating']!, _ratingMeta));
+    }
+    if (data.containsKey('difficulty')) {
+      context.handle(
+          _difficultyMeta,
+          difficulty.isAcceptableOrUnknown(
+              data['difficulty']!, _difficultyMeta));
     }
     return context;
   }
@@ -242,6 +463,18 @@ class $ScoresTable extends Scores with TableInfo<$ScoresTable, Score> {
           .read(DriftSqlType.string, data['${effectivePrefix}file'])!,
       composer: attachedDatabase.options.types
           .read(DriftSqlType.string, data['${effectivePrefix}composer'])!,
+      genre: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}genre'])!,
+      tag: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}tag'])!,
+      label: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}label'])!,
+      reference: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}reference'])!,
+      rating: attachedDatabase.options.types
+          .read(DriftSqlType.double, data['${effectivePrefix}rating'])!,
+      difficulty: attachedDatabase.options.types
+          .read(DriftSqlType.double, data['${effectivePrefix}difficulty'])!,
     );
   }
 
