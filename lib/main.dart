@@ -142,69 +142,54 @@ class _TopBarState extends ConsumerState<TopBar> {
       );
     }
 
-    return DefaultTabController(
-      length: _currentScores.length,
-      child: Scaffold(
-          appBar: AppBar(
-              bottom: TabBar(
-                  indicatorColor: AppTheme.accentMain,
-                  unselectedLabelColor: AppTheme.lightBackground,
-                  labelColor: AppTheme.accentMain,
-                  onTap: (value) {
-                    ref
-                        .read(pdfFileProvider.notifier)
-                        .giveFile(_currentScores[value]);
-                  },
-                  tabs: _currentScores
-                      .map((element) => Text(element.name))
-                      .toList()),
-              centerTitle: true,
-              titleSpacing: 0.0,
-              title: ScoreTitle(),
-              leadingWidth: mediaQuerry.orientation == Orientation.landscape ||
-                      isDesktop(context)
-                  ? mediaQuerry.size.width * 0.25
-                  : mediaQuerry.size.width * 0.15,
-              leading: mediaQuerry.orientation == Orientation.landscape ||
-                      isDesktop(context)
-                  ? Row(
-                      //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        buildAppBarIcons(Icons.photo_camera, () {}),
-                        buildAppBarIcons(Icons.draw, () {}),
-                        buildAppBarIcons(Icons.display_settings, () {}),
-                        buildAppBarIcons(Icons.collections_bookmark, () {}),
-                      ],
-                    )
-                  : buildAppBarIcons(Icons.draw, () {}),
-              actions: [
-                buildAppBarIcons(Icons.library_music, () {
-                  showScoreDrawer(
-                    context,
-                    ScoreDrawer(),
-                    0.7,
-                  );
-                }),
-                buildAppBarIcons(Icons.music_note, () {
-                  showSetlistDrawer(
-                    context,
-                    SetlistDrawer(),
-                    0.7,
-                  );
-                }),
-                buildAppBarIcons(Icons.bookmark, () {
-                  showBookMarkDrawer(
-                    context,
-                    BookMarkDrawer(),
-                    0.7,
-                  );
-                }),
-                buildAppBarIcons(Icons.menu, () {
-                  showMainDrawer(context, MainDrawer(), 0.7);
-                }),
-              ]),
-          body: AppBody()),
-    );
+    return Scaffold(
+        appBar: AppBar(
+            centerTitle: true,
+            titleSpacing: 0.0,
+            title: ScoreTitle(),
+            leadingWidth: mediaQuerry.orientation == Orientation.landscape ||
+                    isDesktop(context)
+                ? mediaQuerry.size.width * 0.25
+                : mediaQuerry.size.width * 0.15,
+            leading: mediaQuerry.orientation == Orientation.landscape ||
+                    isDesktop(context)
+                ? Row(
+                    //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      buildAppBarIcons(Icons.photo_camera, () {}),
+                      buildAppBarIcons(Icons.draw, () {}),
+                      buildAppBarIcons(Icons.display_settings, () {}),
+                      buildAppBarIcons(Icons.collections_bookmark, () {}),
+                    ],
+                  )
+                : buildAppBarIcons(Icons.draw, () {}),
+            actions: [
+              buildAppBarIcons(Icons.library_music, () {
+                showScoreDrawer(
+                  context,
+                  ScoreDrawer(),
+                  0.7,
+                );
+              }),
+              buildAppBarIcons(Icons.music_note, () {
+                showSetlistDrawer(
+                  context,
+                  SetlistDrawer(),
+                  0.7,
+                );
+              }),
+              buildAppBarIcons(Icons.bookmark, () {
+                showBookMarkDrawer(
+                  context,
+                  BookMarkDrawer(),
+                  0.7,
+                );
+              }),
+              buildAppBarIcons(Icons.menu, () {
+                showMainDrawer(context, MainDrawer(), 0.7);
+              }),
+            ]),
+        body: AppBody());
   }
 }
 
@@ -245,8 +230,8 @@ class _ScoreTitleState extends ConsumerState<ScoreTitle> {
   Widget build(
     BuildContext context,
   ) {
-    var currentFile = ref.watch(pdfFileProvider);
     final MediaQueryData mediaQuerry = MediaQuery.of(context);
+    var currentFile = ref.watch(pdfFileProvider);
 
     return Container(
         // alignment: Alignment.center,
@@ -330,96 +315,95 @@ class _AppBodyState extends ConsumerState<AppBody> {
   Widget build(BuildContext context) {
     var currentFile = ref.watch(pdfFileProvider);
     List<Score> _currentScores = ref.watch(currentScoresListProvider);
-    return TabBarView(
-        children: _currentScores.map((score) {
-      return OrientationBuilder(
-          builder: (BuildContext context, Orientation orientation) {
-        if (orientation == Orientation.landscape)
-          return SfPdfViewer.file(File(score.file));
-        else
-          return SfPdfViewer.file(File(score.file),
-              pageLayoutMode: PdfPageLayoutMode.single);
-      });
-    }).toList());
+    // return TabBarView(
+    //     children: _currentScores.map((score) {
+    //   return OrientationBuilder(
+    //       builder: (BuildContext context, Orientation orientation) {
+    //     if (orientation == Orientation.landscape)
+    //       return SfPdfViewer.file(File(score.file));
+    //     else
+    //       return SfPdfViewer.file(File(score.file),
+    //           pageLayoutMode: PdfPageLayoutMode.single);
+    //   });
+    // }).toList());
 
-    // return currentFile.when(
-    //     data: (currentFile) {
-    //       // return Text("$currentFile");
-    //       print("Currently on: $currentFile");
+    return currentFile.when(
+        data: (currentFile) {
+          print("Currently on: $currentFile");
 
-    //       return OrientationBuilder(
-    //           builder: (BuildContext context, Orientation orientation) {
-    //         if (orientation == Orientation.landscape)
-    //           return SfPdfViewer.file(File(currentFile.file));
-    //         else
-    //           return SfPdfViewer.file(File(currentFile.file),
-    //               pageLayoutMode: PdfPageLayoutMode.single);
-    //       });
-    //   //     },
-    //       error: ((error, stackTrace) => Text("Err: $error")),
-    //       loading: () => Center(
-    //             child: Container(
-    //                 height: MediaQuery.of(context).size.height,
-    //                 decoration: BoxDecoration(color: AppTheme.darkBackground),
-    //                 child: Column(
-    //                   mainAxisAlignment: MainAxisAlignment.center,
-    //                   crossAxisAlignment: CrossAxisAlignment.center,
-    //                   children: [
-    //                     Spacer(),
-    //                     Row(
-    //                       crossAxisAlignment: CrossAxisAlignment.center,
-    //                       mainAxisAlignment: MainAxisAlignment.center,
-    //                       children: [
-    //                         Icon(Icons.music_note),
-    //                         Icon(Icons.music_note),
-    //                         Icon(Icons.music_note),
-    //                       ],
-    //                     ),
-    //                     Spacer(),
-    //                     RichText(
-    //                       textAlign: TextAlign.center,
-    //                       text: TextSpan(
-    //                         children: [
-    //                           TextSpan(
-    //                             text:
-    //                                 "Welcome to MelodyScore! You can import a file by clicking on the ",
-    //                             style: TextStyle(
-    //                               color: AppTheme.accentMain,
-    //                               fontSize: 20,
-    //                             ),
-    //                           ),
-    //                           WidgetSpan(
-    //                             child: Icon(Icons.library_music, size: 20),
-    //                           ),
-    //                           TextSpan(
-    //                             text: " above",
-    //                             style: TextStyle(
-    //                               color: AppTheme.accentMain,
-    //                               fontSize: 20,
-    //                             ),
-    //                           ),
-    //                         ],
-    //                       ),
-    //                     ),
-    //                     Spacer(),
-    //                     Text(
-    //                       "Happy Playing!",
-    //                       style:
-    //                           TextStyle(color: AppTheme.accentMain, fontSize: 20),
-    //                     ),
-    //                     Spacer(),
-    //                     Row(
-    //                       crossAxisAlignment: CrossAxisAlignment.center,
-    //                       mainAxisAlignment: MainAxisAlignment.center,
-    //                       children: [
-    //                         Icon(Icons.music_note),
-    //                         Icon(Icons.music_note),
-    //                         Icon(Icons.music_note),
-    //                       ],
-    //                     ),
-    //                     Spacer(),
-    //                   ],
-    //                 )),
-    //           ));
+          return OrientationBuilder(
+              builder: (BuildContext context, Orientation orientation) {
+            if (orientation == Orientation.landscape)
+              return SfPdfViewer.file(File(currentFile.file));
+            else
+              return SfPdfViewer.file(File(currentFile.file),
+                  pageLayoutMode: PdfPageLayoutMode.single);
+          });
+        },
+        error: ((error, stackTrace) => Text("Err: $error")),
+        loading: () => Center(
+              child: Container(
+                  height: MediaQuery.of(context).size.height,
+                  decoration: BoxDecoration(color: AppTheme.darkBackground),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Spacer(),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.music_note),
+                          Icon(Icons.music_note),
+                          Icon(Icons.music_note),
+                        ],
+                      ),
+                      Spacer(),
+                      RichText(
+                        textAlign: TextAlign.center,
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text:
+                                  "Welcome to MelodyScore! You can import a file by clicking on the ",
+                              style: TextStyle(
+                                color: AppTheme.accentMain,
+                                fontSize: 20,
+                              ),
+                            ),
+                            WidgetSpan(
+                              child: Icon(Icons.library_music, size: 20),
+                            ),
+                            TextSpan(
+                              text: " above",
+                              style: TextStyle(
+                                color: AppTheme.accentMain,
+                                fontSize: 20,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Spacer(),
+                      Text(
+                        "Happy Playing!",
+                        style:
+                            TextStyle(color: AppTheme.accentMain, fontSize: 20),
+                      ),
+                      Spacer(),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.music_note),
+                          Icon(Icons.music_note),
+                          Icon(Icons.music_note),
+                        ],
+                      ),
+                      Spacer(),
+                    ],
+                  )),
+            ));
   }
 }

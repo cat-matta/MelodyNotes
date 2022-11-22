@@ -64,6 +64,11 @@ class _ScoresLibraryWidgetState extends ConsumerState<ScoreDrawer> {
     mapSortedScores.forEach((key, listOfScores) => listOfWidgets.add(
             ScoreListTile(listOfScores.length, key, listOfScores, () {},
                 () async {
+          var currentScore = ref.read(pdfFileProvider.notifier).getPrevFile();
+          currentScore.whenData((value) {
+            if (value.composer == key)
+              ref.read(pdfFileProvider.notifier).removeFile(value);
+          });
           ref
               .read(scoresListProvider.notifier)
               .removeScore(listOfScores, "composer");
@@ -136,7 +141,7 @@ class _ScoresLibraryWidgetState extends ConsumerState<ScoreDrawer> {
                       // use to test and show data storage in terminal
                       List<Score> listsOfScore = await servObj.getAllScores();
                       Score score = (listsOfScore.last);
-                      ref.read(pdfFileProvider.notifier).giveFile(score);
+                      // ref.read(pdfFileProvider.notifier).giveFile(score);
                       ref
                           .read(currentScoresListProvider.notifier)
                           .addScore(score);

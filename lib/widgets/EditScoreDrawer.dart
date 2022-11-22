@@ -347,19 +347,24 @@ class _EditScoreWidget extends ConsumerState<EditScoreDrawer> {
                   );
 
                   ref.watch(scoresListProvider.notifier).updateScore(scoreObj);
-                  ref.read(pdfFileProvider.notifier).giveFile(Score(
-                        id: scoreObj.id.value,
-                        name: scoreObj.name.value,
-                        file: scoreObj.file.value,
-                        composer: scoreObj.composer.value,
-                        genre: scoreObj.genre.value,
-                        tag: scoreObj.tag.value,
-                        label: scoreObj.label.value,
-                        reference: scoreObj.reference.value,
-                        rating: scoreObj.rating.value,
-                        difficulty: scoreObj.difficulty.value,
-                      ));
-
+                  Score updated = Score(
+                    id: scoreObj.id.value,
+                    name: scoreObj.name.value,
+                    file: scoreObj.file.value,
+                    composer: scoreObj.composer.value,
+                    genre: scoreObj.genre.value,
+                    tag: scoreObj.tag.value,
+                    label: scoreObj.label.value,
+                    reference: scoreObj.reference.value,
+                    rating: scoreObj.rating.value,
+                    difficulty: scoreObj.difficulty.value,
+                  );
+                  var currentScore =
+                      ref.read(pdfFileProvider.notifier).getPrevFile();
+                  currentScore.whenData((value) {
+                    if (value.id == updated.id)
+                      ref.read(pdfFileProvider.notifier).giveFile(updated);
+                  });
                   // this is to test that the db updated
                   print("updated score successfully");
                   print(await ScoreService().getAllScores());

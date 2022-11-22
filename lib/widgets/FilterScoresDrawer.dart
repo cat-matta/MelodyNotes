@@ -68,9 +68,13 @@ class _FilterScoresDrawerState extends ConsumerState<FilterScoresDrawer> {
                   .removeScore([score], 'composer');
 
               ref.read(currentScoresListProvider.notifier).removeScore(score);
-              print(ref
-                  .read(currentScoresListProvider.notifier)
-                  .state); // need to fix for dynamic if provider works
+              print(ref.read(currentScoresListProvider.notifier).state);
+              var currentScore =
+                  ref.read(pdfFileProvider.notifier).getPrevFile();
+              currentScore.whenData((value) {
+                if (value.id == score.id)
+                  ref.read(pdfFileProvider.notifier).removeFile(score);
+              });
             })));
     return listOfWidgets;
   }
