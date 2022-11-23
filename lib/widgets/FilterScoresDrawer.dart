@@ -57,7 +57,7 @@ class _FilterScoresDrawerState extends ConsumerState<FilterScoresDrawer> {
 
               ref.read(pdfFileProvider.notifier).giveFile(score);
               ref.read(currentScoresListProvider.notifier).addScore(score);
-              print(ref.read(currentScoresListProvider.notifier).state);
+              // print(ref.read(currentScoresListProvider.notifier).state);
               // print(ref.read(pdfFileProvider.notifier).getFile());
             }, () {
               print('edit');
@@ -144,10 +144,10 @@ class _FilterScoresDrawerState extends ConsumerState<FilterScoresDrawer> {
                       List<Score> listsOfScore = await servObj.getAllScores();
                       Score score = (listsOfScore.last);
 
-                      ref.read(pdfFileProvider.notifier).giveFile(score);
-                      ref
-                          .read(currentScoresListProvider.notifier)
-                          .addScore(score);
+                      // ref.read(pdfFileProvider.notifier).giveFile(score);
+                      // ref
+                      //     .read(currentScoresListProvider.notifier)
+                      //     .addScore(score);
 
                       // need to fix for dynamic if provider works
                       // print(listsOfScore);

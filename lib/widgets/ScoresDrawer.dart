@@ -142,9 +142,9 @@ class _ScoresLibraryWidgetState extends ConsumerState<ScoreDrawer> {
                       List<Score> listsOfScore = await servObj.getAllScores();
                       Score score = (listsOfScore.last);
                       // ref.read(pdfFileProvider.notifier).giveFile(score);
-                      ref
-                          .read(currentScoresListProvider.notifier)
-                          .addScore(score);
+                      // ref
+                      //     .read(currentScoresListProvider.notifier)
+                      //     .addScore(score);
                       print(
                           "Current list${ref.read(currentScoresListProvider.notifier).state}");
 
