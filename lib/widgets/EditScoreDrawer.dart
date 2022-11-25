@@ -364,7 +364,7 @@ class _EditScoreWidget extends ConsumerState<EditScoreDrawer> {
                   print("updated score successfully");
                   print(await ScoreService().getAllScores());
 
-                  // Navigator.of(context).pop(); // this may be added once again
+                  Navigator.of(context).pop(); // this may be added once again
                 },
                 child: const Text(
                   'Submit',
