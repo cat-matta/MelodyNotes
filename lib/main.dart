@@ -21,6 +21,7 @@ import './screens/camera_screen.dart';
 import 'data/drift_db.dart';
 import 'locator.dart' as injector;
 import 'themedata.dart';
+import 'package:tabbed_view/tabbed_view.dart';
 
 late List<CameraDescription> cameras;
 late List<Score> _currentScores;
@@ -322,135 +323,77 @@ class _AppBodyState extends ConsumerState<AppBody> {
     var currentFile = ref.watch(pdfFileProvider);
     _currentScores = ref.watch(currentScoresListProvider);
     int numTabs = _currentScores.length;
-    return tabsToggle
-        ? DefaultTabController(
-            length: numTabs,
-            child: Container(
-              child: Scaffold(
-                  appBar: PreferredSize(
-                    preferredSize: mediaQuerry.size / 20,
-                    child: AppBar(
-                        bottom: TabBar(
-                            isScrollable: true,
-                            indicatorColor: AppTheme.accentMain,
-                            unselectedLabelColor: AppTheme.lightBackground,
-                            labelColor: AppTheme.accentMain,
-                            onTap: (value) {
-                              ref
-                                  .read(pdfFileProvider.notifier)
-                                  .giveFile(_currentScores[value]);
-                              ref
-                                  .read(pdfFileProvider.notifier)
-                                  .setCache(value);
-                              setState(() {});
-                            },
-                            tabs: _currentScores
-                                .map((element) => Padding(
-                                      padding: const EdgeInsets.all(1.0),
-                                      child: Flexible(
-                                        fit: FlexFit.tight,
-                                        child: Row(children: [
-                                          Text(
-                                            element.name,
-                                            style: TextStyle(
-                                                overflow:
-                                                    TextOverflow.ellipsis),
-                                          ),
-                                          IconButton(
-                                            icon: Icon(Icons.close),
-                                            onPressed: () {
-                                              ref
-                                                  .read(
-                                                      currentScoresListProvider
-                                                          .notifier)
-                                                  .removeScore(element);
-                                              setState(() {});
-                                            },
-                                          )
-                                        ]),
-                                      ),
-                                    ))
-                                .toList())),
-                  ),
-                  body: TabBarView(
-                      children: _currentScores.map((score) {
-                    return PDFPage(
-                      score: score,
-                    );
-                  }).toList())),
-            ),
-          )
-        : currentFile.when(
-            data: (currentFile) {
-              // print("Currently on: $currentFile");
+    return currentFile.when(
+        data: (currentFile) {
+          // print("Currently on: $currentFile");
 
-              return PDFPage(score: currentFile);
-            },
-            error: ((error, stackTrace) => Text("Err: $error")),
-            loading: () => Center(
-                  child: Container(
-                      height: MediaQuery.of(context).size.height,
-                      decoration: BoxDecoration(color: AppTheme.darkBackground),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+          return PDFPage(score: currentFile);
+        },
+        error: ((error, stackTrace) => Text("Err: $error")),
+        loading: () => Center(
+              child: Container(
+                  height: MediaQuery.of(context).size.height,
+                  decoration: BoxDecoration(color: AppTheme.darkBackground),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Spacer(),
+                      Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Spacer(),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.music_note),
-                              Icon(Icons.music_note),
-                              Icon(Icons.music_note),
-                            ],
-                          ),
-                          Spacer(),
-                          RichText(
-                            textAlign: TextAlign.center,
-                            text: TextSpan(
-                              children: [
-                                TextSpan(
-                                  text:
-                                      "Welcome to MelodyScore! You can import a file by clicking on the ",
-                                  style: TextStyle(
-                                    color: AppTheme.accentMain,
-                                    fontSize: 20,
-                                  ),
-                                ),
-                                WidgetSpan(
-                                  child: Icon(Icons.library_music, size: 20),
-                                ),
-                                TextSpan(
-                                  text: " above",
-                                  style: TextStyle(
-                                    color: AppTheme.accentMain,
-                                    fontSize: 20,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Spacer(),
-                          Text(
-                            "Happy Playing!",
-                            style: TextStyle(
-                                color: AppTheme.accentMain, fontSize: 20),
-                          ),
-                          Spacer(),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.music_note),
-                              Icon(Icons.music_note),
-                              Icon(Icons.music_note),
-                            ],
-                          ),
-                          Spacer(),
+                          Icon(Icons.music_note),
+                          Icon(Icons.music_note),
+                          Icon(Icons.music_note),
                         ],
-                      )),
-                ));
+                      ),
+                      Spacer(),
+                      RichText(
+                        textAlign: TextAlign.center,
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text:
+                                  "Welcome to MelodyScore! You can import a file by clicking on the ",
+                              style: TextStyle(
+                                color: AppTheme.accentMain,
+                                fontSize: 20,
+                              ),
+                            ),
+                            WidgetSpan(
+                              child: Icon(Icons.library_music, size: 20),
+                            ),
+                            TextSpan(
+                              text: " above",
+                              style: TextStyle(
+                                color: AppTheme.accentMain,
+                                fontSize: 20,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Spacer(),
+                      Text(
+                        "Happy Playing!",
+                        style:
+                            TextStyle(color: AppTheme.accentMain, fontSize: 20),
+                      ),
+                      Spacer(),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.music_note),
+                          Icon(Icons.music_note),
+                          Icon(Icons.music_note),
+                        ],
+                      ),
+                      Spacer(),
+                    ],
+                  )),
+            ));
   }
 }
 
