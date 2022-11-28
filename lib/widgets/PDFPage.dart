@@ -33,7 +33,7 @@ class _PDFPageState extends State<PDFPage> {
       if (orientation == Orientation.landscape)
         return KeyboardListener(
           child: SfPdfViewer.file(File(widget.score.file),
-              controller: _pdfViewerController),
+              enableDoubleTapZooming: false, controller: _pdfViewerController),
           focusNode: FocusNode(),
           onKeyEvent: (value) {
             if (value.logicalKey == LogicalKeyboardKey.arrowRight) {
@@ -48,6 +48,7 @@ class _PDFPageState extends State<PDFPage> {
         return KeyboardListener(
           child: SfPdfViewer.file(File(widget.score.file),
               pageLayoutMode: PdfPageLayoutMode.single,
+              enableDoubleTapZooming: false,
               controller: _pdfViewerController),
           focusNode: FocusNode(),
           onKeyEvent: (value) {

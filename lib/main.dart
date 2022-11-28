@@ -27,6 +27,7 @@ import 'package:tabbed_view/tabbed_view.dart';
 late List<CameraDescription> cameras;
 late List<Score> _currentScores;
 bool tabsToggle = false;
+bool showAppBar = true;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -57,7 +58,6 @@ class TopBar extends ConsumerStatefulWidget {
 }
 
 class _TopBarState extends ConsumerState<TopBar> {
-  // late
   @override
   void initState() {
     super.initState();
@@ -88,7 +88,12 @@ class _TopBarState extends ConsumerState<TopBar> {
   @override
   Widget build(BuildContext context) {
     final mediaQuerry = MediaQuery.of(context);
+
+    var currentFile = ref.watch(pdfFileProvider);
+    _currentScores = ref.watch(currentScoresListProvider);
+    int numTabs = _currentScores.length;
     List<VoidCallback> menuFunctions = [];
+
     bool isDesktop(BuildContext context) {
       return mediaQuerry.size.width >= 700;
     }
@@ -146,254 +151,180 @@ class _TopBarState extends ConsumerState<TopBar> {
     }
 
     return Scaffold(
-        appBar: AppBar(
-            centerTitle: true,
-            titleSpacing: 0.0,
-            title: ScoreTitle(),
-            leadingWidth: mediaQuerry.orientation == Orientation.landscape ||
-                    isDesktop(context)
-                ? mediaQuerry.size.width * 0.25
-                : mediaQuerry.size.width * 0.15,
-            leading: mediaQuerry.orientation == Orientation.landscape ||
-                    isDesktop(context)
-                ? Row(
-                    //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      buildAppBarIcons(Icons.photo_camera, () {}),
-                      buildAppBarIcons(Icons.draw, () {}),
-                      buildAppBarIcons(Icons.display_settings, () {
-                        tabsToggle = !tabsToggle;
-                        setState(() {});
-                      }),
-                      buildAppBarIcons(Icons.collections_bookmark, () {}),
-                    ],
-                  )
-                : buildAppBarIcons(Icons.draw, () {}),
-            actions: [
-              buildAppBarIcons(Icons.library_music, () {
-                showScoreDrawer(
-                  context,
-                  ScoreDrawer(),
-                  0.7,
-                );
-              }),
-              buildAppBarIcons(Icons.music_note, () {
-                showSetlistDrawer(
-                  context,
-                  SetlistDrawer(),
-                  0.7,
-                );
-              }),
-              buildAppBarIcons(Icons.bookmark, () {
-                showBookMarkDrawer(
-                  context,
-                  BookMarkDrawer(),
-                  0.7,
-                );
-              }),
-              buildAppBarIcons(Icons.menu, () {
-                showMainDrawer(context, MainDrawer(), 0.7);
-              }),
-            ]),
-        body: AppBody());
-  }
-}
-
-class ScoreTitle extends ConsumerStatefulWidget {
-  @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _ScoreTitleState();
-}
-
-class _ScoreTitleState extends ConsumerState<ScoreTitle> {
-  @override
-  void initState() {
-    super.initState();
-    setup();
-  }
-
-  void setup() async {
-    super.initState();
-    final prefs = await SharedPreferences.getInstance();
-    final int? fileId = prefs.getInt('file_id');
-    final List<String>? items = prefs.getStringList('saved_scores');
-    if (fileId == null || items == null)
-      return;
-    else {
-      ScoreService servObj = ScoreService();
-      List<Score> listsOfScores = await servObj.getAllScores();
-
-      Score cachedScore = ref
-          .read(scoresListProvider.notifier)
-          .getScorefromID(listsOfScores, fileId);
-      print("cached score id: $fileId");
-      ref.read(pdfFileProvider.notifier).giveFile(cachedScore);
-      ref.read(currentScoresListProvider.notifier).getCache(items);
-      print("Cached items: ${items}");
-    }
-  }
-
-  @override
-  Widget build(
-    BuildContext context,
-  ) {
-    final MediaQueryData mediaQuerry = MediaQuery.of(context);
-    var currentFile = ref.watch(pdfFileProvider);
-
-    return Container(
-        // alignment: Alignment.center,
-        width: mediaQuerry.size.width * 0.5,
-        decoration: BoxDecoration(
-            color: AppTheme.lightBackground,
-            borderRadius: BorderRadius.circular(20)),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            IconButton(
-              onPressed: () => {},
-              icon: Icon(Icons.settings),
-              color: AppTheme.accentSecondary,
-            ),
-            Flexible(
-              child: currentFile.when(
-                data: (data) => Text(
-                  data.name,
-                  style: TextStyle(color: Colors.black),
-                  overflow: TextOverflow.ellipsis,
-                ),
-                error: ((error, stackTrace) => Text(
-                      "Error picking file",
-                      style: TextStyle(color: Colors.black),
-                      overflow: TextOverflow.ellipsis,
+        appBar: showAppBar
+            ? AppBar(
+                centerTitle: true,
+                titleSpacing: 0.0,
+                title: Container(
+                    // alignment: Alignment.center,
+                    width: mediaQuerry.size.width * 0.5,
+                    decoration: BoxDecoration(
+                        color: AppTheme.lightBackground,
+                        borderRadius: BorderRadius.circular(20)),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        IconButton(
+                          onPressed: () =>
+                              {showAppBar = !showAppBar, setState(() {})},
+                          icon: Icon(Icons.settings),
+                          color: AppTheme.accentSecondary,
+                        ),
+                        Flexible(
+                          child: currentFile.when(
+                            data: (data) => Text(
+                              data.name,
+                              style: TextStyle(color: Colors.black),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            error: ((error, stackTrace) => Text(
+                                  "Error picking file",
+                                  style: TextStyle(color: Colors.black),
+                                  overflow: TextOverflow.ellipsis,
+                                )),
+                            loading: () => Text(
+                              "",
+                              style: TextStyle(color: Colors.black),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () => {},
+                          icon: Icon(Icons.search),
+                          color: AppTheme.accentSecondary,
+                        ),
+                      ],
                     )),
-                loading: () => Text(
-                  "",
-                  style: TextStyle(color: Colors.black),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ),
-            IconButton(
-              onPressed: () => {},
-              icon: Icon(Icons.search),
-              color: AppTheme.accentSecondary,
-            ),
-          ],
-        ));
+                leadingWidth:
+                    mediaQuerry.orientation == Orientation.landscape ||
+                            isDesktop(context)
+                        ? mediaQuerry.size.width * 0.25
+                        : mediaQuerry.size.width * 0.15,
+                leading: mediaQuerry.orientation == Orientation.landscape ||
+                        isDesktop(context)
+                    ? Row(
+                        //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          buildAppBarIcons(Icons.photo_camera, () {}),
+                          buildAppBarIcons(Icons.draw, () {}),
+                          buildAppBarIcons(Icons.display_settings, () {
+                            tabsToggle = !tabsToggle;
+                            setState(() {});
+                          }),
+                          buildAppBarIcons(Icons.collections_bookmark, () {}),
+                        ],
+                      )
+                    : buildAppBarIcons(Icons.draw, () {}),
+                actions: [
+                    buildAppBarIcons(Icons.library_music, () {
+                      showScoreDrawer(
+                        context,
+                        ScoreDrawer(),
+                        0.7,
+                      );
+                    }),
+                    buildAppBarIcons(Icons.music_note, () {
+                      showSetlistDrawer(
+                        context,
+                        SetlistDrawer(),
+                        0.7,
+                      );
+                    }),
+                    buildAppBarIcons(Icons.bookmark, () {
+                      showBookMarkDrawer(
+                        context,
+                        BookMarkDrawer(),
+                        0.7,
+                      );
+                    }),
+                    buildAppBarIcons(Icons.menu, () {
+                      showMainDrawer(context, MainDrawer(), 0.7);
+                    }),
+                  ])
+            : null,
+        body: currentFile.when(
+            data: (currentFile) {
+              // print("Currently on: $currentFile");
+
+              return GestureDetector(
+                  onDoubleTap: () => setState(() => showAppBar = !showAppBar),
+                  child: PDFPage(score: currentFile));
+            },
+            error: ((error, stackTrace) => Text("Err: $error")),
+            loading: () => LandingPage()));
   }
 }
 
-class AppBody extends ConsumerStatefulWidget {
-  // const AppBody({super.key});
-
-  @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _AppBodyState();
-}
-
-class _AppBodyState extends ConsumerState<AppBody> {
-  @override
-  void initState() {
-    super.initState();
-    setup();
-  }
-
-  void setup() async {
-    super.initState();
-    final prefs = await SharedPreferences.getInstance();
-    final int? fileId = prefs.getInt('file_id');
-    final List<String>? items = prefs.getStringList('saved_scores');
-    if (fileId == null || items == null)
-      return;
-    else {
-      ScoreService servObj = ScoreService();
-      List<Score> listsOfScores = await servObj.getAllScores();
-
-      Score cachedScore = ref
-          .read(scoresListProvider.notifier)
-          .getScorefromID(listsOfScores, fileId);
-      print("cached score id: $fileId");
-      ref.read(pdfFileProvider.notifier).giveFile(cachedScore);
-      ref.read(currentScoresListProvider.notifier).getCache(items);
-      print("Cached items: ${items}");
-    }
-  }
+class LandingPage extends StatelessWidget {
+  const LandingPage({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final MediaQueryData mediaQuerry = MediaQuery.of(context);
-
-    var currentFile = ref.watch(pdfFileProvider);
-    _currentScores = ref.watch(currentScoresListProvider);
-    int numTabs = _currentScores.length;
-    return currentFile.when(
-        data: (currentFile) {
-          // print("Currently on: $currentFile");
-
-          return PDFPage(score: currentFile);
-        },
-        error: ((error, stackTrace) => Text("Err: $error")),
-        loading: () => Center(
-              child: Container(
-                  height: MediaQuery.of(context).size.height,
-                  decoration: BoxDecoration(color: AppTheme.darkBackground),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Spacer(),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.music_note),
-                          Icon(Icons.music_note),
-                          Icon(Icons.music_note),
-                        ],
+    return Center(
+      child: Container(
+          height: MediaQuery.of(context).size.height,
+          decoration: BoxDecoration(color: AppTheme.darkBackground),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Spacer(),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.music_note),
+                  Icon(Icons.music_note),
+                  Icon(Icons.music_note),
+                ],
+              ),
+              Spacer(),
+              RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text:
+                          "Welcome to MelodyScore! You can import a file by clicking on the ",
+                      style: TextStyle(
+                        color: AppTheme.accentMain,
+                        fontSize: 20,
                       ),
-                      Spacer(),
-                      RichText(
-                        textAlign: TextAlign.center,
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text:
-                                  "Welcome to MelodyScore! You can import a file by clicking on the ",
-                              style: TextStyle(
-                                color: AppTheme.accentMain,
-                                fontSize: 20,
-                              ),
-                            ),
-                            WidgetSpan(
-                              child: Icon(Icons.library_music, size: 20),
-                            ),
-                            TextSpan(
-                              text: " above",
-                              style: TextStyle(
-                                color: AppTheme.accentMain,
-                                fontSize: 20,
-                              ),
-                            ),
-                          ],
-                        ),
+                    ),
+                    WidgetSpan(
+                      child: Icon(Icons.library_music, size: 20),
+                    ),
+                    TextSpan(
+                      text: " above",
+                      style: TextStyle(
+                        color: AppTheme.accentMain,
+                        fontSize: 20,
                       ),
-                      Spacer(),
-                      Text(
-                        "Happy Playing!",
-                        style:
-                            TextStyle(color: AppTheme.accentMain, fontSize: 20),
-                      ),
-                      Spacer(),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.music_note),
-                          Icon(Icons.music_note),
-                          Icon(Icons.music_note),
-                        ],
-                      ),
-                      Spacer(),
-                    ],
-                  )),
-            ));
+                    ),
+                  ],
+                ),
+              ),
+              Spacer(),
+              Text(
+                "Happy Playing!",
+                style: TextStyle(color: AppTheme.accentMain, fontSize: 20),
+              ),
+              Spacer(),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.music_note),
+                  Icon(Icons.music_note),
+                  Icon(Icons.music_note),
+                ],
+              ),
+              Spacer(),
+            ],
+          )),
+    );
   }
 }
