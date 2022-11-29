@@ -145,8 +145,12 @@ class _ScoresLibraryWidgetState extends ConsumerState<ScoreDrawer> {
                       // ref
                       //     .read(currentScoresListProvider.notifier)
                       //     .addScore(score);
-                      print(
-                          "Current list${ref.read(currentScoresListProvider.notifier).state}");
+                      // ref.read(pdfFileProvider.notifier).giveFile(score);
+                      // ref
+                      //     .read(currentScoresListProvider.notifier)
+                      //     .addScore(score);
+                      // print(
+                      //     "Current list${ref.read(currentScoresListProvider.notifier).state}");
 
                       // print(listsOfScore);
                     },

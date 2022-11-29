@@ -2,6 +2,9 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:melodyscore/providers/CurrentFilesProvider.dart';
+import 'package:melodyscore/providers/ScoresListProvider.dart';
+import 'package:melodyscore/services/scores_service.dart';
 import 'package:flutter/services.dart';
 import 'package:melodyscore/providers/CurrentFilesProvider.dart';
 import 'package:melodyscore/providers/ScoresListProvider.dart';
@@ -18,6 +21,7 @@ import './widgets/MainDrawer.dart';
 import './widgets/SetlistDrawer.dart';
 import 'package:melodyscore/screens/scanner_screen.dart';
 import './screens/camera_screen.dart';
+import 'data/drift_db.dart';
 import 'data/drift_db.dart';
 import 'locator.dart' as injector;
 import 'themedata.dart';
