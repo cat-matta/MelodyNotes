@@ -13,7 +13,6 @@ import 'package:melodyscore/widgets/BookMarkDrawer.dart';
 import 'package:melodyscore/widgets/ScoresDrawer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 import './widgets/MainDrawer.dart';
 import './widgets/SetlistDrawer.dart';
@@ -22,7 +21,6 @@ import './screens/camera_screen.dart';
 import 'data/drift_db.dart';
 import 'locator.dart' as injector;
 import 'themedata.dart';
-import 'package:tabbed_view/tabbed_view.dart';
 
 late List<CameraDescription> cameras;
 late List<Score> _currentScores;
@@ -42,7 +40,7 @@ class AppEntry extends StatelessWidget {
     return MaterialApp(
       theme: AppTheme.maintheme(),
       debugShowCheckedModeBanner: false,
-      home: SafeArea(child: TopBar()),
+      home: SafeArea(child: AppEnry()),
       initialRoute: '/',
       routes: {
         CameraScreen.routeName: (ctx) => CameraScreen(cameras: cameras),
@@ -52,12 +50,12 @@ class AppEntry extends StatelessWidget {
   }
 }
 
-class TopBar extends ConsumerStatefulWidget {
+class AppEnry extends ConsumerStatefulWidget {
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _TopBarState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _AppEnryState();
 }
 
-class _TopBarState extends ConsumerState<TopBar> {
+class _AppEnryState extends ConsumerState<AppEnry> {
   @override
   void initState() {
     super.initState();

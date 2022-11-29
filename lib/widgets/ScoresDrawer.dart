@@ -227,7 +227,7 @@ class _ScoresLibraryWidgetState extends ConsumerState<ScoreDrawer> {
                   onPressed: () {
                     ref
                         .read(scoresListProvider.notifier)
-                        .getMappedScores("tag");
+                        .getMappedScores("tags");
                     _hasBeenPressedTags = true;
                     _hasBeenPressedComposer = false;
                     _hasBeenPressedGenres = false;
@@ -251,7 +251,7 @@ class _ScoresLibraryWidgetState extends ConsumerState<ScoreDrawer> {
                   onPressed: () {
                     ref
                         .read(scoresListProvider.notifier)
-                        .getMappedScores("label");
+                        .getMappedScores("labels");
                     _hasBeenPressedTags = false;
                     _hasBeenPressedComposer = false;
                     _hasBeenPressedGenres = false;
