@@ -49,6 +49,7 @@ dependencies:
   permission_handler: ^10.2.0
   syncfusion_flutter_pdfviewer: ^20.3.56
   shared_preferences: ^2.0.15
+  tabbed_view: ^1.15.0
 
 dev_dependencies:
   flutter_test:
@@ -84,6 +85,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/logo.png
+    - assets/images/M.png
     - assets/images/M.png
 
   # An image asset can refer to one or more resolution-specific "variants", see

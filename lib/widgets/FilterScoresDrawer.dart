@@ -57,15 +57,26 @@ class _FilterScoresDrawerState extends ConsumerState<FilterScoresDrawer> {
 
               ref.read(pdfFileProvider.notifier).giveFile(score);
               ref.read(currentScoresListProvider.notifier).addScore(score);
+              // print(ref.read(currentScoresListProvider.notifier).state);
               print(ref.read(currentScoresListProvider.notifier).state);
               // print(ref.read(pdfFileProvider.notifier).getFile());
             }, () {
               print('edit');
               // don't need this edit callback function for editDrawer. can be removed
+              // don't need this edit callback function for editDrawer. can be removed
             }, () async {
               ref
                   .read(scoresListProvider.notifier)
                   .removeScore([score], 'composer');
+
+              ref.read(currentScoresListProvider.notifier).removeScore(score);
+              print(ref.read(currentScoresListProvider.notifier).state);
+              var currentScore =
+                  ref.read(pdfFileProvider.notifier).getPrevFile();
+              currentScore.whenData((value) {
+                if (value.id == score.id)
+                  ref.read(pdfFileProvider.notifier).removeFile(score);
+              });
 
               ref.read(currentScoresListProvider.notifier).removeScore(score);
               print(ref
@@ -133,20 +144,13 @@ class _FilterScoresDrawerState extends ConsumerState<FilterScoresDrawer> {
                               .last,
                           file: file?.path ?? "no path",
                           composer: driftHelper.Value(widget.headername));
-
                       ref
                           .read(scoresListProvider.notifier)
                           .insertScore(scoreObj, "composer");
-                      List<Score> listsOfScore = await servObj.getAllScores();
-                      Score score = (listsOfScore.last);
-
-                      ref.read(pdfFileProvider.notifier).giveFile(score);
-                      ref
-                          .read(currentScoresListProvider.notifier)
-                          .addScore(score);
 
                       // need to fix for dynamic if provider works
-                      // print(listsOfScore);
+                      List<Score> listsOfScore = await servObj.getAllScores();
+                      print(listsOfScore);
                     },
                     child: const Text('Import'),
                     style: TextButton.styleFrom(

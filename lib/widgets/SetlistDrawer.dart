@@ -1,34 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:melodyscore/themedata.dart';
 
+import 'SetListTile.dart';
+
+//main Setlist widget, displays all setlists
+//have the ability to create setlists
 class SetlistDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Widget buildListTile(int numItems, String text, VoidCallback function) {
-      return ListTile(
-        title: Text(
-          text,
-          style: TextStyle(
-            fontWeight: AppTheme.headerFontWeight,
-            fontSize: 20,
-          ),
-        ),
-        subtitle: Text(
-          "$numItems Item",
-          style: TextStyle(
-            fontWeight: AppTheme.headerFontWeight,
-            fontSize: 16,
-          ),
-        ),
-        leading: Icon(
-          Icons.edit_outlined,
-          color: AppTheme.maintheme().iconTheme.color,
-        ),
-        trailing: Icon(
-          Icons.arrow_forward_ios,
-          color: AppTheme.maintheme().iconTheme.color,
-        ),
-        onTap: function,
+    //show dialog to create/edit setlist
+    Future<void> _BuildDialog(
+      String title,
+      String hintText,
+      String action2Text,
+      VoidCallback action2,
+    ) async {
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(title),
+            content: TextField(
+              textAlign: TextAlign.left,
+              decoration: InputDecoration(
+                //border: InputBorder.none,
+                hintText: hintText,
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Cancel'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              //depending on whether the user is editing a setlist
+              //or creating a setlist, the action2text and  action2
+              //arguments will be different
+              TextButton(
+                child: Text(action2Text),
+                onPressed: action2,
+              ),
+            ],
+          );
+        },
       );
     }
 
@@ -39,20 +55,17 @@ class SetlistDrawer extends StatelessWidget {
           child: Row(
             children: [
               IconButton(
-                onPressed: () {},
+                onPressed: () => _BuildDialog(
+                  "Create Setlist",
+                  "Name",
+                  "Create",
+                  () {},
+                ),
                 icon: Icon(
                   Icons.add,
                   color: AppTheme.maintheme().iconTheme.color,
                 ),
                 tooltip: "Add Setlist",
-              ),
-              IconButton(
-                onPressed: () {},
-                icon: Icon(
-                  Icons.edit_outlined,
-                  color: AppTheme.maintheme().iconTheme.color,
-                ),
-                tooltip: "Edit",
               ),
             ],
           ),
@@ -121,8 +134,19 @@ class SetlistDrawer extends StatelessWidget {
           child: ListView(
             padding: EdgeInsets.zero,
             children: [
-              buildListTile(1, "Setlist Name", () {}),
-              buildListTile(1, "Setlist Name2", () {}),
+              SetListTile(
+                2,
+                "Beethoven",
+                [],
+                () => _BuildDialog(
+                  "Edit Setlist",
+                  "Name",
+                  "Change",
+                  () {},
+                ),
+                () async {},
+              ),
+              SetListTile(1, "Mozart", [], () {}, () async {}),
             ],
           ),
         )

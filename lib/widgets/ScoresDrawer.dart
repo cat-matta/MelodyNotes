@@ -64,6 +64,11 @@ class _ScoresLibraryWidgetState extends ConsumerState<ScoreDrawer> {
     mapSortedScores.forEach((key, listOfScores) => listOfWidgets.add(
             ScoreListTile(listOfScores.length, key, listOfScores, () {},
                 () async {
+          var currentScore = ref.read(pdfFileProvider.notifier).getPrevFile();
+          currentScore.whenData((value) {
+            if (value.composer == key)
+              ref.read(pdfFileProvider.notifier).removeFile(value);
+          });
           ref
               .read(scoresListProvider.notifier)
               .removeScore(listOfScores, "composer");
@@ -136,12 +141,16 @@ class _ScoresLibraryWidgetState extends ConsumerState<ScoreDrawer> {
                       // use to test and show data storage in terminal
                       List<Score> listsOfScore = await servObj.getAllScores();
                       Score score = (listsOfScore.last);
-                      ref.read(pdfFileProvider.notifier).giveFile(score);
-                      ref
-                          .read(currentScoresListProvider.notifier)
-                          .addScore(score);
-                      print(
-                          "Current list${ref.read(currentScoresListProvider.notifier).state}");
+                      // ref.read(pdfFileProvider.notifier).giveFile(score);
+                      // ref
+                      //     .read(currentScoresListProvider.notifier)
+                      //     .addScore(score);
+                      // ref.read(pdfFileProvider.notifier).giveFile(score);
+                      // ref
+                      //     .read(currentScoresListProvider.notifier)
+                      //     .addScore(score);
+                      // print(
+                      //     "Current list${ref.read(currentScoresListProvider.notifier).state}");
 
                       // print(listsOfScore);
                     },
@@ -198,7 +207,7 @@ class _ScoresLibraryWidgetState extends ConsumerState<ScoreDrawer> {
                   onPressed: () {
                     ref
                         .read(scoresListProvider.notifier)
-                        .getMappedScores("test");
+                        .getMappedScores("genre");
                     _hasBeenPressedGenres = true;
                     _hasBeenPressedComposer = false;
                     _hasBeenPressedTags = false;
@@ -222,7 +231,7 @@ class _ScoresLibraryWidgetState extends ConsumerState<ScoreDrawer> {
                   onPressed: () {
                     ref
                         .read(scoresListProvider.notifier)
-                        .getMappedScores("test");
+                        .getMappedScores("tags");
                     _hasBeenPressedTags = true;
                     _hasBeenPressedComposer = false;
                     _hasBeenPressedGenres = false;
@@ -246,7 +255,7 @@ class _ScoresLibraryWidgetState extends ConsumerState<ScoreDrawer> {
                   onPressed: () {
                     ref
                         .read(scoresListProvider.notifier)
-                        .getMappedScores("test");
+                        .getMappedScores("labels");
                     _hasBeenPressedTags = false;
                     _hasBeenPressedComposer = false;
                     _hasBeenPressedGenres = false;

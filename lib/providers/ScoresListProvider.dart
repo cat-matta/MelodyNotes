@@ -64,6 +64,27 @@ class ScoreListNotifier extends StateNotifier<Map<String, List<Score>>> {
         }
         mappedScores[score.composer]!.add(score);
       });
+    } else if (filter == 'genre') {
+      listsOfScore.forEach((score) {
+        if (mappedScores[score.genre] == null) {
+          mappedScores[score.genre] = [];
+        }
+        mappedScores[score.genre]!.add(score);
+      });
+    } else if (filter == 'tags') {
+      listsOfScore.forEach((score) {
+        if (mappedScores[score.tag] == null) {
+          mappedScores[score.tag] = [];
+        }
+        mappedScores[score.tag]!.add(score);
+      });
+    } else if (filter == 'labels') {
+      listsOfScore.forEach((score) {
+        if (mappedScores[score.label] == null) {
+          mappedScores[score.label] = [];
+        }
+        mappedScores[score.label]!.add(score);
+      });
     }
     return mappedScores;
   }
