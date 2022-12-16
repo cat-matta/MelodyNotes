@@ -93,9 +93,23 @@ class _FilterScoresDrawerState extends ConsumerState<FilterScoresDrawer> {
         ? []
         : mapSortedScores[widget.headername]!;
 
-    ListView listOfScoreTiles = ListView(
+    Widget listOfScoreTiles = ReorderableListView(
       padding: EdgeInsets.zero,
-      children: createListOfScoreTileWidgets(),
+      onReorder: (int oldIndex, int newIndex) {
+        setState(() {
+          if (oldIndex < newIndex) {
+            newIndex -= 1;
+          }
+          final Score item = widget.scores.removeAt(oldIndex);
+          widget.scores.insert(newIndex, item);
+        });
+      },
+      children: createListOfScoreTileWidgets()
+          .map((element) => ListTile(
+                key: Key("${element.scoreInfo.id}"),
+                title: element,
+              ))
+          .toList(),
     );
 
     return Scaffold(
