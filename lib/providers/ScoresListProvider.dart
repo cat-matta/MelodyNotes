@@ -58,27 +58,66 @@ class ScoreListNotifier extends StateNotifier<Map<String, List<Score>>> {
     List<Score> listsOfScore = await servObj.getAllScores();
     Map<String, List<Score>> mappedScores = {};
     if (filter == 'composer') {
+
+      listsOfScore.sort((a,b){
+        int comparsion = a.composer.compareTo(b.composer);
+        if(comparsion == 0){
+          return a.name.compareTo(b.name);
+        }
+        return comparsion;
+      });
+
       listsOfScore.forEach((score) {
         if (mappedScores[score.composer] == null) {
           mappedScores[score.composer] = [];
         }
         mappedScores[score.composer]!.add(score);
       });
+
     } else if (filter == 'genre') {
+
+      listsOfScore.sort((a, b) {
+        int comparsion = a.genre.compareTo(b.genre);
+        if (comparsion == 0) {
+          return a.name.compareTo(b.name);
+        }
+        return comparsion;
+      });
+
       listsOfScore.forEach((score) {
         if (mappedScores[score.genre] == null) {
           mappedScores[score.genre] = [];
         }
         mappedScores[score.genre]!.add(score);
       });
+
     } else if (filter == 'tags') {
+      
+      listsOfScore.sort((a, b) {
+        int comparsion = a.tag.compareTo(b.tag);
+        if (comparsion == 0) {
+          return a.name.compareTo(b.name);
+        }
+        return comparsion;
+      });
+
       listsOfScore.forEach((score) {
         if (mappedScores[score.tag] == null) {
           mappedScores[score.tag] = [];
         }
         mappedScores[score.tag]!.add(score);
       });
+
     } else if (filter == 'labels') {
+
+      listsOfScore.sort((a, b) {
+        int comparsion = a.label.compareTo(b.label);
+        if (comparsion == 0) {
+          return a.name.compareTo(b.name);
+        }
+        return comparsion;
+      });
+
       listsOfScore.forEach((score) {
         if (mappedScores[score.label] == null) {
           mappedScores[score.label] = [];

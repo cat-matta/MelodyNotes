@@ -19,11 +19,17 @@ class Scores extends Table {
   RealColumn get difficulty => real().withDefault(const Constant(0)).check(difficulty.isBetween(Constant(0), Constant(3)))();
 }
 
-@DriftDatabase(tables: [Scores])
+class SetLists extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get name => text().withLength(min: 1, max: 100)();
+  TextColumn get scoreList => text()();
+}
+
+@DriftDatabase(tables: [Scores, SetLists])
 class AppDb extends _$AppDb {
   AppDb() : super(_openConnection());
 
-  // queries setup for each table
+  // queries score setup
 
   // Create score record
   Future<int> insertScoreDb(ScoresCompanion score) {
@@ -31,6 +37,7 @@ class AppDb extends _$AppDb {
   }
   // get all score records
   Future<List<Score>> get allScoresDb => select(scores).get();
+
   // delete records by bulk or individual
   Future deleteListOfScoresDB(List<int> listOfIds){
     return (delete(scores)..where((score)=>score.id.isIn(listOfIds))).go();
@@ -38,6 +45,18 @@ class AppDb extends _$AppDb {
   // update individual record
   Future updateScoreDb(ScoresCompanion updatedScore) {
     return update(scores).replace(updatedScore);
+  }
+
+  // queries setlist setup
+
+  Future<int> insertSetListDb(SetListsCompanion setlist){
+    return into(setLists).insert(setlist);
+  }
+
+  Future<List<SetList>> get allSetlistsDb => select(setLists).get();
+
+  Future deleteListofSetListsDB(List<int> listofSetlists){
+    return (delete(setLists)..where((setlist)=>setlist.id.isIn(listofSetlists))).go();
   }
 
   // Note: this is for migration, so not applicable yet.
