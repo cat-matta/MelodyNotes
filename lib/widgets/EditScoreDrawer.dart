@@ -96,6 +96,7 @@ class _EditScoreWidget extends ConsumerState<EditScoreDrawer> {
                       ),
                       onChanged: (String text) {
                         updatedScore["title"] = text;
+                        setState(() => fieldUpdateFlag['title'] = true);
                       },
                     ),
                   ]),
@@ -122,6 +123,7 @@ class _EditScoreWidget extends ConsumerState<EditScoreDrawer> {
                       ),
                       onChanged: (String text) {
                         updatedScore["composer"] = text;
+                        setState(() => fieldUpdateFlag['composer'] = true);
                       },
                     ),
                   ]),
@@ -148,6 +150,7 @@ class _EditScoreWidget extends ConsumerState<EditScoreDrawer> {
                       ),
                       onChanged: (String text) {
                         updatedScore["genre"] = text;
+                        setState(() => fieldUpdateFlag['genre'] = true);
                       },
                     ),
                   ]),
@@ -174,6 +177,7 @@ class _EditScoreWidget extends ConsumerState<EditScoreDrawer> {
                       ),
                       onChanged: (String text) {
                         updatedScore["tag"] = text;
+                        setState(() => fieldUpdateFlag['tag'] = true);
                       },
                     ),
                   ]),
@@ -200,6 +204,7 @@ class _EditScoreWidget extends ConsumerState<EditScoreDrawer> {
                       ),
                       onChanged: (String text) {
                         updatedScore["label"] = text;
+                        setState(() => fieldUpdateFlag['label'] = true);
                       },
                     ),
                   ]),
@@ -226,6 +231,7 @@ class _EditScoreWidget extends ConsumerState<EditScoreDrawer> {
                       ),
                       onChanged: (String text) {
                         updatedScore["reference"] = text;
+                        setState(() => fieldUpdateFlag['reference'] = true);
                       },
                     ),
                   ]),
@@ -256,6 +262,7 @@ class _EditScoreWidget extends ConsumerState<EditScoreDrawer> {
                             ),
                         onRatingUpdate: (rating) {
                           updatedScore["rating"] = rating;
+                          setState(() => fieldUpdateFlag['rating'] = true);
                         }),
                   ]),
                   TableRow(children: [
@@ -285,6 +292,7 @@ class _EditScoreWidget extends ConsumerState<EditScoreDrawer> {
                       ),
                       onRatingUpdate: (rating) {
                         updatedScore["difficulty"] = rating;
+                        setState(() => fieldUpdateFlag['difficulty'] = true);
                       },
                     ),
                   ]),

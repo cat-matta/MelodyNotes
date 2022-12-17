@@ -140,6 +140,8 @@ class _ScoresLibraryWidgetState extends ConsumerState<ScoreDrawer> {
                       //     "We chose: ${ref.read(pdfFileProvider.notifier).getFile()}");
                       // use to test and show data storage in terminal
                       List<Score> listsOfScore = await servObj.getAllScores();
+                      listsOfScore.sort((a, b) => a.name.compareTo(b.name));
+
                       Score score = (listsOfScore.last);
                       // ref.read(pdfFileProvider.notifier).giveFile(score);
                       // ref

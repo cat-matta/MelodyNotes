@@ -49,6 +49,7 @@ class _FilterScoresDrawerState extends ConsumerState<FilterScoresDrawer> {
 
   List<ScoreTile> createListOfScoreTileWidgets() {
     List<ScoreTile> listOfWidgets = [];
+
     widget.scores
         .forEach((score) => listOfWidgets.add(ScoreTile(score.name, score, () {
               print('click');
@@ -62,7 +63,6 @@ class _FilterScoresDrawerState extends ConsumerState<FilterScoresDrawer> {
               // print(ref.read(pdfFileProvider.notifier).getFile());
             }, () {
               print('edit');
-              // don't need this edit callback function for editDrawer. can be removed
               // don't need this edit callback function for editDrawer. can be removed
             }, () async {
               ref
@@ -93,9 +93,23 @@ class _FilterScoresDrawerState extends ConsumerState<FilterScoresDrawer> {
         ? []
         : mapSortedScores[widget.headername]!;
 
-    ListView listOfScoreTiles = ListView(
+    Widget listOfScoreTiles = ReorderableListView(
       padding: EdgeInsets.zero,
-      children: createListOfScoreTileWidgets(),
+      onReorder: (int oldIndex, int newIndex) {
+        setState(() {
+          if (oldIndex < newIndex) {
+            newIndex -= 1;
+          }
+          final Score item = widget.scores.removeAt(oldIndex);
+          widget.scores.insert(newIndex, item);
+        });
+      },
+      children: createListOfScoreTileWidgets()
+          .map((element) => ListTile(
+                key: Key("${element.scoreInfo.id}"),
+                title: element,
+              ))
+          .toList(),
     );
 
     return Scaffold(
@@ -150,6 +164,7 @@ class _FilterScoresDrawerState extends ConsumerState<FilterScoresDrawer> {
 
                       // need to fix for dynamic if provider works
                       List<Score> listsOfScore = await servObj.getAllScores();
+                      listsOfScore.sort((a, b) => a.name.compareTo(b.name));
                       print(listsOfScore);
                     },
                     child: const Text('Import'),

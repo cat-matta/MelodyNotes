@@ -484,12 +484,218 @@ class $ScoresTable extends Scores with TableInfo<$ScoresTable, Score> {
   }
 }
 
+class SetList extends DataClass implements Insertable<SetList> {
+  final int id;
+  final String name;
+  final String scoreList;
+  const SetList(
+      {required this.id, required this.name, required this.scoreList});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['name'] = Variable<String>(name);
+    map['score_list'] = Variable<String>(scoreList);
+    return map;
+  }
+
+  SetListsCompanion toCompanion(bool nullToAbsent) {
+    return SetListsCompanion(
+      id: Value(id),
+      name: Value(name),
+      scoreList: Value(scoreList),
+    );
+  }
+
+  factory SetList.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SetList(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      scoreList: serializer.fromJson<String>(json['scoreList']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+      'scoreList': serializer.toJson<String>(scoreList),
+    };
+  }
+
+  SetList copyWith({int? id, String? name, String? scoreList}) => SetList(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        scoreList: scoreList ?? this.scoreList,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('SetList(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('scoreList: $scoreList')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, scoreList);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SetList &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.scoreList == this.scoreList);
+}
+
+class SetListsCompanion extends UpdateCompanion<SetList> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<String> scoreList;
+  const SetListsCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.scoreList = const Value.absent(),
+  });
+  SetListsCompanion.insert({
+    this.id = const Value.absent(),
+    required String name,
+    required String scoreList,
+  })  : name = Value(name),
+        scoreList = Value(scoreList);
+  static Insertable<SetList> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<String>? scoreList,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (scoreList != null) 'score_list': scoreList,
+    });
+  }
+
+  SetListsCompanion copyWith(
+      {Value<int>? id, Value<String>? name, Value<String>? scoreList}) {
+    return SetListsCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      scoreList: scoreList ?? this.scoreList,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (scoreList.present) {
+      map['score_list'] = Variable<String>(scoreList.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SetListsCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('scoreList: $scoreList')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SetListsTable extends SetLists with TableInfo<$SetListsTable, SetList> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SetListsTable(this.attachedDatabase, [this._alias]);
+  final VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
+  final VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 100),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true);
+  final VerificationMeta _scoreListMeta = const VerificationMeta('scoreList');
+  @override
+  late final GeneratedColumn<String> scoreList = GeneratedColumn<String>(
+      'score_list', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, name, scoreList];
+  @override
+  String get aliasedName => _alias ?? 'set_lists';
+  @override
+  String get actualTableName => 'set_lists';
+  @override
+  VerificationContext validateIntegrity(Insertable<SetList> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('score_list')) {
+      context.handle(_scoreListMeta,
+          scoreList.isAcceptableOrUnknown(data['score_list']!, _scoreListMeta));
+    } else if (isInserting) {
+      context.missing(_scoreListMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SetList map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SetList(
+      id: attachedDatabase.options.types
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      scoreList: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}score_list'])!,
+    );
+  }
+
+  @override
+  $SetListsTable createAlias(String alias) {
+    return $SetListsTable(attachedDatabase, alias);
+  }
+}
+
 abstract class _$AppDb extends GeneratedDatabase {
   _$AppDb(QueryExecutor e) : super(e);
   late final $ScoresTable scores = $ScoresTable(this);
+  late final $SetListsTable setLists = $SetListsTable(this);
   @override
   Iterable<TableInfo<Table, dynamic>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [scores];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [scores, setLists];
 }
