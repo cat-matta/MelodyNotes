@@ -29,6 +29,8 @@ import 'themedata.dart';
 late List<CameraDescription> cameras;
 late List<Score> _currentScores;
 bool tabsToggle = false;
+bool halfPage = true;
+
 bool showAppBar = true;
 
 Future<void> main() async {
@@ -211,7 +213,7 @@ class _AppEnryState extends ConsumerState<AppEnry> {
                           buildAppBarIcons(Icons.photo_camera, () {}),
                           buildAppBarIcons(Icons.draw, () {}),
                           buildAppBarIcons(Icons.display_settings, () {
-                            tabsToggle = !tabsToggle;
+                            halfPage = !halfPage;
                             setState(() {});
                           }),
                           buildAppBarIcons(Icons.collections_bookmark, () {}),
@@ -251,7 +253,10 @@ class _AppEnryState extends ConsumerState<AppEnry> {
 
               return GestureDetector(
                   onDoubleTap: () => setState(() => showAppBar = !showAppBar),
-                  child: PDFPage(score: currentFile));
+                  child: PDFPage(
+                    score: currentFile,
+                    halfPage: halfPage,
+                  ));
             },
             error: ((error, stackTrace) => Text("Err: $error")),
             loading: () => LandingPage()));
