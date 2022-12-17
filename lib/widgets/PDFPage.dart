@@ -55,7 +55,7 @@ class _PDFPageState extends State<PDFPage> {
             child: ResizableWidget(
               isDisabledSmartHide: true,
               isHorizontalSeparator: true,
-              separatorSize: 1.0,
+              separatorSize: 2.0,
               separatorColor: AppTheme.accentMain,
               children: [
                 SfPdfViewer.file(File(widget.score.file),
