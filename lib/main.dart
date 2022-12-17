@@ -29,7 +29,7 @@ import 'themedata.dart';
 late List<CameraDescription> cameras;
 late List<Score> _currentScores;
 bool tabsToggle = false;
-bool halfPage = true;
+bool halfPage = false;
 
 bool showAppBar = true;
 
