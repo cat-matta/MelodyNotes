@@ -1,3 +1,3 @@
 # MelodyScore
 
-The Adobe of Music Sheet Organization
+The Adobe of Music Sheet Organization.
